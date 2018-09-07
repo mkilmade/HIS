@@ -1,0 +1,131 @@
+  <p><label>Date: <input size="10" type="date" id="race_date" name="race_date"></label>
+     <label>Race: <input type="number" min="1" max="15" id="race" name="race"></label>
+     <label>Track: <input type="text" id="track_id" name="track_id" value='xxx' style="width: 30px;" readonly></label>
+  </p>
+
+  <p><label>Distance: <select id="distance" name="distance">
+            <option value="4.50">4.5f</option>
+            <option value="5.00">5f</option>
+            <option value="5.50">5.5f</option>
+            <option value="6.00" selected>6f</option>
+            <option value="6.50">6.5f</option>
+            <option value="7.00">7f</option>
+            <option value="7.50">7.5f</option>
+            <option value="8.00">Mile</option>
+            <option value="8.06">1m 40yds</option>
+            <option value="8.50">1m 1/16</option>
+            <option value="9.00">1m 1/8</option>
+            <option value="9.50">1m 3/16</option>
+            <option value="10.00">1m 1/4</option>
+            <option value="11.00">1m 3/8</option>
+            <option value="13.00">1m 5/8</option>
+            <option value="12.00">1m 1/2</option>
+            <option value="14.00">1m 3/4</option>
+            <option value="16.00">2m</option>
+          </select>
+     </label>
+
+      <label for="turf">Surface: </label>
+          <input type="radio" value="TRUE" id="turf" name="turf">Turf
+          <input type="radio" value="FALSE" id="turf" checked name="turf">Dirt
+  </p>
+
+  <p>
+      <label>Class: <input size="10" type="text" id="race_class" name="race_class"></label>
+      <label >Sex: <select id="sex" name="sex">
+            <option value="male" selected>Male</option>
+            <option value="female">Female</option>
+          </select>
+      </label>
+
+      <label>Age: <select id="age" name="age">
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="3+" selected>3+</option>
+            <option value="4">4</option>
+            <option value="4+">4+</option>
+          </select>
+      </label>
+  </p>
+
+
+   <p><label>Horse: <input onblur="horse_trigger()" type="text" id="horse" name="horse"></label>
+      <label>Jockey: <input type="text" id="jockey" name="jockey"></label>
+   </p>
+
+   <p><label>Flow: <input size="15" type="text" id="race_flow" name="race_flow"></label></p>
+
+   <p><label>Post: <input type="number" min="1" max="20" id="post_position" name="post_position" value='1'></label>
+      <label>Field Size: <input type="number" min="1" max="20" id="field_size" name="field_size" value='10'></label>
+      <label>Finish: <input type="number" min="1" max="20" id="finish_position" name="finish_position" value='1' readonly></label>
+   </p>
+
+   <p><label>Odds: <input size="5" type="text" id="odds" value="0.0" pattern="[0-9]{0,3}[.][0-9][0,5]{0,1}" name="odds"></label>
+
+      <label for="favorite">Favorite: </label>
+          <input type="radio" value="TRUE" id="favorite" name="favorite">Favorite
+          <input type="radio" value="FALSE" id="favorite" checked name="favorite">Not Favorite
+    </p>
+
+   <p><label>Track Coniditon: <select id="track_condition" name="track_condition">
+              <option value="Fast" selected>Fast</option>
+              <option value="Good">Good</option>
+              <option value="Sloppy">Sloppy</option>
+              <option value="Muddy">Muddy</option>
+              <option value="Firm">Firm</option>
+              <option value="Soft">Soft</option>
+              <option value="Yielding">Yielding</option>
+              <option value="Hard">Hard</option>
+              <option value="Frozen">Frozen</option>
+              <option value="Wet Fast">Wet Fast</option>
+            </select>
+      </label>
+
+      <label>Time: <input size="8" type="text" id="time_of_race" name="time_of_race" pattern="[0-4][:][0-5][0-9][.][0-4]"></label>
+  </p>
+
+   <p><label>Trainer: <input type="text" id="trainer" name="trainer"></label></p>
+
+   <p><label>Comment: <input type="text" size="25" id="comment" name="comment" pattern="[\w, \-(){}:;'/\\\[\]]{0,200}"></label></p>
+
+   <p><label>Previous Date: <input size="10" type="date" id="previous_date" name="previous_date"></label>
+      <label>Track: <select id="previous_track_id" name="previous_track_id" style="width: 60px;">
+              <option value="BEL" selected>BEL</option>
+              <option value="SAR">SAR</option>
+              <option value="AQU">AQU</option>
+              <option value="MTH">MTH</option>
+              <option value="CD">CD</option>
+              <option value="GP">GP</option>
+              <option value="KEE">KEE</option>
+              <option value="WO">WO</option>
+              <option value="OP">OP</option>
+              <option value="FG">FG</option>
+              <option value="FL">FL</option>
+              <option value="SA">SA</option>
+              <option value="LA">LA</option>
+              <option value="DMR">DMR</option>
+              <option value="AP">AP</option>
+              <option value="EIP">EIP</option>
+              <option value="DEL">DEL</option>
+              <option value="FL">FL</option>
+              <option value="LRC">LRC</option>
+              <option value="LBS">LBS</option>
+              <option value="LRL">LRL</option>
+              <option value="PIM">PIM</option>
+              <option value="HOU">HOU</option>
+              <option value="LS">LS</option>
+              <option value="TAM">TAM</option>
+              <option value="SUF">SUF</option>
+              <option value="PRX">PRX</option>
+              <option value="PID">PID</option>
+              <option value="PEN">PEN</option>
+              <option value="MED">MED</option>
+              <option value="ML">ML</option>
+              <option value="IND">IND</option>
+              <option value="ASC">ASC</option>
+            </select>
+      </label>
+      <p><label>Race: <input type="number" min="1" max="15" id="previous_race" name="previous_race"></label>
+      <label>Finish: <input type="number" min="1" max="20" id="previous_finish_position" name="previous_finish_position"></label></p>
+   </p>
+
