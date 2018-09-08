@@ -1,15 +1,16 @@
 <?php
-define('DB_HOST','127.0.0.1');
-define('DB_USER','mkilmade');
-define('DB_PASSWORD','albhaw29&');
-define('DB_PORT','3306');
-define('DB_NAME', 'tbd');
+$ini = parse_ini_file('his.ini');
+
+define('DB_HOST', $ini['host']);
+define('DB_USER', $ini['user']);
+define('DB_PORT', $ini['port']);
+define('DB_NAME', $ini['name']);
 
 $db = @new mysqli(DB_HOST,
-                 DB_USER,
-                 DB_PASSWORD,
-                 DB_NAME,
-                 DB_PORT);
+                  DB_USER,
+                  $ini['password'],
+                  DB_NAME,
+                  DB_PORT);
 
 if ($db->connect_errno) {
     die;
