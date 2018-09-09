@@ -20,6 +20,7 @@
     		<exclude name=".buildpath" />
     		<exclude name=".gitignore" />
     		<exclude name=".project" />
+    		<exclude name=".DS_Store" />
     		<exclude name="README" />
     	</fileset>
   		</copy>
