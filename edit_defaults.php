@@ -30,7 +30,7 @@
   <fieldset style="width: 425px; background-color: Azure; margin:auto" >
     <legend style="text-align: center">Edit Defaults</legend>
 
-  <p><label>ID: <input type="number" min="1" max="99999" id="current_defaults_id" name="current_defaults_id" value"" readonly></label></p>
+   <p><label>ID: <input type="number" min="1" max="99999" id="current_defaults_id" name="current_defaults_id" value="" readonly></label></p>
 
    <p><label>Past Days: <input type="number" min="1" max="28" id="past_days" name="past_days"></label></p>
 

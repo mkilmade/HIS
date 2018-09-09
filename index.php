@@ -196,20 +196,20 @@
     <h1 id="title">H.I.S.</h1>
     <table id='navigator'>
         <tr>
-          <td><a href='add_winner.php'>Add Winner</td>
-          <td><a href='browse.php'>Browse</td>
-          <td><a href='search.php'>Search</td>
-          <td><a id="scratches_url" target='_blank'>Scratches</td>
-          <td><a id="site_url" target='_blank'>Site</td>
-          <td><a target='_blank' href='http://www.drf.com'>DRF</td>
-          <td><a target='_blank' href='http://www.twitter.com'>Twitter</td>
-          <td><a target='_blank' href='https://www.brisnet.com/product/entries-programs'>Entries</td>
-          <td><a target='_blank' href='https://www.brisnet.com/product/race-results'>Charts</td>
-          <td><a target='_blank' href='http://www1.drf.com/formulator-web/#card-selector'>Formulator</td>
-          <td><a target='_blank' href='https://www.nyrabets.com/#wagering'>NYRA Bets</td>
-          <td><a target='_blank' href='http://www.brisnet.com/cgi-bin/static.cgi?page=stablealert'>Stable</td>
-          <td><a href='trends.php'>Trends & Stats</td>
-          <td><a href='edit_defaults.php'>Settings</td>
+          <td><a href='add_winner.php'>Add Winner</a></td>
+          <td><a href='browse.php'>Browse</a></td>
+          <td><a href='search.php'>Search</a></td>
+          <td><a id="scratches_url" target='_blank'>Scratches</a></td>
+          <td><a id="site_url" target='_blank'>Site</a></td>
+          <td><a target='_blank' href='http://www.drf.com'>DRF</a></td>
+          <td><a target='_blank' href='http://www.twitter.com'></a>Twitter</td>
+          <td><a target='_blank' href='https://www.brisnet.com/product/entries-programs'>Entries</a></td>
+          <td><a target='_blank' href='https://www.brisnet.com/product/race-results'>Charts</a></td>
+          <td><a target='_blank' href='http://www1.drf.com/formulator-web/#card-selector'>Formulator</a></td>
+          <td><a target='_blank' href='https://www.nyrabets.com/#wagering'>NYRA Bets</a></td>
+          <td><a target='_blank' href='http://www.brisnet.com/cgi-bin/static.cgi?page=stablealert'>Stable</a></td>
+          <td><a href='trends.php'>Trends/Stats</a></td>
+          <td><a href='edit_defaults.php'>Settings</a></td>
         </tr>
     </table>
     <br>
