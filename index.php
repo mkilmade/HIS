@@ -22,7 +22,7 @@
   <script src="jquery/jquery.tablesorter.js"></script>
   <script src="jquery/jquery.tablesorter.pager.js"></script>
   <script src="jquery/jquery-ui.min.js"></script>
-  <title>HISa</title>
+  <title>HIS</title>
 
   <style>
     .center {
