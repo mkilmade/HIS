@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="HIS_Tasks" basedir="../" default="deploy">
+	<target name="deploy">
+  		<copy todir="/Library/WebServer/Documents/tbd">
+    	<fileset dir="${basedir}">
+    		<exclude name="ant/" />
+    		<exclude name=".settings/" />
+    		<exclude name=".buildpath" />
+    		<exclude name=".gitignore" />
+    		<exclude name=".project" />
+    		<exclude name="README" />
+    	</fileset>
+  		</copy>
+	</target>
+</project>	
