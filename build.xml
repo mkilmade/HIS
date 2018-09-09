@@ -14,7 +14,8 @@
 	<target name="deploy">
   		<copy todir="${deploy.destdir}">
     	<fileset dir="${basedir}">
-    		<exclude name="ant/" />
+    		<exclude name="build.xml" />
+    		<exclude name="build.properties" />
     		<exclude name=".settings/" />
     		<exclude name=".buildpath" />
     		<exclude name=".gitignore" />
