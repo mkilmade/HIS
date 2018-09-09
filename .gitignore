@@ -1,3 +1,5 @@
 logs/**
 jquery/**
+ant/**
+.settings
 secure/his.ini
