@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="HIS_Tasks" basedir="../" default="deploy">
+<project name="HIS_Tasks" basedir="." default="deploy">
 	<description>
 	    HIS Ant build file
 	</description>
 	
 	<!-- set global properties for this build -->
-	<property file = "ant/build.properties" />
+	<property file = "build.properties" />
 	<echo>
 		destination: ${deploy.destdir}
 		     source: ${basedir} </echo>
