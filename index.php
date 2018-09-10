@@ -403,7 +403,7 @@
           $(document).ready(function() {
             $('#scratches_url').attr('href','{$conn->defaults['scratches_url']}');
             $('#site_url').attr('href','{$conn->defaults['site_url']}');
-            $('#title').text('{$conn->defaults['meet_name']} [".DB_NAME."]');
+            $('#title').text('{$conn->defaults['meet_name']}".(DB_PRODUCTION == 1 ? '' :' ['.DB_NAME.']')."');
            });
         </script>
     </html>
@@ -602,7 +602,7 @@
           $('#multiwinners').text('".(($horse_cnts['Turf']+$horse_cnts['Dirt'])-$horse_cnts['Total'])." horses won on dirt & turf');
           $('#scratches_url').attr('href','{$conn->defaults['scratches_url']}');
           $('#site_url').attr('href','{$conn->defaults['site_url']}');
-          $('#title').text('{$conn->defaults['meet_name']} [".DB_NAME."]');
+          $('#title').text('{$conn->defaults['meet_name']}".(DB_PRODUCTION == 1 ? '' : ' ['.DB_NAME.']')."');
           // clear/hide dynamic eleemnts
           clearInfo();
         });

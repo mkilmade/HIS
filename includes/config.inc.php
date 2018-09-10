@@ -1,23 +1,25 @@
 <?php # Script config.inc.php
 // ****** Settings ****** //
+$ini = parse_ini_file('./secure/config.ini');
 
 // turn on/off debug mode
-$_SESSION['debug']='off';
+$_SESSION['debug']=$ini['debug'];
 
 // location of MySQL connection script constant
-define('MYSQL', './secure/connect.inc.php');
+define('MYSQL', $ini['mysql']);
 
 // error log file location constanr
-define('ERROR_LOG_FILE', './logs/error_log');
+define('ERROR_LOG_FILE', $ini['error_log']);
 
 // set time zone
-date_default_timezone_set('America/New_York');
+define('HIS_TIMEZONE', $ini['timezone']);
+date_default_timezone_set(HIS_TIMEZONE);
 
 // ****** Error Handling ****** //
 
 // create custom error handler function
 function report_errors($num, $msg, $file, $line) {
-    $date = new DateTime("now", new DateTimeZone('America/New_York'));
+    $date = new DateTime("now", new DateTimeZone(HIS_TIMEZONE));
     $now = $date->format("Y-m-d H:i:s");
     $m  = "\n Logged: $now";
     $m .= "\nError #: $num";
@@ -35,5 +37,5 @@ set_error_handler("report_errors", E_ALL);
 
 // report all errors possible
 error_reporting(E_ALL);
-
+$ini = '';
 ?>
