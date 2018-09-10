@@ -202,7 +202,7 @@
           <td><a id="scratches_url" target='_blank'>Scratches</a></td>
           <td><a id="site_url" target='_blank'>Site</a></td>
           <td><a target='_blank' href='http://www.drf.com'>DRF</a></td>
-          <td><a target='_blank' href='http://www.twitter.com'></a>Twitter</td>
+          <td><a target='_blank' href='http://www.twitter.com'>Twitter</a></td>
           <td><a target='_blank' href='https://www.brisnet.com/product/entries-programs'>Entries</a></td>
           <td><a target='_blank' href='https://www.brisnet.com/product/race-results'>Charts</a></td>
           <td><a target='_blank' href='http://www1.drf.com/formulator-web/#card-selector'>Formulator</a></td>
@@ -403,7 +403,7 @@
           $(document).ready(function() {
             $('#scratches_url').attr('href','{$conn->defaults['scratches_url']}');
             $('#site_url').attr('href','{$conn->defaults['site_url']}');
-            $('#title').text('{$conn->defaults['meet_name']}');
+            $('#title').text('{$conn->defaults['meet_name']} [".DB_NAME."]');
            });
         </script>
     </html>
@@ -602,7 +602,7 @@
           $('#multiwinners').text('".(($horse_cnts['Turf']+$horse_cnts['Dirt'])-$horse_cnts['Total'])." horses won on dirt & turf');
           $('#scratches_url').attr('href','{$conn->defaults['scratches_url']}');
           $('#site_url').attr('href','{$conn->defaults['site_url']}');
-          $('#title').text('{$conn->defaults['meet_name']}');
+          $('#title').text('{$conn->defaults['meet_name']} [".DB_NAME."]');
           // clear/hide dynamic eleemnts
           clearInfo();
         });
