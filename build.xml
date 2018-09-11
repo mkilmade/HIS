@@ -2,7 +2,7 @@
 <!DOCTYPE project>
 <project name="HIS_Tasks" basedir="." default="deploy">
 	<description>
-	    HIS Ant build file
+	    Deploy HIS application to Apache web server
 	</description>
 	
 	<!-- set global properties for this build -->
