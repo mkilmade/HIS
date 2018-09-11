@@ -15,7 +15,6 @@
   		<copy todir="${deploy.destdir}">
     	<fileset dir="${basedir}">
     		<exclude name="secure/config.ini" />
-    		<exclude name="secure/his.ini" />
     		<exclude name="build.xml" />
     		<exclude name="build.properties" />
     		<exclude name=".settings/" />
