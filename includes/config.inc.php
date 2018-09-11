@@ -1,18 +1,18 @@
 <?php # Script config.inc.php
 // ****** Settings ****** //
-$ini = parse_ini_file('./secure/config.ini');
+$ini = parse_ini_file('./secure/config.ini', true);
 
 // turn on/off debug mode
-$_SESSION['debug']=$ini['debug'];
+$_SESSION['debug']=$ini['system']['debug'];
 
 // location of MySQL connection script constant
-define('MYSQL', $ini['mysql']);
+define('MYSQL', $ini['system']['mysql']);
 
 // error log file location constanr
-define('ERROR_LOG_FILE', $ini['error_log']);
+define('ERROR_LOG_FILE', $ini['system']['error_log']);
 
 // set time zone
-define('HIS_TIMEZONE', $ini['timezone']);
+define('HIS_TIMEZONE', $ini['system']['timezone']);
 date_default_timezone_set(HIS_TIMEZONE);
 
 // ****** Error Handling ****** //
