@@ -14,7 +14,7 @@
                           previous_track_id
               ) AS key_races
 
-              WHERE (wins > 2 AND '$previous_track_id' <> '{$conn->defaults['track_id']}')
+              WHERE (wins > 2 AND 'previous_track_id' <> '{$conn->defaults['track_id']}')
                     ||
                     (wins > 1 AND previous_track_id = '{$conn->defaults['track_id']}')
               ORDER BY wins DESC,
