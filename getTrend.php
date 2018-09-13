@@ -11,22 +11,6 @@
     // call trend function requested
     $conn = new Connection();
     $trend = $_GET['trend'];
-    
-    switch($trend) {
-        case 'multipleWins':
-            multipleWins($conn);
-            break;
-        case 'keyRaces':
-            keyRaces($conn);
-            break;
-        case 'previouslyRanAtMeet':
-            previouslyRanAtMeet($conn);
-            break;
-        case 'previousRaceAtMeetPerCard':
-            previousRaceAtMeetPerCard($conn);
-            break;
-        default:
-            break;
-    }
+    $trend($conn);
     $conn->close();
 ?>
