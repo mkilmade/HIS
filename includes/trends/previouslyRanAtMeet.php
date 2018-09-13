@@ -1,7 +1,7 @@
 <?php
 
 function previouslyRanAtMeet($conn) {
-    // declare build variable to keep code analyzer happy
+    // declare 'bind' variables to keep code analyzer happy
     $race_date=$horse="";
     
     $query = "SELECT

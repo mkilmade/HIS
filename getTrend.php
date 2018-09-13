@@ -10,7 +10,6 @@
     
     // call trend function requested
     $conn = new Connection();
-    $trend = $_GET['trend'];
-    $trend($conn);
+    $_GET['trend']($conn);
     $conn->close();
 ?>

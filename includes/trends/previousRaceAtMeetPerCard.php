@@ -1,7 +1,7 @@
 <?php
 
 function previousRaceAtMeetPerCard($conn) {
-    // declare build variable to keep code analyzer happy
+    // declare 'bind' variables to keep code analyzer happy
     $races=$wins=$race_date="";
     $query = "SELECT
                  COUNT(*) AS races,

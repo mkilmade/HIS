@@ -1,7 +1,7 @@
 <?php
 
 function keyRaces($conn) {
-    // declare build variable to keep code analyzer happy
+    // declare 'bind' variables to keep code analyzer happy
     $previous_date=$previous_race=$previous_track_id=$wins="";
     $horse=$race_date=$race=$track_id=$race_class=$distance=$turf=$time_of_race=$previous_finish_position="";
     

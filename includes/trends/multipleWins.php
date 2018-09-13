@@ -1,19 +1,19 @@
 <?php
 
 function multipleWins($conn) {
-    // declare build variable to keep code analyzer happy
+    // declare 'bind' variables to keep code analyzer happy
     $wins=$horse="";
     
     $query = "SELECT
-                     wins, horse
-                  FROM (
+                wins, horse
+              FROM (
                     SELECT count(*) AS wins, horse
                     FROM tb17
                     WHERE {$conn->defaults['meet_filter']}
                     GROUP BY horse
-                    ) AS multi_winners
-                  WHERE wins > '1'
-                  ORDER BY wins, horse";
+                   ) AS multi_winners
+              WHERE wins > '1'
+              ORDER BY wins, horse";
     
     $stmt = $conn->db->prepare($query);
     $stmt->execute();
