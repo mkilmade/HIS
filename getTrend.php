@@ -9,7 +9,5 @@
     include_once('includes/trends/previousRaceAtMeetPerCard.php');
     
     // call trend function requested
-    $conn = new Connection();
     $_GET['trend']($conn);
-    $conn->close();
 ?>

@@ -1,6 +1,11 @@
 <?php
+session_start();
+require_once('includes/config.inc.php');
+include_once('includes/connection.php');
 
 function previousRaceAtMeetPerCard($conn) {
+    $conn = new Connection();
+    
     // declare 'bind' variables to keep code analyzer happy
     $races=$wins=$race_date="";
     $query = "SELECT
@@ -60,4 +65,6 @@ function previousRaceAtMeetPerCard($conn) {
     
     $stmt->free_result();
     $stmt->close();
+    $conn->close();
+    
 }

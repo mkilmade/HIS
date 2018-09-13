@@ -1,6 +1,11 @@
 <?php
+session_start();
+require_once('includes/config.inc.php');
+include_once('includes/connection.php');
 
 function previouslyRanAtMeet($conn) {
+    $conn = new Connection();
+    
     // declare 'bind' variables to keep code analyzer happy
     $race_date=$horse="";
     
@@ -49,5 +54,6 @@ function previouslyRanAtMeet($conn) {
 
     $stmt->free_result();
     $stmt->close();
-   
+    $conn->close();
+    
 }

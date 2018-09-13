@@ -1,6 +1,11 @@
 <?php
+session_start();
+require_once('includes/config.inc.php');
+include_once('includes/connection.php');
 
 function keyRaces($conn) {
+    $conn = new Connection();
+    
     // declare 'bind' variables to keep code analyzer happy
     $previous_date=$previous_race=$previous_track_id=$wins="";
     $horse=$race_date=$race=$track_id=$race_class=$distance=$turf=$time_of_race=$previous_finish_position="";
@@ -159,6 +164,7 @@ function keyRaces($conn) {
     
     $stmt->free_result();
     $stmt->close();
+    $conn->close();
     
 } // function
 
