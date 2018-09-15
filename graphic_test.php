@@ -21,8 +21,8 @@
     }
     unset($$win_count);
     // Add values to the graph
-    $graphValuesx=array(0,80,23,11,190,245,50,80,111,240,55);
-    $string = $_GET['type'].": ".$name."    wins: ".$win_tally;
+    //$graphValuesx=array(0,80,23,11,190,245,50,80,111,240,55);
+    //$string = $_GET['type'].": ".$name."    wins: ".$win_tally;
     // Define .PNG image
     header("Content-type: image/png");
     $imgWidth=330;

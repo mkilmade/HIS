@@ -32,7 +32,7 @@
   <fieldset style="width: 425px; background-color: Azure" >
     <legend style="text-align: center">Edit Entry</legend>
 
-  <p><label>ID: <input type="number" min="1" max="99999" id="tb17_id" name="tb17_id" value"" readonly></label></p>
+  <p><label>ID: <input type="number" min="1" max="99999" id="tb17_id" name="tb17_id" value="" readonly></label></p>
 
   <?php include_once('includes/entry_input.inc.html'); ?>
 

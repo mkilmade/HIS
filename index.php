@@ -214,7 +214,7 @@
     </table>
     <br>
     <table id='summary'>
-      <thead>
+      <thead><tr>
         <th>Type</th>
         <th># of Days</th>
         <th>Last Date</th>
@@ -234,7 +234,7 @@
             <span id='multiwinners' class='tooltiptext'></span>
           </div>
         </th>
-      </thead>
+      </tr></thead>
       <tbody>
 <?php
     /*

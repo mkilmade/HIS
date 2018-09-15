@@ -14,7 +14,7 @@
   <script src="jquery/jquery.tablesorter.js"></script>
   <script src="jquery/jquery.tablesorter.pager.js"></script>
   <script src="jquery/jquery-ui.min.js"></script>
-  <title id="title">Browse Meet Results</title>
+  <title>Browse Meet Results</title>
 
   <style>
     .turf {background-color:#32CD32;}
@@ -53,10 +53,12 @@
   <strong>Filters:</strong>
   <table border=1>
     <thead>
-        <th>Date</th>
-        <th>Trainer</th>
-        <th>Jockey</th>
-        <th>Horse</th>
+    	<tr>
+            <th>Date</th>
+            <th>Trainer</th>
+            <th>Jockey</th>
+            <th>Horse</th>
+        </tr>
     <thead>
     <tr>
       <td><input type="date" id="race_date" name="filterrace_date"></td>
@@ -215,7 +217,7 @@
         $('#trainer').val('".addslashes(isset($post['filtertrainer']) ? $post['filtertrainer'] : '')."');
         $('#jockey').val('".addslashes(isset($post['filterjockey']) ? $post['filterjockey'] : '')."');
         $('#horse').val('".addslashes(isset($post['filterhorse']) ? $post['filterhorse'] : '')."');
-        $('#title').text('{$conn->defaults['meet_name']} (Browse)');
+        document.title='{$conn->defaults['meet_name']} (Browse)';
         $('#body_title').text('{$conn->defaults['meet_name']}');
       });
     </script>
