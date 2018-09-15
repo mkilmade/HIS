@@ -208,7 +208,7 @@
           <td><a target='_blank' href='http://www1.drf.com/formulator-web/#card-selector'>Formulator</a></td>
           <td><a target='_blank' href='https://www.nyrabets.com/#wagering'>NYRA Bets</a></td>
           <td><a target='_blank' href='http://www.brisnet.com/cgi-bin/static.cgi?page=stablealert'>Stable</a></td>
-          <td><a href='trends2.php'>Trends/Stats</a></td>
+          <td><a href='trends.php'>Trends/Stats</a></td>
           <td><a href='edit_defaults.php'>Settings</a></td>
         </tr>
     </table>
