@@ -1,7 +1,7 @@
 <?php 
   session_start(); 
   require_once('includes/config.inc.php');
-  include_once('includes/connection.php');
+  include_once('includes/connection.inc.php');
   $conn = new Connection();
 ?>
 <!DOCTYPE html>
@@ -56,13 +56,13 @@
      include_once('includes/trends/multiple_wins_at_meet.php');
 
      //=============== get previous track win counts (#trackTable) ===============
-     include_once('includes/trends/previous_track_wins.php');
+     include_once('includes/trends/previousTrackWins.inc.php');
 
      //=============== get previous race at meet winner counts by race_date (#previousMeetDateCountTable) ================
      include_once('includes/trends/previously_ran_by_date.php');
 
      //=============== get previous race finish position tally (#previousFinishTable) ================
-     include_once('includes/trends/previous_finish_position_tally.php');
+     include_once('includes/trends/previousFinishTally.inc.php');
 
      //=============== get previous race at meet winners (#previouslyRanAtMeetWinTable) ================
      include_once('includes/trends/previously_ran_at_meet.php');

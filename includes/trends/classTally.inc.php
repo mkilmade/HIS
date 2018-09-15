@@ -1,5 +1,9 @@
 <?php
-
+// called by getTrend.php
+function classTally($conn) {
+    // declare 'bind' variables to keep code analyzer happy
+    $races=$class="";
+    
     $query = "SELECT 
                  count(DISTINCT race_date,race) AS races,
                  race_class
@@ -33,11 +37,21 @@
       echo "<td>$races</td>";
       echo "</tr>";
     }
-    echo "<tr><td>Total</td><td>$total</td></tr>";
+    
+    echo "
+        <tr><td>Total</td><td>$total</td></tr>
+        </tbody></table></div>
 
+        <script>
+            $('#classTable').tablesorter({
+                widgets: ['zebra']
+            });
+        </script>
+        ";
+    
     $stmt->free_result();
     $stmt->close();
+ 
+}  // function
 
-    echo "</tbody></table></div>";
-
-?>
+?> 

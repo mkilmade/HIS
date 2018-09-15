@@ -3,19 +3,19 @@
 
   class Connection
   {
-    // datebase connection object used for queries/inserts/etc
+    // datebase connection.inc object used for queries/inserts/etc
     public $db;
     public $defaults;
 
     function __construct()
     {
-      // get databace connection
+      // get databace connection.inc
       include(MYSQL);
       $this->db = $db;
       $this->defaults = $this->get_his_defaults();
     }
 
-    // close database connection object
+    // close database connection.inc object
     public function close()
     {
       $this->db->close();

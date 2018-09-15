@@ -8,7 +8,7 @@
   <script src="jquery/jquery.tablesorter.js"></script>
   <script src="jquery/jquery.tablesorter.pager.js"></script>
   <script src="jquery/jquery-ui.min.js"></script>
-  <title id="title">Trends</title>
+  <title>Trends</title>
 
   <style>
     table#navigator {
@@ -78,64 +78,13 @@
       <td onmouseover="getTrend('multipleWins')">Multiple Wins</td>
       <td onmouseover="getTrend('previouslyRanAtMeet')">Previously Ran At Meet Before Win</td>
       <td onmouseover="getTrend('previousRaceAtMeetPerCard')">Previous Race At Meet Per Card</td>
+      <td onmouseover="getTrend('classTally')">Class Tally</td>
+      <td onmouseover="getTrend('previousTrackWins')">Previous Track Wins</td>
+      <td onmouseover="getTrend('previousFinishTally')">Previous Finish Tally</td>
     </tr>
   </table>
   <br>
-  <div id='trendDiv' style='float: left; visibility:hidden;'></div>
+  <div id='trendDiv' style='margin-right: auto; margin-left: auto;width: 800px;visibility:hidden;'></div>
 </body>
 
-<script>
-  $(document).ready(function() {
-
-    $('#keyTable').tablesorter({
-       widgets: ['zebra'],
-       headers: {
-         1: {
-          sorter: false
-         },
-         4: {
-          sorter: false
-         }
-       }
-    });
-
-    $('#trackTable').tablesorter({
-      widgets: ['zebra']
-    });
-
-    $('#multiWinsTable').tablesorter({
-      widgets: ['zebra']
-    });
-
-    $('#previouslyRanAtMeetWinTable').tablesorter({
-      widgets: ['zebra']
-    });
-
-    $('#previousFinishTable').tablesorter({
-       widgets: ['zebra'],
-        headers: {
-          0: {
-            sorter: false
-          },
-          1: {
-            sorter: false
-          }
-        }
-    });
-
-    $('#previousMeetDateCountTable').tablesorter({
-        widgets: ['zebra'],
-        headers: {
-          1: {
-            sorter: false
-          }
-        }
-    });
-
-    $('#classTable').tablesorter({
-      widgets: ['zebra']
-    });
-
-  });
-</script>
 </html>

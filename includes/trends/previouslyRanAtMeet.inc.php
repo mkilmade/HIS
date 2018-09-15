@@ -1,10 +1,6 @@
 <?php
-session_start();
-require_once('includes/config.inc.php');
-include_once('includes/connection.php');
-
+// called by getTrend.php
 function previouslyRanAtMeet($conn) {
-    $conn = new Connection();
     
     // declare 'bind' variables to keep code analyzer happy
     $race_date=$horse="";
@@ -27,7 +23,7 @@ function previouslyRanAtMeet($conn) {
     
     echo "
       <div style='overflow-x:auto;float: left;'>
-      <table id='previouslyRanAtMeet' class='tablesorter' style='width:300px; font-size:14px'>
+      <table id='previouslyRanAtMeetWinTable' class='tablesorter' style='width:300px; font-size:14px'>
         <caption>Previous Race At Meet Before Win ($stmt->num_rows)</caption>
         <thead>
           <th>Horse</th>
@@ -46,7 +42,7 @@ function previouslyRanAtMeet($conn) {
     
     echo "</tbody></table></div>
         <script>
-            $('#previouslyRanAtMeet').tablesorter({
+            $('#previouslyRanAtMeetWinTable').tablesorter({
               widgets: ['zebra']
             });
         </script>
@@ -54,6 +50,7 @@ function previouslyRanAtMeet($conn) {
 
     $stmt->free_result();
     $stmt->close();
-    $conn->close();
     
-}
+} // function
+
+?>

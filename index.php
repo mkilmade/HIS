@@ -3,7 +3,7 @@
     session_start();
 
     require_once('includes/config.inc.php');
-    include_once('includes/connection.php');
+    include_once('includes/connection.inc.php');
     $conn = new Connection();
     //print_r($_SESSION);
 
@@ -239,7 +239,7 @@
 <?php
     /*
       --build stat line for display
-      statLine(connection, turf [TRUE|FALSE])
+      statLine(connection.inc, turf [TRUE|FALSE])
     */
     $horse_cnts['Dirt']=0;
     $horse_cnts['Turf']=0;

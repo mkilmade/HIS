@@ -1,11 +1,6 @@
 <?php
-session_start();
-require_once('includes/config.inc.php');
-include_once('includes/connection.php');
-
+// called by getTrend.php
 function multipleWins($conn) {
-    $conn = new Connection();
-
     // declare 'bind' variables to keep code analyzer happy
     $wins=$horse="";
     
@@ -54,8 +49,7 @@ function multipleWins($conn) {
         ";
     $stmt->free_result();
     $stmt->close();
-    $conn->close();
    
-}
+} // function
 
 ?>

@@ -3,7 +3,7 @@
 
     session_start();
     require_once('includes/config.inc.php');
-    include_once('includes/connection.php');
+    include_once('includes/connection.inc.php');
     $conn = new Connection();
     // get the horse parameter from URL
     $horse = $_GET["horse"];

@@ -1,4 +1,9 @@
 <?php
+// called by getTrend.php
+function previousTrackWins($conn) {
+    // declare 'bind' variables to keep code analyzer happy
+    $previous_track_id=$wins="";
+        
     $total = 0;
     $query = "SELECT previous_track_id,
                      COUNT(*) as wins
@@ -54,15 +59,24 @@
         echo "</tr>";
         $total += $wins;
     }
-    $stmt->free_result();
-    $stmt->close();
 
     // add total row
-    echo "<tr>";
-    echo "<td><b>Total</b></td>";
-    echo "<td><b>$total</b></td>";
-    echo "</tr>";
+    echo "
+        <tr>
+            <td><b>Total</b></td>
+            <td><b>$total</b></td>
+        </tr>
+        </tbody></table></div>
 
-    echo "</tbody></table></div>";
+        <script>
+            $('#trackTable').tablesorter({
+              widgets: ['zebra']
+            });
+        </script>
+        ";
+    $stmt->free_result();
+    $stmt->close();
+    
+} // function
 
 ?>
