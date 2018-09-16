@@ -1,10 +1,6 @@
 <?php
 // called by getTrend.php
 function previouslyRanAtMeet($conn) {
-    
-    // declare 'bind' variables to keep code analyzer happy
-    $race_date=$horse="";
-    
     $query = "SELECT
                  horse,
                  race_date
@@ -22,8 +18,7 @@ function previouslyRanAtMeet($conn) {
                        $race_date);
     
     echo "
-      <div style='overflow-x:auto;float: left;'>
-      <table id='previouslyRanAtMeetWinTable' class='tablesorter' style='width:300px; font-size:14px'>
+      <table id='previouslyRanAtMeetWinTable' class='tablesorter' style='width:300px; margin: auto; font-size:14px'>
         <caption>Previous Race At Meet Before Win ($stmt->num_rows)</caption>
         <thead>
           <th>Horse</th>
@@ -40,7 +35,7 @@ function previouslyRanAtMeet($conn) {
         echo "</tr>";
     }
     
-    echo "</tbody></table></div>
+    echo "</tbody></table>
         <script>
             $('#previouslyRanAtMeetWinTable').tablesorter({
               widgets: ['zebra']

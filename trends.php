@@ -40,7 +40,8 @@
       border: 1px;
       border-collapse: separate;
       border-spacing: 2px;
-      text-align:center;
+      text-align: center;
+      margin: auto;
     }
 
     table#keyTable,
@@ -69,7 +70,7 @@
   
 </head>
 <body>
-  <h2 id="body_title">Browse Trends And Stats</h2>
+  <h2 id="body_title" style="text-align: center;" >Browse Trends And Stats</h2>
   <table id="navigator">
     <caption>(hover trend to see trending info)</caption>
     <tr>
@@ -84,7 +85,7 @@
     </tr>
   </table>
   <br>
-  <div id='trendDiv' style='margin-right: auto; margin-left: auto;width: 800px;visibility:hidden;'></div>
+  <div id='trendDiv' style='margin-right: auto; margin-left: auto;width: 1000px; visibility:hidden;'></div>
 </body>
 
 </html>

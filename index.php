@@ -11,6 +11,161 @@
     // adding winner entries by race # (lower to higher)
     if(!isset($_SESSION['dirt_track_condition'])) $_SESSION['dirt_track_condition'] = "Fast";
     if(!isset($_SESSION['turf_track_condition'])) $_SESSION['turf_track_condition'] = "Firm";
+
+    /*
+     --build stat line for display
+     statLine(connection.inc, turf [TRUE|FALSE])
+     */
+    $horse_cnts['Dirt']=0;
+    $horse_cnts['Turf']=0;
+    $horse_cnts['Total']=0;
+    $deadheat_cnt=0;
+    
+    function statLine(&$conn, $turf, $distance) {
+        
+        switch($turf) {
+            case 'TRUE':
+                $surface='Turf';
+                $surface_class='turf';
+                break;
+            case 'FALSE':
+                $surface='Dirt';
+                $surface_class='dirt';
+                break;
+            default:
+                $surface='Total';
+                $surface_class='total';
+                break;
+        }
+        // -- build basic stats query
+        $query="SELECT
+         COUNT(DISTINCT race_date),
+         MAX(race_date),
+         COUNT(DISTINCT race_date, race),
+         SUM(IF(comment LIKE 'dead%',1,0)) as deadheat,
+         TRUNCATE(AVG(post_position),1),
+         SUM(IF(comment LIKE 'dead%',field_size/2,field_size)),
+         TRUNCATE(AVG(IF(odds>0,odds,NULL)),2),
+         COUNT(DISTINCT trainer),
+         COUNT(DISTINCT jockey),
+         COUNT(DISTINCT horse)
+       FROM tb17
+       WHERE {$conn->defaults['meet_filter']} and horse <> ''"; // don't use if no horse enter yet
+        
+        // -- add WHERE clause
+        if ($surface <> 'Total') {
+            $query .= " AND turf='$turf'";
+            if ($distance <> 'total') {
+                $query .= "AND distance ".($distance=='sprints' ? "<'8'" : ">='8'");
+            }
+        }
+        // will only get 1 entry and 'LIMIT' 1 is more efficient
+        $query .= " LIMIT 1";
+        
+        // -- run query
+        $stmt = $conn->db->prepare($query);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($dates,
+            $last_date,
+            $races,
+            $deadheat,
+            $avg_post,
+            $sum_field_size,
+            $avg_odds,
+            $trainers,
+            $jockeys,
+            $horses);
+        $stmt->fetch();
+        $stmt->free_result();
+        $stmt->close();
+        
+        // @todo try is find work around for 'not used' warning
+        global $horse_cnts;
+        global $deadheat_cnt;
+        
+        if ($distance=='total') {
+            $horse_cnts[$surface] += $horses;
+            $deadheat_cnt += ($deadheat/2);
+        }
+        // get multiple winners count
+        $qry="SELECT
+         COUNT(*) as count
+         FROM (SELECT COUNT(*) AS Wins,
+                      horse
+              FROM tb17
+              WHERE {$conn->defaults['meet_filter']} AND horse <> ''"; // don't use if no horse enter yet
+        // -- add to derived WHERE clause
+        if ($surface <> 'Total') {
+            $qry .= " AND turf='$turf'";
+        }
+        $qry .= " GROUP BY horse) AS multi_winners_count
+         WHERE Wins > '1' LIMIT 1";
+        
+        //echo "<br>$sum_field_size:$races";
+        // -- run query
+        $stmt2 = $conn->db->prepare($qry);
+        $stmt2->execute();
+        $stmt2->store_result();
+        $stmt2->bind_result($multi_winners_count);
+        $stmt2->fetch();
+        $stmt2->free_result();
+        $stmt2->close();
+        
+        
+        // -- build stat line for display
+        echo "
+      <tr class=$surface_class>
+        <td>$surface".($distance=='total' ? '' : '/'.$distance)."</td>
+        <td>$dates</td>
+        <td>$last_date</td>
+        <td>$races</td>
+        <td>$avg_post</td>
+        <td>".($races>0 ? round($sum_field_size/$races,2) : 0)."</td>
+        <td>$avg_odds</td>
+        <td>$trainers</td>
+        <td>$jockeys</td>
+        <td>$horses</td>
+        <td>$multi_winners_count</td>
+      </tr>
+      ";
+    }
+    
+    function topTen(&$conn, $type, $as_of_date, $days) {
+        // -- build basic stats query
+        if ($days>0) {
+            $date= new DateTime($as_of_date);
+            $date->sub(new DateInterval('P'.$days.'D'));
+        } else {
+            $date= new DateTime($conn->defaults['start_date']);
+            $date->sub(new DateInterval('P1D'));
+        }
+        $diff=$date->format('Y-m-d');
+        
+        $query="SELECT
+          $type as name,
+          COUNT(*) as wins,
+          SUM(IF(favorite='TRUE',1,0)) as favs,
+          SUM(IF(turf='TRUE',1,0)) as turfs,
+          AVG(IF(odds<>0.0,odds,NULL)) as avg_odds
+        FROM tb17
+        WHERE race_date > '$diff' AND trainer <> '' AND jockey <> '' AND {$conn->defaults['meet_filter']}
+        GROUP BY $type
+        ORDER BY wins DESC, $type
+        LIMIT 10
+      ";
+          
+          // -- run query
+          $stmt = $conn->db->prepare($query);
+          $stmt->execute();
+          $result=$stmt->get_result();
+          $rows=$result->fetch_all(MYSQLI_ASSOC);
+          $stmt->free_result();
+          $stmt->close();
+          //print_r($rows);
+          return $rows;
+    }
+    
 ?>
 <!DOCTYPE html>
 <html>
@@ -237,160 +392,6 @@
       </tr></thead>
       <tbody>
 <?php
-    /*
-      --build stat line for display
-      statLine(connection.inc, turf [TRUE|FALSE])
-    */
-    $horse_cnts['Dirt']=0;
-    $horse_cnts['Turf']=0;
-    $horse_cnts['Total']=0;
-    $deadheat_cnt=0;
-
-    function statLine(&$conn, $turf, $distance) {
-      
-      switch($turf) {
-        case 'TRUE':
-          $surface='Turf';
-          $surface_class='turf';
-          break;
-        case 'FALSE':
-          $surface='Dirt';
-          $surface_class='dirt';
-         break;
-        default:
-          $surface='Total';
-          $surface_class='total';
-          $bg_color='';
-          break;
-      }
-      // -- build basic stats query
-      $query="SELECT
-         COUNT(DISTINCT race_date),
-         MAX(race_date),
-         COUNT(DISTINCT race_date, race),
-         SUM(IF(comment LIKE 'dead%',1,0)) as deadheat,
-         TRUNCATE(AVG(post_position),1),
-         SUM(IF(comment LIKE 'dead%',field_size/2,field_size)),
-         TRUNCATE(AVG(IF(odds>0,odds,NULL)),2),
-         COUNT(DISTINCT trainer), 
-         COUNT(DISTINCT jockey),
-         COUNT(DISTINCT horse)
-       FROM tb17
-       WHERE {$conn->defaults['meet_filter']} and horse <> ''"; // don't use if no horse enter yet
-
-      // -- add WHERE clause
-      if ($surface <> 'Total') {
-        $query .= " AND turf='$turf'";
-        if ($distance <> 'total') {
-          $query .= "AND distance ".($distance=='sprints' ? "<'8'" : ">='8'");
-        }
-      }
-      // will only get 1 entry and 'LIMIT' 1 is more efficient
-      $query .= " LIMIT 1";
-
-      // -- run query
-      $stmt = $conn->db->prepare($query);
-      $stmt->execute();
-      $stmt->store_result();
-      $stmt->bind_result($dates,
-                         $last_date,
-                         $races,
-                         $deadheat,
-                         $avg_post,
-                         $sum_field_size,
-                         $avg_odds,
-                         $trainers,
-                         $jockeys,
-                         $horses);
-      $stmt->fetch();
-      $stmt->free_result();
-      $stmt->close();
-
-      global $horse_cnts;
-      global $deadheat_cnt;
-
-      if ($distance=='total') {
-        $horse_cnts[$surface] += $horses;
-        $deadheat_cnt += ($deadheat/2);
-      }
-      // get multiple winners count
-      $qry="SELECT
-         COUNT(*) as count
-         FROM (SELECT COUNT(*) AS Wins,
-                      horse
-              FROM tb17
-              WHERE {$conn->defaults['meet_filter']} AND horse <> ''"; // don't use if no horse enter yet
-      // -- add to derived WHERE clause
-      if ($surface <> 'Total') {
-        $qry .= " AND turf='$turf'";
-      }
-      $qry .= " GROUP BY horse) AS multi_winners_count
-         WHERE Wins > '1' LIMIT 1";
-
-      //echo "<br>$sum_field_size:$races";
-      // -- run query
-      $stmt2 = $conn->db->prepare($qry);
-      $stmt2->execute();
-      $stmt2->store_result();
-      $stmt2->bind_result($multi_winners_count);
-      $stmt2->fetch();
-      $stmt2->free_result();
-      $stmt2->close();
-
-
-      // -- build stat line for display
-      echo "
-      <tr class=$surface_class>
-        <td>$surface".($distance=='total' ? '' : '/'.$distance)."</td>
-        <td>$dates</td>
-        <td>$last_date</td>
-        <td>$races</td>
-        <td>$avg_post</td>
-        <td>".($races>0 ? round($sum_field_size/$races,2) : 0)."</td>
-        <td>$avg_odds</td>
-        <td>$trainers</td>
-        <td>$jockeys</td>
-        <td>$horses</td>
-        <td>$multi_winners_count</td>
-      </tr>
-      ";
-    }
-
-    function topTen(&$conn, $type, $as_of_date, $days) {
-      // -- build basic stats query
-      if ($days>0) {
-        $date= new DateTime($as_of_date);
-        $date->sub(new DateInterval('P'.$days.'D'));
-      } else {
-        $date= new DateTime($conn->defaults['start_date']);
-        $date->sub(new DateInterval('P1D'));
-      }
-      $diff=$date->format('Y-m-d');
-
-      $query="SELECT
-          $type as name,
-          COUNT(*) as wins,
-          SUM(IF(favorite='TRUE',1,0)) as favs,
-          SUM(IF(turf='TRUE',1,0)) as turfs,
-          AVG(IF(odds<>0.0,odds,NULL)) as avg_odds
-        FROM tb17
-        WHERE race_date > '$diff' AND trainer <> '' AND jockey <> '' AND {$conn->defaults['meet_filter']}
-        GROUP BY $type
-        ORDER BY wins DESC, $type
-        LIMIT 10
-      ";
-
-      // -- run query
-      $stmt = $conn->db->prepare($query);
-      $stmt->execute();
-      $result=$stmt->get_result();
-      $rows=$result->fetch_all(MYSQLI_ASSOC);
-      $stmt->free_result();
-      $stmt->close();
-      //print_r($rows);
-      return $rows;
-     }
-
     // -- get last racing date and defaults
     $lrdate=$conn->last_race_date();
 
@@ -420,12 +421,13 @@
     statLine($conn, 'TRUE', 'total');
     //statLine($conn, 'TRUE', 'sprints');
     //statLine($conn, 'TRUE', 'routes');
-    echo "
+?>
+
       </tbody>
     </table>
     <br>
-    ";
 
+<?php
     // -- build top ten lists
 
     // -- get top ten list data and send

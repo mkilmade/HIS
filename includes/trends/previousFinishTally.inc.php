@@ -1,9 +1,6 @@
 <?php
 // called by getTrend.php
 function previousFinishTally($conn) {
-    // declare 'bind' variables to keep code analyzer happy
-    $count=$previous_finish_position="";
-    
     $query = "SELECT 
                  COUNT(DISTINCT race_date,race),
                  previous_finish_position
@@ -21,8 +18,7 @@ function previousFinishTally($conn) {
                        $previous_finish_position);
 
     echo "
-      <div style='overflow-x:auto;float: left;'>
-      <table id='previousFinishTable' class='tablesorter' style='width:225px; font-size:14px'>
+      <table id='previousFinishTable' class='tablesorter' style='width:225px; margin: auto; font-size:14px'>
         <caption>Previous Race At Meet</caption>
         <thead>
           <th>Prev Finish</th>
@@ -40,7 +36,7 @@ function previousFinishTally($conn) {
     }
     echo "
         <tr><td>Total</td><td>$total</td></tr>
-        </tbody></table></div>
+        </tbody></table>
 
         <script>
             $('#previousFinishTable').tablesorter({

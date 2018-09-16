@@ -1,9 +1,6 @@
 <?php
 // called by getTrend.php
 function previousRaceAtMeetPerCard($conn) {
-    
-    // declare 'bind' variables to keep code analyzer happy
-    $races=$wins=$race_date="";
     $query = "SELECT
                  COUNT(*) AS races,
                  SUM(IF(previous_track_id  = '{$conn->defaults['track_id']}'   AND
@@ -24,8 +21,7 @@ function previousRaceAtMeetPerCard($conn) {
                        $race_date);
     
     echo "
-      <div style='overflow-x:auto;float: left;'>
-      <table id='previousMeetDateCountTable' class='tablesorter' style='width:200px; font-size:14px'>
+      <table id='previousMeetDateCountTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
         <caption>Winner's Previous Race At Meet</caption>
         <thead>
           <th>Date</th>
@@ -46,7 +42,7 @@ function previousRaceAtMeetPerCard($conn) {
     }
     
     echo "
-        </tbody></table></div>
+        </tbody></table>
         <script>
             $('#previousMeetDateCountTable').tablesorter({
                 widgets: ['zebra'],

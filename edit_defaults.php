@@ -18,7 +18,7 @@
 </head>
 
 <body>
-  <table align="center">
+  <table style="margin: auto;">
     <tr>
       <td><a href='index.php'>Home</a></td>
     </tr>

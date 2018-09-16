@@ -50,30 +50,31 @@
   </table>
   <br/>
   <form action="browse.php" method="post">
-  <strong>Filters:</strong>
-  <table border=1>
-    <thead>
-    	<tr>
-            <th>Date</th>
-            <th>Trainer</th>
-            <th>Jockey</th>
-            <th>Horse</th>
+      <strong>Filters:</strong>
+      <table border=1>
+        <thead>
+        	<tr>
+                <th>Date</th>
+                <th>Trainer</th>
+                <th>Jockey</th>
+                <th>Horse</th>
+            </tr>
+        <thead>
+        <tr>
+          <td><input type="date" id="race_date" name="filterrace_date"></td>
+          <td><input type="text" id="trainer" name="filtertrainer"></td>
+          <td><input type="text" id="jockey" name="filterjockey"></td>
+          <td><input type="text" id="horse" name="filterhorse"></td>
         </tr>
-    <thead>
-    <tr>
-      <td><input type="date" id="race_date" name="filterrace_date"></td>
-      <td><input type="text" id="trainer" name="filtertrainer"></td>
-      <td><input type="text" id="jockey" name="filterjockey"></td>
-      <td><input type="text" id="horse" name="filterhorse"></td>
-    </tr>
-  </table>
-  <table>
-      <tr>
-        <td><input id="apply_button_id" type="submit" name="submit" value="Apply Filter"></td>
+      </table>
+      <table>
+          <tr>
+            <td><input id="apply_button_id" type="submit" name="submit" value="Apply Filter"></td>
+            <td><button type="button" onclick="clearFilters()">Clear Filters</button></td>
+          <tr>
+      </table>
   </form>
-        <td><button type="button" onclick="clearFilters()">Clear Filters</button></td>
-      <tr>
-  </table>
+  
   <?php
 
     // -- find last race date if no filters set

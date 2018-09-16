@@ -1,9 +1,6 @@
 <?php
 // called by getTrend.php
 function multipleWins($conn) {
-    // declare 'bind' variables to keep code analyzer happy
-    $wins=$horse="";
-    
     $query = "SELECT
                 wins, horse
               FROM (
@@ -22,8 +19,7 @@ function multipleWins($conn) {
         $horse);
     
     echo "
-          <div style='overflow-x:auto;float: left;'>
-          <table id='multiWinsTable' class='tablesorter' style='width:200px; font-size:14px'>
+          <table id='multiWinsTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
             <caption>Multiple Wins at Meet ($stmt->num_rows)</caption>
             <thead>
               <th>Horse</th>
@@ -40,7 +36,7 @@ function multipleWins($conn) {
     }
     
     echo "
-        </tbody></table></div>
+        </tbody></table>
         <script>
             $('#multiWinsTable').tablesorter({
               widgets: ['zebra']

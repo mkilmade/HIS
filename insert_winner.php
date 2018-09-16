@@ -30,7 +30,7 @@
     </tr>
   </table>
   <br/>
-  <table id='vTable' border=1 cellspacing=2 cellpadding=2 class='tablesorter'>
+  <table id='vTable' border=1 style="border-spacing: 2px; border-padding: 2px;" class='tablesorter'>
     <thead>
       <tr>
         <th>Field</th>

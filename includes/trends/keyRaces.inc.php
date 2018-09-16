@@ -1,11 +1,6 @@
 <?php
 // called by getTrend.php
 function keyRaces($conn) {
-    
-    // declare 'bind' variables to keep code analyzer happy
-    $previous_date=$previous_race=$previous_track_id=$wins="";
-    $horse=$race_date=$race=$track_id=$race_class=$distance=$turf=$time_of_race=$previous_finish_position="";
-    
     $query = "SELECT *
               FROM
               (
@@ -39,8 +34,7 @@ function keyRaces($conn) {
     
     // -- build html key race table
     echo "
-      <div style='overflow-x:auto;float: left;'>
-      <table id='keyTable' class='tablesorter' style='width:900px; font-size:16px'>
+      <table id='keyTable' class='tablesorter' style='width:900px; margin: auto; font-size:16px'>
         <caption>Key Race Information ($stmt->num_rows)</caption>
         <thead>
           <th>Date</th>

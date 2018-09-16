@@ -1,9 +1,6 @@
 <?php
 // called by getTrend.php
 function previousTrackWins($conn) {
-    // declare 'bind' variables to keep code analyzer happy
-    $previous_track_id=$wins="";
-        
     $total = 0;
     $query = "SELECT previous_track_id,
                      COUNT(*) as wins
@@ -20,8 +17,7 @@ function previousTrackWins($conn) {
                        $wins);
 
     echo "
-      <div style='overflow-x:auto;float: left;'>
-      <table id='trackTable' class='tablesorter' style='width:200px; font-size:14px'>
+      <table id='trackTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
         <caption>Previous Track Stats ($stmt->num_rows)</caption>
         <thead>
           <th>Track</th>
@@ -66,7 +62,7 @@ function previousTrackWins($conn) {
             <td><b>Total</b></td>
             <td><b>$total</b></td>
         </tr>
-        </tbody></table></div>
+        </tbody></table>
 
         <script>
             $('#trackTable').tablesorter({
