@@ -14,7 +14,7 @@
   <script src="jquery/jquery.tablesorter.js"></script>
   <script src="jquery/jquery.tablesorter.pager.js"></script>
   <script src="jquery/jquery-ui.min.js"></script>
-  <title id="title">Trends</title>
+  <title>Trends</title>
 
   <style>
     .turf {background-color:#32CD32;}
@@ -41,7 +41,7 @@
   </style>
 </head>
 <body>
-  <h2 id="body_title">Browse Trends & Stats</h2>
+  <h2 id="body_title">Browse Trends And Stats</h2>
    <table>
     <tr>
       <td><a href='index.php'>Home</a></td>

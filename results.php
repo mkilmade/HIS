@@ -26,8 +26,8 @@
       <td><a href='index.php'>Home</a></td>
       <td><a href='search.php'>Search</a></td>
     </tr>
-  <br/>
   </table>
+  <br>
   <?php
     // create short variable names
     $searchorder=$_POST['searchorder'];

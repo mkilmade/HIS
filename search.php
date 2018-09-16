@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title id="title">Tampa Bay Downs 2017/18 Search</title>
+  <title>Tampa Bay Downs 2017/18 Search</title>
   <link href="jquery/jquery-ui.min.css" rel="stylesheet">
   <script src="jquery/jquery.js"></script>
   <script src="jquery/jquery.tablesorter.js"></script>
@@ -43,7 +43,7 @@
         <th>Field Size</th>
     </tr>
     <tr>
-        <td><input type="date" id="race_date" name="race_date" value"2018-01-23"></td>
+        <td><input type="date" id="race_date" name="race_date" value="2018-01-23"></td>
         <td>
           <select name="race">
             <option value="1">1</option>
@@ -144,7 +144,7 @@
 
       </tr>
     </table>
-  </p>
+
   <strong>Winner's Information:</strong><br />
   <table>
     <tr>
