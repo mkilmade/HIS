@@ -80,12 +80,11 @@
         $stmt->free_result();
         $stmt->close();
         
-        // @todo try is find work around for 'not used' warning
         global $horse_cnts;
         global $deadheat_cnt;
         
         if ($distance=='total') {
-            $horse_cnts[$surface] += $horses;
+            $horse_cnts[$surface] = $horse_cnts[$surface] + $horses;
             $deadheat_cnt += ($deadheat/2);
         }
         // get multiple winners count
