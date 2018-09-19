@@ -4,26 +4,26 @@
 	<description>
 	    Deploy HIS application to Apache web server
 	</description>
-	
+
 	<!-- set global properties for this build -->
-	<property file = "build.properties" />
+	<property file="build.properties" />
 	<echo>
 		destination: ${deploy.destdir}
 		     source: ${basedir} </echo>
 
 	<target name="deploy">
-  		<copy todir="${deploy.destdir}">
-    	<fileset dir="${basedir}">
-    		<exclude name="secure/config.ini" />
-    		<exclude name="build.xml" />
-    		<exclude name="build.properties" />
-    		<exclude name=".settings/" />
-    		<exclude name=".buildpath" />
-    		<exclude name=".gitignore" />
-    		<exclude name=".project" />
-    		<exclude name=".DS_Store" />
-    		<exclude name="README" />
-    	</fileset>
-  		</copy>
+		<copy todir="${deploy.destdir}">
+			<fileset dir="${basedir}">
+				<exclude name="secure/config.ini" />
+				<exclude name="build.xml" />
+				<exclude name="build.properties" />
+				<exclude name=".settings/" />
+				<exclude name=".buildpath" />
+				<exclude name=".gitignore" />
+				<exclude name=".project" />
+				<exclude name=".DS_Store" />
+				<exclude name="README" />
+			</fileset>
+		</copy>
 	</target>
-</project>	
+</project>

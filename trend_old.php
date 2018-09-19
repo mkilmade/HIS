@@ -1,7 +1,7 @@
 <?php 
   session_start(); 
   require_once('includes/config.inc.php');
-  include_once('includes/connection.inc.php');
+  require_once('includes/connection.inc.php');
   $conn = new Connection();
 ?>
 <!DOCTYPE html>
@@ -50,25 +50,25 @@
   <br/>
   <?php
      //=============== build key race table (#keyTable) ================
-     include_once('includes/trends/key_races.php');
+     require_once('includes/trends/key_races.php');
 
      //=============== get multiple winner at meet (#multiWinsTable) ================
-     include_once('includes/trends/multiple_wins_at_meet.php');
+     require_once('includes/trends/multiple_wins_at_meet.php');
 
      //=============== get previous track win counts (#trackTable) ===============
-     include_once('includes/trends/previousTrackWins.inc.php');
+     require_once('includes/trends/previousTrackWins.inc.php');
 
      //=============== get previous race at meet winner counts by race_date (#previousMeetDateCountTable) ================
-     include_once('includes/trends/previously_ran_by_date.php');
+     require_once('includes/trends/previously_ran_by_date.php');
 
      //=============== get previous race finish position tally (#previousFinishTable) ================
-     include_once('includes/trends/previousFinishTally.inc.php');
+     require_once('includes/trends/previousFinishTally.inc.php');
 
      //=============== get previous race at meet winners (#previouslyRanAtMeetWinTable) ================
-     include_once('includes/trends/previously_ran_at_meet.php');
+     require_once('includes/trends/previously_ran_at_meet.php');
 
      //=============== get class tally for meet (#classTable) ================
-     include_once('includes/trends/class_tally_for_meet.php');
+     require_once('includes/trends/class_tally_for_meet.php');
 
     $conn->close();
 

@@ -1,6 +1,8 @@
 <?php
+
 // called by getTrend.php
-function previousTrackWins($conn) {
+function previousTrackWins($conn)
+{
     $total = 0;
     $query = "SELECT previous_track_id,
                      COUNT(*) as wins
@@ -9,12 +11,11 @@ function previousTrackWins($conn) {
                     {$conn->defaults['meet_filter']}
               GROUP By previous_track_id
               ORDER BY wins DESC, previous_track_id";
- 
-    $stmt = $conn->db->prepare($query);  
+
+    $stmt = $conn->db->prepare($query);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($previous_track_id,
-                       $wins);
+    $stmt->bind_result($previous_track_id, $wins);
 
     echo "
       <table id='trackTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
@@ -26,13 +27,12 @@ function previousTrackWins($conn) {
     <tbody>
     ";
     $total = 0;
-    while($stmt->fetch()) {
-      echo "<tr>";
-      echo "<td>$previous_track_id</td>";
-      echo "<td>$wins</td>";
-      echo "</tr>";
-      $total += $wins;
-
+    while ($stmt->fetch()) {
+        echo "<tr>";
+        echo "<td>$previous_track_id</td>";
+        echo "<td>$wins</td>";
+        echo "</tr>";
+        $total += $wins;
     }
     $stmt->free_result();
     $stmt->close();
@@ -43,12 +43,12 @@ function previousTrackWins($conn) {
               WHERE comment LIKE '%FTS%' and
                     {$conn->defaults['meet_filter']}
               LIMIT 1";
-    $stmt = $conn->db->prepare($query);  
+    $stmt = $conn->db->prepare($query);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($wins);
 
-    while($stmt->fetch()) {
+    while ($stmt->fetch()) {
         echo "<tr>";
         echo "<td>Firsters</td>";
         echo "<td>$wins</td>";
@@ -72,7 +72,6 @@ function previousTrackWins($conn) {
         ";
     $stmt->free_result();
     $stmt->close();
-    
 } // function
 
 ?>

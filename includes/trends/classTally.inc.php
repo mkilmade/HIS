@@ -1,6 +1,8 @@
 <?php
+
 // called by getTrend.php
-function classTally($conn) {
+function classTally($conn)
+{
     $query = "SELECT 
                  count(DISTINCT race_date,race) AS races,
                  race_class
@@ -9,11 +11,10 @@ function classTally($conn) {
               GROUP By race_class
               ORDER BY races DESC, race_class";
 
-    $stmt = $conn->db->prepare($query);  
+    $stmt = $conn->db->prepare($query);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($races,
-                       $class);
+    $stmt->bind_result($races, $class);
 
     echo "
       <table id='classTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
@@ -26,14 +27,14 @@ function classTally($conn) {
     ";
 
     $total = 0;
-    while($stmt->fetch()) {
-      $total += $races;
-      echo "<tr>";
-      echo "<td style='text-align:left;'>$class</td>";
-      echo "<td>$races</td>";
-      echo "</tr>";
+    while ($stmt->fetch()) {
+        $total += $races;
+        echo "<tr>";
+        echo "<td style='text-align:left;'>$class</td>";
+        echo "<td>$races</td>";
+        echo "</tr>";
     }
-    
+
     echo "
         <tr><td>Total</td><td>$total</td></tr>
         </tbody></table>
@@ -44,10 +45,9 @@ function classTally($conn) {
             });
         </script>
         ";
-    
+
     $stmt->free_result();
     $stmt->close();
- 
-}  // function
+} // function
 
 ?> 

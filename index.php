@@ -3,7 +3,7 @@
     session_start();
 
     require_once('includes/config.inc.php');
-    include_once('includes/connection.inc.php');
+    require_once('includes/connection.inc.php');
     $conn = new Connection();
     //print_r($_SESSION);
 

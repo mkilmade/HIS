@@ -2,13 +2,13 @@
 //      form to update winning entry in the tbd.tb17 table
   session_start();
   require_once('includes/config.inc.php');
-  include_once('includes/connection.inc.php');
+  require_once('includes/connection.inc.php');
   $conn = new Connection();
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link href="jquery/jquery-ui.min.css" rel="stylesheet">
   <script src="jquery/jquery.js"></script>
   <script src="jquery/jquery.tablesorter.js"></script>
@@ -34,7 +34,7 @@
 
   <p><label>ID: <input type="number" min="1" max="99999" id="tb17_id" name="tb17_id" value="" readonly></label></p>
 
-  <?php include_once('includes/entry_input.inc.html'); ?>
+  <?php require_once('includes/entry_input.inc.html'); ?>
 
   </fieldset>
 

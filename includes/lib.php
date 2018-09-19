@@ -12,7 +12,7 @@
   // not used; kept for reference
   function build_select($type)
   {
-    include_once('connection.inc.php');
+    require_once('connection.inc.php');
     $conn = new Connection();
     $html='';
     $varName="search".$type;

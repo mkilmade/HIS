@@ -1,6 +1,8 @@
 <?php
+
 // called by getTrend.php
-function multipleWins($conn) {
+function multipleWins($conn)
+{
     $query = "SELECT
                 wins, horse
               FROM (
@@ -11,13 +13,12 @@ function multipleWins($conn) {
                    ) AS multi_winners
               WHERE wins > '1'
               ORDER BY wins, horse";
-    
+
     $stmt = $conn->db->prepare($query);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($wins,
-        $horse);
-    
+    $stmt->bind_result($wins, $horse);
+
     echo "
           <table id='multiWinsTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
             <caption>Multiple Wins at Meet ($stmt->num_rows)</caption>
@@ -27,14 +28,14 @@ function multipleWins($conn) {
             </thead>
            <tbody>
         ";
-    
-    while($stmt->fetch()) {
+
+    while ($stmt->fetch()) {
         echo "<tr>";
         echo "<td style='text-align:left;'>$horse</td>";
         echo "<td>$wins</td>";
         echo "</tr>";
     }
-    
+
     echo "
         </tbody></table>
         <script>
@@ -45,7 +46,6 @@ function multipleWins($conn) {
         ";
     $stmt->free_result();
     $stmt->close();
-   
 } // function
 
 ?>

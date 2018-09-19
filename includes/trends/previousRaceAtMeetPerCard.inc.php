@@ -1,6 +1,8 @@
 <?php
+
 // called by getTrend.php
-function previousRaceAtMeetPerCard($conn) {
+function previousRaceAtMeetPerCard($conn)
+{
     $query = "SELECT
                  COUNT(*) AS races,
                  SUM(IF(previous_track_id  = '{$conn->defaults['track_id']}'   AND
@@ -12,14 +14,12 @@ function previousRaceAtMeetPerCard($conn) {
               WHERE {$conn->defaults['meet_filter']}
               GROUP BY race_date
               ORDER BY race_date DESC";
-    
+
     $stmt = $conn->db->prepare($query);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($races,
-                       $wins,
-                       $race_date);
-    
+    $stmt->bind_result($races, $wins, $race_date);
+
     echo "
       <table id='previousMeetDateCountTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
         <caption>Winner's Previous Race At Meet</caption>
@@ -29,18 +29,18 @@ function previousRaceAtMeetPerCard($conn) {
         </thead>
     <tbody>
     ";
-    
-    while($stmt->fetch()) {
-        if ($wins == 0 ) {
+
+    while ($stmt->fetch()) {
+        if ($wins == 0) {
             continue;
         }
-        $dt = substr($race_date,5,5);
+        $dt = substr($race_date, 5, 5);
         echo "<tr>";
         echo "<td>$dt</td>";
         echo "<td>$wins of $races</td>";
         echo "</tr>";
     }
-    
+
     echo "
         </tbody></table>
         <script>
@@ -54,8 +54,7 @@ function previousRaceAtMeetPerCard($conn) {
            });
         </script>
         ";
-    
+
     $stmt->free_result();
     $stmt->close();
-    
 } // function

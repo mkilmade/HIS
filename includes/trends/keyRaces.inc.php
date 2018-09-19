@@ -1,6 +1,8 @@
 <?php
+
 // called by getTrend.php
-function keyRaces($conn) {
+function keyRaces($conn)
+{
     $query = "SELECT *
               FROM
               (
@@ -22,16 +24,13 @@ function keyRaces($conn) {
                        previous_date DESC,
                        previous_track_id,
                        previous_race";
-    //echo "<br>$query";
+    // echo "<br>$query";
     // $stmt = $conn->db->prepare($query);
     // $stmt->execute();
     $stmt = $conn->execute_qry($query);
     $stmt->store_result();
-    $stmt->bind_result($previous_date,
-                       $previous_race,
-                       $previous_track_id,
-                       $wins);
-    
+    $stmt->bind_result($previous_date, $previous_race, $previous_track_id, $wins);
+
     // -- build html key race table
     echo "
       <table id='keyTable' class='tablesorter' style='width:900px; margin: auto; font-size:16px'>
@@ -45,11 +44,11 @@ function keyRaces($conn) {
         </thead>
     <tbody>
     ";
-    
-    $n =0;
-    while($stmt->fetch()) {
+
+    $n = 0;
+    while ($stmt->fetch()) {
         // build key race data
-        $qry =   "SELECT horse,
+        $qry = "SELECT horse,
                        race_class,
                        distance,
                        time_of_race,
@@ -63,7 +62,7 @@ function keyRaces($conn) {
         $stmt2->execute();
         $result = $stmt2->get_result();
         $assoc_data = $result->fetch_assoc();
-        if (count($assoc_data)==0) {
+        if (count($assoc_data) == 0) {
             $key_race_data = "Key Race Winner: Sorry, only NYRA races on file. Use race link for chart.";
         } else {
             $key_race_data = "Key Race Winner: ";
@@ -72,14 +71,14 @@ function keyRaces($conn) {
             $key_race_data .= "</b> : ";
             $key_race_data .= $assoc_data['race_class'];
             $key_race_data .= " : ";
-            $key_race_data .= $assoc_data['distance'].($assoc_data['turf']=="TRUE" ? ' t' : '');
+            $key_race_data .= $assoc_data['distance'] . ($assoc_data['turf'] == "TRUE" ? ' t' : '');
             $key_race_data .= " : ";
             $key_race_data .= $assoc_data['time_of_race'];
         }
         $stmt2->close();
-        
+
         // get last winner data from key race
-        $qry =   "SELECT horse,
+        $qry = "SELECT horse,
                        race_date,
                        race,
                        track_id,
@@ -94,35 +93,27 @@ function keyRaces($conn) {
                       previous_track_id  = '$previous_track_id'
                 ORDER BY race_date DESC, race
                ";
-        
+
         $stmt2 = $conn->db->prepare($qry);
         $stmt2->execute();
         $stmt2->store_result();
-        $stmt2->bind_result($horse,
-            $race_date,
-            $race,
-            $track_id,
-            $race_class,
-            $distance,
-            $turf,
-            $time_of_race,
-            $previous_finish_position);
-        $key_race_data.="<br>Next Out Winners:";
-        
-        while($stmt2->fetch()) {
+        $stmt2->bind_result($horse, $race_date, $race, $track_id, $race_class, $distance, $turf, $time_of_race, $previous_finish_position);
+        $key_race_data .= "<br>Next Out Winners:";
+
+        while ($stmt2->fetch()) {
             $key_race_data .= "<br> - ";
             $key_race_data .= "<b>$horse</b> <sup>$previous_finish_position</sup> : ";
             $key_race_data .= "$race_date ";
             $key_race_data .= "$track_id <sup> $race </sup> : ";
             $key_race_data .= "$race_class : ";
-            $key_race_data .= "$distance".($turf=="TRUE" ? ' t' : ''). " : ";
+            $key_race_data .= "$distance" . ($turf == "TRUE" ? ' t' : '') . " : ";
             $key_race_data .= "$time_of_race";
         }
         $stmt2->close();
-        
-        //$date = new DateTime($previous_date, new DateTimeZone('America/New_York'));
+
+        // $date = new DateTime($previous_date, new DateTimeZone('America/New_York'));
         $date = new DateTime($previous_date, new DateTimeZone(HIS_TIMEZONE));
-        $chart_file="http://www.equibase.com/premium/chartEmb.cfm?track=$previous_track_id&racedate=".$date->format("m/d/y")."&cy=USA&rn=$previous_race";
+        $chart_file = "http://www.equibase.com/premium/chartEmb.cfm?track=$previous_track_id&racedate=" . $date->format("m/d/y") . "&cy=USA&rn=$previous_race";
         echo "<tr>";
         echo "<td>$previous_date</td>";
         echo "<td><a target='_blank' href='$chart_file'>$previous_race</a></td>";
@@ -131,7 +122,8 @@ function keyRaces($conn) {
         echo "<td style='text-align: left'>$key_race_data</td>";
         echo "</tr>";
         $n = $n + 1;
-        if ($n==1000) break;
+        if ($n == 1000)
+            break;
     }
 
     echo "
@@ -151,10 +143,9 @@ function keyRaces($conn) {
         });
       </script>
     ";
-    
+
     $stmt->free_result();
     $stmt->close();
-    
 } // function
 
 ?>

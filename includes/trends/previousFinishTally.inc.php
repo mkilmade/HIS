@@ -1,6 +1,8 @@
 <?php
+
 // called by getTrend.php
-function previousFinishTally($conn) {
+function previousFinishTally($conn)
+{
     $query = "SELECT 
                  COUNT(DISTINCT race_date,race),
                  previous_finish_position
@@ -11,11 +13,10 @@ function previousFinishTally($conn) {
                     previous_date <= '{$conn->defaults['end_date']}'
               GROUP BY previous_finish_position";
 
-    $stmt = $conn->db->prepare($query);  
+    $stmt = $conn->db->prepare($query);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($count,
-                       $previous_finish_position);
+    $stmt->bind_result($count, $previous_finish_position);
 
     echo "
       <table id='previousFinishTable' class='tablesorter' style='width:225px; margin: auto; font-size:14px'>
@@ -27,12 +28,12 @@ function previousFinishTally($conn) {
     <tbody>
     ";
     $total = 0;
-    while($stmt->fetch()) {
-      $total += $count;
-      echo "<tr>";
-      echo "<td>$previous_finish_position</td>";
-      echo "<td>$count</td>";
-      echo "</tr>";
+    while ($stmt->fetch()) {
+        $total += $count;
+        echo "<tr>";
+        echo "<td>$previous_finish_position</td>";
+        echo "<td>$count</td>";
+        echo "</tr>";
     }
     echo "
         <tr><td>Total</td><td>$total</td></tr>
@@ -51,10 +52,9 @@ function previousFinishTally($conn) {
                 }
           });
           ";
-        
+
     $stmt->free_result();
     $stmt->close();
-    
 } // function
 
 ?>

@@ -1,6 +1,8 @@
 <?php
+
 // called by getTrend.php
-function previouslyRanAtMeet($conn) {
+function previouslyRanAtMeet($conn)
+{
     $query = "SELECT
                  horse,
                  race_date
@@ -10,13 +12,12 @@ function previouslyRanAtMeet($conn) {
                     previous_date >= '{$conn->defaults['start_date']}' AND
                     previous_date <= '{$conn->defaults['end_date']}'
               ORDER BY horse, race_date DESC";
-    
+
     $stmt = $conn->db->prepare($query);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($horse,
-                       $race_date);
-    
+    $stmt->bind_result($horse, $race_date);
+
     echo "
       <table id='previouslyRanAtMeetWinTable' class='tablesorter' style='width:300px; margin: auto; font-size:14px'>
         <caption>Previous Race At Meet Before Win ($stmt->num_rows)</caption>
@@ -26,15 +27,15 @@ function previouslyRanAtMeet($conn) {
         </thead>
     <tbody>
     ";
-    
-    while($stmt->fetch()) {
-        $dt = substr($race_date,5,5);
+
+    while ($stmt->fetch()) {
+        $dt = substr($race_date, 5, 5);
         echo "<tr>";
         echo "<td>$horse</td>";
         echo "<td>$dt</td>";
         echo "</tr>";
     }
-    
+
     echo "</tbody></table>
         <script>
             $('#previouslyRanAtMeetWinTable').tablesorter({
@@ -45,7 +46,6 @@ function previouslyRanAtMeet($conn) {
 
     $stmt->free_result();
     $stmt->close();
-    
 } // function
 
 ?>
