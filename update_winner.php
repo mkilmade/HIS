@@ -73,13 +73,24 @@
 
       foreach($post as $field => $value) {
         if ($field=='tb17_id') $id=$value;
+        
+        // no need to update field if same value
         if ($value==$entry[$field]) {
           unset($post[$field]);
           continue;
         }
+        
+        // check for resource and insert new jockey or trainer or horse if does not exist
+        if ($field == 'jockey' || $field == 'trainer' || $field == 'horse') {
+            $status = $conn->addResource($field, $value);
+            $status = ($status == 1) ? "(Added)" : "(Insertion Failed: " . $status . ")";
+        } else {
+            $status = "";
+        }
+        
         echo "<tr>
                 <td>$field</td>
-                <td>$value</td>
+                <td>$value $status</td>
                 <td>{$entry[$field]}</td>
               </tr>";
 

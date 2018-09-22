@@ -1,5 +1,5 @@
 <?php
-require_once('lib.php');
+require_once ('lib.php');
 
 class Connection
 {
@@ -68,6 +68,7 @@ class Connection
             $fields = $fields . ($fields == "" ? "" : ", ") . $field;
             $values = $values . ($values == "" ? "" : ", ") . "'" . $value . "'";
         }
+        //echo "<br>INSERT INTO $table ($fields) VALUES ($values)";
         return $this->execute_query("INSERT INTO $table ($fields) VALUES ($values)");
     }
 
@@ -211,6 +212,23 @@ class Connection
         }
         $stmt->close();
         clog('final status: ' . $status);
+        return $status;
+    }
+
+    public function addResource($table, $name)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM " . DB_NAME . ".$table WHERE name = '$name'");
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows == 0) {
+            $data = [
+                "name" => $name
+            ];
+            $status = $this->insert_row($data, DB_NAME . ".$table");
+        } else {
+            $status="";
+        }
+        $stmt->close();
         return $status;
     }
 

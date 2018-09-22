@@ -39,6 +39,7 @@ $conn = new Connection();
 			</tr>
 		</thead>
 <?php
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $fields = "";
     $values = "";
@@ -66,11 +67,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($post as $field => $value) {
         $fields = $fields . ($fields == "" ? "" : ", ") . $field;
         $values = $values . ($values == "" ? "" : ", ") . "'" . $value . "'";
+
+        // check for resource and insert new jockey or trainer or horse if does not exist
+        if ($field == 'jockey' || $field == 'trainer' || $field == 'horse') {
+            $status = $conn->addResource($field, $value);
+            $status = ($status == 1) ? "(Added)" : "(Insertion Failed: " . $status . ")";
+        } else {
+            $status = "";
+        }
+        
         echo "<tr>
                 <td>$field</td>
-                <td>$value</td>
+                <td>$value $status</td>
               </tr>";
+        unset($status);
     } // foreach
+    
     echo "<tr>
               <td>Fields List</td>
               <td>$fields</td>
@@ -84,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               <td>INSERT INTO 'tbd'.'tb17' ($fields) VALUES ($values)</td>
             </tr>";
 
-    $status = $conn->insert_row($post, 'tb17');
+    $status = $conn->insert_row($post, DB_NAME.".tb17");
     $status = ($status == 1) ? "Success" : "Failed: " . $status;
     $status_style = ($status == "Success") ? "" : "style='color: #DC143C';";
 
