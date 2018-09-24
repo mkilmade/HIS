@@ -102,7 +102,7 @@ function keyRaces($conn)
             $key_race_data .= "<br> - ";
             $key_race_data .= "<b>$horse</b> <sup>$previous_finish_position</sup> : ";
             $key_race_data .= "$race_date ";
-            $key_race_data .= "$track_id <sup> $race </sup> : ";
+            $key_race_data .= "$track_id <sup> R$race </sup> : ";
             $key_race_data .= "$race_class : ";
             $key_race_data .= "$distance" . ($turf == "TRUE" ? ' t' : '') . " : ";
             $key_race_data .= "$time_of_race";
