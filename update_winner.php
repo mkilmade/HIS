@@ -48,8 +48,8 @@
       $stmt = $conn->db->prepare($query);
       $stmt->bind_param('s', $_POST['tb17_id']);  
       $stmt->execute();
-      $result=$stmt->get_result();
-      $entry=$result->fetch_assoc();
+      $entry=$stmt->get_result()->fetch_assoc();
+      
       $fldvals="";
       $post=$_POST;
       unset($post['submit']);
@@ -83,7 +83,15 @@
         // check for resource and insert new jockey or trainer or horse if does not exist
         if ($field == 'jockey' || $field == 'trainer' || $field == 'horse') {
             $status = $conn->addResource($field, $value);
-            $status = ($status == 1) ? "(Added)" : "(Insertion Failed: " . $status . ")";
+            switch($status) {
+                case(1):
+                    $status = "(Added)";
+                    break;
+                case(""):
+                    break;
+                default:
+                    $status = "(Insertion Failed: $status";                   
+            }
         } else {
             $status = "";
         }

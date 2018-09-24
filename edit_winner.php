@@ -54,11 +54,9 @@
     $stmt = $conn->db->prepare($query);
     $stmt->bind_param('s', $_GET['tb17_id']);  
     $stmt->execute();
-    $result=$stmt->get_result();
-    $results=$result->fetch_assoc();
     echo "
         // fill in form fields with database values";
-    foreach($results as $field => $value) {
+    foreach($stmt->get_result()->fetch_assoc() as $field => $value) {
       if ($field=='favorite' || $field=='turf') {
         echo "
         $(\"input[name='$field'][value='$value']\").prop(\"checked\", true);";

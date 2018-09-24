@@ -25,9 +25,8 @@ function keyRaces($conn)
                        previous_track_id,
                        previous_race";
     // echo "<br>$query";
-    // $stmt = $conn->db->prepare($query);
-    // $stmt->execute();
-    $stmt = $conn->execute_qry($query);
+    $stmt = $conn->db->prepare($query);
+    $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($previous_date, $previous_race, $previous_track_id, $wins);
 
@@ -60,8 +59,7 @@ function keyRaces($conn)
                 LIMIT 1";
         $stmt2 = $conn->db->prepare($qry);
         $stmt2->execute();
-        $result = $stmt2->get_result();
-        $assoc_data = $result->fetch_assoc();
+        $assoc_data = $stmt2->get_result()->fetch_assoc();
         if (count($assoc_data) == 0) {
             $key_race_data = "Key Race Winner: Sorry, only NYRA races on file. Use race link for chart.";
         } else {

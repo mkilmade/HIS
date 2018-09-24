@@ -46,18 +46,35 @@ class Connection
 
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->free_result();
-        $stmt->close();
-        $defaults = $result->fetch_assoc();
+        $defaults = $stmt->get_result()->fetch_assoc();
         $defaults['meet_name'] = addslashes($defaults['meet_name']);
         $defaults['track_name'] = addslashes($defaults['track_name']);
         $defaults['meet_filter'] = "race_date >= '{$defaults['start_date']}' AND 
                                 race_date <= '{$defaults['end_date']}' AND
                                 track_id = '{$defaults['track_id']}'";
+        $stmt->free_result();
+        $stmt->close();
         return $defaults;
     }
-
+    
+    public function execute_query($query)
+    {
+        $stmt = $this->db->stmt_init();
+        if ($stmt->prepare($query)) {
+            $status = $stmt->execute();
+            if (! $status) {
+                $status = $stmt->error;
+                clog('Execute error: ' . $status);
+            }
+        } else {
+            $status = $stmt->error;
+            clog('Prepare error: ' . $status);
+        }
+        $stmt->close();
+        clog('final status: ' . $status);
+        return $status;
+    }
+    
     // insert a new row into a table
     public function insert_row(&$data, $table)
     {
@@ -81,19 +98,6 @@ class Connection
             $fldvals = $fldvals . ($fldvals == "" ? "" : ", ") . $field . "='" . $value . "'";
         }
         return $this->execute_query("UPDATE $table SET $fldvals WHERE " . $table . "_id='" . $id . "'");
-    }
-
-    public function execute_qry($query)
-    {
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
-
-    public function close_qry($stmt)
-    {
-        $stmt->free_result();
-        $stmt->close();
     }
 
     // -- get last race date for current meet
@@ -197,34 +201,18 @@ class Connection
         return $last_race;
     }
 
-    public function execute_query($query)
+    public function addResource($tableName, $resourceName)
     {
-        $stmt = $this->db->stmt_init();
-        if ($stmt->prepare($query)) {
-            $status = $stmt->execute();
-            if (! $status) {
-                $status = $stmt->error;
-                clog('Execute error: ' . $status);
-            }
-        } else {
-            $status = $stmt->error;
-            clog('Prepare error: ' . $status);
-        }
-        $stmt->close();
-        clog('final status: ' . $status);
-        return $status;
-    }
-
-    public function addResource($table, $name)
-    {
-        $stmt = $this->db->prepare("SELECT * FROM " . DB_NAME . ".$table WHERE name = '$name'");
+        // query table for resource already exists in table
+        $stmt = $this->db->prepare("SELECT * FROM $tableName WHERE name = '$resourceName'");
         $stmt->execute();
         $stmt->store_result();
+        // if resource is not already in table, insert entry
         if ($stmt->num_rows == 0) {
             $data = [
-                "name" => $name
+                "name" => $resourceName
             ];
-            $status = $this->insert_row($data, DB_NAME . ".$table");
+            $status = $this->insert_row($data, $tableName);
         } else {
             $status="";
         }

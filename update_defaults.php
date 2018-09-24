@@ -14,8 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              ";
     $stmt = $conn->db->prepare($query);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $entry = $result->fetch_assoc();
+    $entry = $stmt->get_result()->fetch_assoc();
 
     foreach ($post as $field => $value) {
         if ($field == 'current_defaults_id')

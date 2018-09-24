@@ -15,8 +15,7 @@ $query = "SELECT trainer, jockey
 $stmt = $conn->db->prepare($query);
 $stmt->bind_param('s', $horse);
 $stmt->execute();
-$result = $stmt->get_result();
-$lastWinData = $result->fetch_assoc();
+$lastWinData = $stmt->get_result()->fetch_assoc();
 if (count($lastWinData) == 0) {
     $lastWinData["trainer"] = "";
     $lastWinData["jockey"] = "";

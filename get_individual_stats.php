@@ -26,13 +26,11 @@ $query = "SELECT
 $stmt = $conn->db->prepare($query);
 $stmt->bind_param('s', $name);
 $stmt->execute();
-$result = $stmt->get_result();
-$results = $result->fetch_assoc();
 
 echo "<table style='border: 3px solid black; color: black;background-color: #F5F5DC;'>
         <caption style='text-align: center; font-weight: bold;'>'$name'</caption>";
 
-foreach ($results as $field => $value) {
+foreach ($stmt->get_result()->fetch_assoc() as $field => $value) {
     echo "<tr>
                 <td style='text-align:right;
                            border-bottom: 1px dotted;'>$field: </td>

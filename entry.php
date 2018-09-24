@@ -20,22 +20,22 @@
     require_once('includes/connection.inc.php');;
     $conn = new Connection();
     
-    // create short variable names
-    $tb17_id = $_GET['tb17_id'];
-    // $query = "SELECT tb17_id, race_date, horse, jockey, trainer, distance, turf, odds FROM tb17 WHERE tb17_id = ?";
-    $query = "SELECT * FROM tb17 WHERE tb17_id = ?";
-    $stmt = $conn->db->prepare($query);
-    $stmt->bind_param('s', $tb17_id);
+    // each entry field/value pairs
+    $stmt = $conn->db->prepare("SELECT * FROM tb17 WHERE tb17_id = ?");
+    $stmt->bind_param('s', $_GET['tb17_id']);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $results = $result->fetch_assoc();
-    echo "";
-    foreach ($results as $field => $value) {
-        echo "<tr><td align='right'>$field</td><td>$value</td></tr>";
+    
+    // format html
+    $html="";
+    foreach ($stmt->get_result()->fetch_assoc() as $field => $value) {
+        $html .= "<tr><td align='right'>$field:</td><td><b>$value</b></td></tr>";
     }
     $stmt->free_result();
     $stmt->close();
     $conn->close();
+    
+    // send html to browser
+    echo $html;
 ?>
     </table>
 </body>

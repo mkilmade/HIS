@@ -1,9 +1,10 @@
-<?php 
+<?php
 // edit_defaults.php # script mjk 4/28/18
- // form to updatte entry in the tbd.current_defaults table
+// form to updatte entry in the tbd.current_defaults table
 session_start();
-require_once('includes/config.inc.php');
-require_once('includes/connection.inc.php');;
+require_once ('includes/config.inc.php');
+require_once ('includes/connection.inc.php');
+;
 $conn = new Connection();
 ?>
 <!DOCTYPE html>
@@ -97,7 +98,7 @@ $conn = new Connection();
 <script>
  $(document).ready(function() {
 
- <?php
+<?php
 $query = "SELECT cd.current_defaults_id,
                      cd.past_days,
                      cd.previous_track_id,
@@ -109,10 +110,8 @@ $query = "SELECT cd.current_defaults_id,
              ";
 $stmt = $conn->db->prepare($query);
 $stmt->execute();
-$result = $stmt->get_result();
-$results = $result->fetch_assoc();
 // fill in form fields with database values";
-foreach ($results as $field => $value) {
+foreach ($stmt->get_result()->fetch_assoc() as $field => $value) {
     if ($field == 'race_meet_id') {
         $current_race_meet_id = $value;
         continue;
