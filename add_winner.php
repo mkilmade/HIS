@@ -1,10 +1,14 @@
 <?php 
 // add_winner.php script mjk 4/19/18
- // form to log winning entry into the tbd.tb17 table
-session_start();
-require_once('includes/config.inc.php');
-require_once('includes/connection.inc.php');;
-$conn = new Connection();
+    // form to log winning entry into the tbd.tb17 table
+    session_start();
+    require_once('includes/config.inc.php');
+    require_once('includes/connection.inc.php');;
+    $conn = new Connection();
+    // -- get last race date a& next race #
+    $last_race_date = $conn->last_race_date();
+    $next_race = $conn->last_race($last_race_date) + 1;
+    $conn->close();
 ?>
 <!DOCTYPE html>
 <html>
@@ -46,11 +50,17 @@ $conn = new Connection();
 <script>
   $(document).ready(function() {
     setupCommonFields();
+    // set race number to 1 if date is chenged (helpful when adding a new race date
+    $('#race_date').on('change',function(e) {
+      $('#race').val(1);
+    });
+    // set favorite to true if less than threshold (1.5)
+    $('#odds').on('change',function(e) {
+      if ($('#odds').val() < 1.5) {
+        $('input:radio[name="favorite"][value="TRUE"]').prop('checked',true);
+      }
+    });
 <?php
-// -- get last race date a& next race #
-$last_race_date = $conn->last_race_date();
-$next_race = $conn->last_race($last_race_date) + 1;
-$conn->close();
 echo "
     $('#race_date').datepicker('setDate', '$last_race_date');
     $('#race').val('$next_race');

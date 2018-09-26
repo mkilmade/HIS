@@ -3,7 +3,7 @@
 // used by add_winner.php & edit_winner.php to auto fill jockey & 
 // trainer fielss for selected horse
 
-// invoked as the 'onblur' event handler of respective forms
+//invoked as the 'onblur' event handler of respective forms
 function horse_trigger() {
     var horse=$("#horse").val();
 

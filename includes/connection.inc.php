@@ -204,7 +204,8 @@ class Connection
     public function addResource($tableName, $resourceName)
     {
         // query table for resource already exists in table
-        $stmt = $this->db->prepare("SELECT * FROM $tableName WHERE name = \"$resourceName\"");
+        $stmt = $this->db->prepare("SELECT * FROM $tableName WHERE name = ?");
+        $stmt->bind_param('s', $resourceName);
         $stmt->execute();
         $stmt->store_result();
         // if resource is not already in table, insert entry
