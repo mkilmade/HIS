@@ -52,8 +52,31 @@
     setupCommonFields();
     // set race number to 1 if date is chenged (helpful when adding a new race date
     $('#race_date').on('change',function(e) {
-      $('#race').val(1);
+    	var race_date=$("#race_date").val();
+    	
+        // build request for GET
+        var request = new Object();
+        request.type = 'next_race';
+        request.race_date = race_date;
+
+        // build settings/options for $.ajax call
+        var options = new Object();
+        options.data = request;
+        options.dataType = "json";
+        options.method = "GET";
+        options.success = function(response, status, xhr) {
+          $("#race").val(response.next_race);
+        }
+        options.error = function(xhr, status, errorThrown) {
+          console.log("An error has occcured in request for next race #:");
+          console.log("       Status: " + xhr.status + " - " + xhr.statusText);
+          console.log("Response Text: " + xhr.responseText);
+        }
+        options.url = "getHisInfo.php";
+
+        $.ajax(options);
     });
+    
     // set favorite to true if less than threshold (1.5)
     $('#odds').on('change',function(e) {
       if ($('#odds').val() < 1.5) {
