@@ -36,20 +36,20 @@ function horse_trigger() {
 
 // table entity autocmplete functions
 function getHorses(request, response) {
-  getNames(request, response, "horse", "getEntityNames.php");
+  getNames(request, response, "horse", "getHisInfo.php");
 }
 function getTrainers(request, response) {
-  getNames(request, response, "trainer", "getEntityNames.php");
+  getNames(request, response, "trainer", "getHisInfo.php");
 }
 function getJockeys(request, response) {
-  getNames(request, response, "jockey", "getEntityNames.php");
+  getNames(request, response, "jockey", "getHisInfo.php");
 }
 // catgegory autocomplete functions
 function getRaceClasses(request, response) {
-  getNames(request, response, "race_class", "getCategoryNames.php");
+  getNames(request, response, "race_class", "getHisInfo.php");
 }
 function getRaceFlows(request, response) {
-  getNames(request, response, "race_flow", "getCategoryNames.php");
+  getNames(request, response, "race_flow", "getHisInfo.php");
 }
 
 function getNames(request, response, entity_name, url) {
@@ -58,6 +58,7 @@ function getNames(request, response, entity_name, url) {
      method: 'GET',
      dataType: 'json',
      data: {
+      type: entity_name,
       name: request.term,
       entity_name: entity_name
      },

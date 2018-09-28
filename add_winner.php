@@ -5,10 +5,6 @@
     require_once('includes/config.inc.php');
     require_once('includes/connection.inc.php');;
     $conn = new Connection();
-    // -- get last race date a& next race #
-    $last_race_date = $conn->last_race_date();
-    $next_race = $conn->last_race($last_race_date) + 1;
-    $conn->close();
 ?>
 <!DOCTYPE html>
 <html>
@@ -84,18 +80,22 @@
       }
     });
 <?php
-echo "
-    $('#race_date').datepicker('setDate', '$last_race_date');
-    $('#race').val('$next_race');
-    $('#track_id').val('{$conn->defaults['track_id']}');
-    $('#previous_track_id').val('{$conn->defaults['previous_track_id']}');
-    $('#track_condition').val('{$_SESSION['dirt_track_condition']}');
-    $('input[name=turf]:radio').on('change', function(e) {
-      turf=$('input[name=turf]:checked', '#addForm');
-      $('#track_condition').val(turf.val()=='TRUE' ? '{$_SESSION['turf_track_condition']}':'{$_SESSION['dirt_track_condition']}');
-    });
-
-    ";
+    // -- get last race date a& next race #
+    $last_race_date = $conn->last_race_date();
+    $next_race = $conn->last_race($last_race_date) + 1;
+    $conn->close();
+    echo "
+        $('#race_date').datepicker('setDate', '$last_race_date');
+        $('#race').val('$next_race');
+        $('#track_id').val('{$conn->defaults['track_id']}');
+        $('#previous_track_id').val('{$conn->defaults['previous_track_id']}');
+        $('#track_condition').val('{$_SESSION['dirt_track_condition']}');
+        $('input[name=turf]:radio').on('change', function(e) {
+          turf=$('input[name=turf]:checked', '#addForm');
+          $('#track_condition').val(turf.val()=='TRUE' ? '{$_SESSION['turf_track_condition']}':'{$_SESSION['dirt_track_condition']}');
+        });
+    
+        ";
 ?>
 
 }); // finish .ready function
