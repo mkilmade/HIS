@@ -34,33 +34,15 @@ function horse_trigger() {
     }
 }
 
-// table entity autocmplete functions
-function getHorses(request, response) {
-  getNames(request, response, "horse", "getHisInfo.php");
-}
-function getTrainers(request, response) {
-  getNames(request, response, "trainer", "getHisInfo.php");
-}
-function getJockeys(request, response) {
-  getNames(request, response, "jockey", "getHisInfo.php");
-}
-// catgegory autocomplete functions
-function getRaceClasses(request, response) {
-  getNames(request, response, "race_class", "getHisInfo.php");
-}
-function getRaceFlows(request, response) {
-  getNames(request, response, "race_flow", "getHisInfo.php");
-}
-
-function getNames(request, response, entity_name, url) {
+function getDomainNames(request, response) {
   $.ajax({
-     url: url,
+     url: "getHisInfo.php",
      method: 'GET',
      dataType: 'json',
      data: {
-      type: entity_name,
+      type: "autocomplete",
       name: request.term,
-      entity_name: entity_name
+      domain: this.element.attr('id')
      },
      success: function( data ) {
          console.log(data);
@@ -68,37 +50,15 @@ function getNames(request, response, entity_name, url) {
      }
   });
 }
+
 function setupCommonFields() {
   // populate autocomplete lists options
-  $('#horse').autocomplete({
-          source: getHorses,
+  $('#horse, #trainer, #jockey, #race_class, #race_flow').autocomplete({
+          source: getDomainNames,
        minLength: 1
   });
-  $('#trainer').autocomplete({
-         source: getTrainers,
-      minLength: 1
-  });
-  $('#jockey').autocomplete({
-         source: getJockeys,
-      minLength: 1
-  });
-  $('#race_class').autocomplete({
-         source: getRaceClasses,
-      minLength: 1
-  });
-  $('#race_flow').autocomplete({
-         source: getRaceFlows,
-      minLength: 0
-  });
-
-  $('#race_date').datepicker({
-    currentText: 'Today',
-    defaultDate: 0,
-    dateFormat: 'yy-mm-dd',
-    showButtonPanel: true
-  });
-
-  $('#previous_date').datepicker({
+ 
+  $('#race_date, #previous_date').datepicker({
     currentText: 'Today',
     defaultDate: 0,
     dateFormat: 'yy-mm-dd',

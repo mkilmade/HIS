@@ -8,14 +8,21 @@
         case('next_race'):
             $response = getNextRaceNumber($_GET['race_date'], $conn);
             break;
-        case('race_class'):
-        case('race_flow'):
-            $response =  getCategoryNames($_GET['name'], $_GET['entity_name'], $conn);
-            break;
-        case('horse'):
-        case('jockey');
-        case('trainer'):
-            $response = getEntityNames($_GET['name'], $_GET['entity_name'], $conn);
+        case('autocomplete'):
+            $domain = $_GET['domain'];
+            switch($domain) {
+                case('race_class'):
+                case('race_flow'):
+                    $response =  getCategoryNames($_GET['name'], $domain, $conn);
+                    break;
+                case('horse'):
+                case('jockey');
+                case('trainer'):
+                    $response = getDomainEntryNames($_GET['name'], $domain, $conn);
+                    break;
+                default:
+                    $response =  array('error' => 'Invalid autocorrect request');
+            }
             break;
         default:
             $response =  array('error' => 'Invalid request');
@@ -53,7 +60,7 @@ function getCategoryNames($name, $category, $conn) {
     return $cats;
 }
 
-function getEntityNames($searchname, $tablename, $conn) {
+function getDomainEntryNames($searchname, $tablename, $conn) {
     $id = $tablename . "_id";
     
     // first list those matching 'shortcut' field
