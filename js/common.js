@@ -12,7 +12,8 @@ function horse_trigger() {
 
       // build query info for GET
       var queryData = new Object();
-      queryData.horse= horse;
+      queryData.type = 'last_win_data';
+      queryData.horse = horse;
 
       // build settings/options for $.ajax call
       var options = new Object();
@@ -28,10 +29,35 @@ function horse_trigger() {
         console.log("       Status: " + xhr.status + " - " + xhr.statusText);
         console.log("Response Text: " + xhr.responseText);
       }
-      options.url = "getLastWinData.php";
+      options.url = "getHisInfo.php";
 
       $.ajax(options);
     }
+}
+function race_date_trigger(e) {
+	var race_date=$("#race_date").val();
+	
+    // build request for GET
+    var request = new Object();
+    request.type = 'next_race';
+    request.race_date = race_date;
+
+    // build settings/options for $.ajax call
+    var options = new Object();
+    options.data = request;
+    options.dataType = "json";
+    options.method = "GET";
+    options.success = function(response, status, xhr) {
+      $("#race").val(response.next_race);
+    }
+    options.error = function(xhr, status, errorThrown) {
+      console.log("An error has occcured in request for next race #:");
+      console.log("       Status: " + xhr.status + " - " + xhr.statusText);
+      console.log("Response Text: " + xhr.responseText);
+    }
+    options.url = "getHisInfo.php";
+
+    $.ajax(options);	
 }
 
 function getDomainNames(request, response) {

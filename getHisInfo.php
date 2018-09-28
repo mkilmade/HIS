@@ -24,6 +24,9 @@
                     $response =  array('error' => 'Invalid autocorrect request');
             }
             break;
+        case('last_win_data'):
+            $response = getLastWinData($_GET['horse'], $conn);
+            break;
         default:
             $response =  array('error' => 'Invalid request');
     }
@@ -31,7 +34,7 @@
     
     $conn->close();
     
-function getNextRaceNumber($race_date, &$conn) {
+function getNextRaceNumber($race_date, $conn) {
     return array('next_race' => $conn->last_race($race_date) + 1);
 }
 
@@ -110,5 +113,26 @@ function getDomainEntryNames($searchname, $tablename, $conn) {
     
     return $names;
     
+}
+
+function getLastWinData($horse, $conn) {
+    // get the horse parameter from URL
+    $query = "SELECT trainer, jockey
+           FROM tb17
+          WHERE horse = ?
+       ORDER BY race_date DESC
+          LIMIT 1";
+    
+    $stmt = $conn->db->prepare($query);
+    $stmt->bind_param('s', $horse);
+    $stmt->execute();
+    $lastWinData = $stmt->get_result()->fetch_assoc();
+    if (count($lastWinData) == 0) {
+        $lastWinData["trainer"] = "";
+        $lastWinData["jockey"] = "";
+    }
+    $stmt->close();
+    
+    return $lastWinData;
 }
 ?>

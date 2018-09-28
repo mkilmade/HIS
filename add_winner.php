@@ -46,31 +46,10 @@
 <script>
   $(document).ready(function() {
     setupCommonFields();
-    // set race number to 1 if date is chenged (helpful when adding a new race date
+    // set race number to 1 if date is new or to appropriate race # if race date on file
+    // (most helpful when adding a new race date)
     $('#race_date').on('change',function(e) {
-    	var race_date=$("#race_date").val();
-    	
-        // build request for GET
-        var request = new Object();
-        request.type = 'next_race';
-        request.race_date = race_date;
-
-        // build settings/options for $.ajax call
-        var options = new Object();
-        options.data = request;
-        options.dataType = "json";
-        options.method = "GET";
-        options.success = function(response, status, xhr) {
-          $("#race").val(response.next_race);
-        }
-        options.error = function(xhr, status, errorThrown) {
-          console.log("An error has occcured in request for next race #:");
-          console.log("       Status: " + xhr.status + " - " + xhr.statusText);
-          console.log("Response Text: " + xhr.responseText);
-        }
-        options.url = "getHisInfo.php";
-
-        $.ajax(options);
+        race_date_trigger();
     });
     
     // set favorite to true if less than threshold (1.5)
@@ -85,19 +64,24 @@
     $next_race = $conn->last_race($last_race_date) + 1;
     $conn->close();
     echo "
-        $('#race_date').datepicker('setDate', '$last_race_date');
-        $('#race').val('$next_race');
-        $('#track_id').val('{$conn->defaults['track_id']}');
-        $('#previous_track_id').val('{$conn->defaults['previous_track_id']}');
-        $('#track_condition').val('{$_SESSION['dirt_track_condition']}');
-        $('input[name=turf]:radio').on('change', function(e) {
-          turf=$('input[name=turf]:checked', '#addForm');
-          $('#track_condition').val(turf.val()=='TRUE' ? '{$_SESSION['turf_track_condition']}':'{$_SESSION['dirt_track_condition']}');
-        });
-    
-        ";
+    var last_race_date = '$last_race_date',
+        next_race = '$next_race',
+        current_track_id = '{$conn->defaults['track_id']}',
+        previous_track_id = '{$conn->defaults['previous_track_id']}',
+        dirt_track_condition = '{$_SESSION['dirt_track_condition']}',
+        turf_track_condition = '{$_SESSION['turf_track_condition']}';
+        
+"
 ?>
-
-}); // finish .ready function
+    $('#race_date').datepicker('setDate', last_race_date);
+    $('#race').val(next_race);
+    $('#track_id').val(current_track_id);
+    $('#previous_track_id').val(previous_track_id);
+    $('#track_condition').val(dirt_track_condition);
+    $('input[name=turf]:radio').on('change', function(e) {
+        turf=$('input[name=turf]:checked', '#addForm');
+        $('#track_condition').val(turf.val()=='TRUE' ? turf_track_condition : dirt_track_condition);
+    });    
+  }); // finish .ready function
 </script>
 </html>
