@@ -27,6 +27,12 @@
         case('last_win_data'):
             $response = getLastWinData($_GET['horse'], $conn);
             break;
+        case('previous_next_out_winners'):
+            $response = previous_next_out_winners($_GET['previous_date'],
+                                                  $_GET['previous_track_id'],
+                                                  $_GET['previous_race'],
+                                                  $conn);
+            break;
         default:
             $response =  array('error' => 'Invalid request');
     }
@@ -134,5 +140,26 @@ function getLastWinData($horse, $conn) {
     $stmt->close();
     
     return $lastWinData;
+    
+}function previous_next_out_winners($previous_date,
+                                    $previous_track_id,
+                                    $previous_race,
+                                    $conn) {
+    $query = "SELECT
+                COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
+              FROM tb17
+              WHERE previous_date = '$previous_date' AND
+                    previous_track_id = '$previous_track_id' AND
+                    previous_race = '$previous_race'";
+    
+    $stmt = $conn->db->prepare($query);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($wins);
+    $stmt->fetch();
+    $stmt->free_result();
+    $stmt->close();
+                                        
+    return array('wins' => $wins);
 }
 ?>

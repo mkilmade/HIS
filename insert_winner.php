@@ -61,9 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         unset($post['previous_race']);
         unset($post['previous_track_id']);
         unset($post['previous_finish_position']);
-        clog("previous values has been unset!");
     }
-
+    
     foreach ($post as $field => $value) {
         $fields = $fields . ($fields == "" ? "" : ", ") . $field;
         $values = $values . ($values == "" ? "" : ", ") . "'" . $value . "'";
@@ -110,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     echo "<tr>
               <td $status_style >Insertion Status</td>
-              <td $status_style >$status</td>
+              <td $status_style >$status $wins</td>
             </tr>
       ";
 
