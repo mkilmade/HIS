@@ -20,9 +20,9 @@ function horse_trigger() {
       options.data = queryData;
       options.dataType = "json";
       options.method = "GET";
-      options.success = function(lastWinData, status, xhr) {
-        $("#trainer").val(lastWinData.trainer);
-        $("#jockey").val(lastWinData.jockey);
+      options.success = function(response, status, xhr) {
+        $("#trainer").val(response.trainer);
+        $("#jockey").val(response.jockey);
       }
       options.error = function(xhr, status, errorThrown) {
         console.log("An error has occcured in 'horse_trigger' function:");

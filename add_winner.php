@@ -45,19 +45,6 @@
 </body>
 <script>
   $(document).ready(function() {
-    setupCommonFields();
-    // set race number to 1 if date is new or to appropriate race # if race date on file
-    // (most helpful when adding a new race date)
-    $('#race_date').on('change',function(e) {
-        race_date_trigger();
-    });
-    
-    // set favorite to true if less than threshold (1.5)
-    $('#odds').on('change',function(e) {
-      if ($('#odds').val() < 1.5) {
-        $('input:radio[name="favorite"][value="TRUE"]').prop('checked',true);
-      }
-    });
 <?php
     // -- get last race date a& next race #
     $last_race_date = $conn->last_race_date();
@@ -71,8 +58,21 @@
         dirt_track_condition = '{$_SESSION['dirt_track_condition']}',
         turf_track_condition = '{$_SESSION['turf_track_condition']}';
         
-"
+    "
 ?>
+    setupCommonFields();
+    // set race number to 1 if date is new or to appropriate race # if race date on file
+    // (most helpful when adding a new race date)
+    $('#race_date').on('change',function(e) {
+        race_date_trigger();
+    });
+    
+    // set favorite to true if less than threshold (1.5)
+    $('#odds').on('change',function(e) {
+      if ($('#odds').val() < 1.5) {
+        $('input:radio[name="favorite"][value="TRUE"]').prop('checked',true);
+      }
+    });
     $('#race_date').datepicker('setDate', last_race_date);
     $('#race').val(next_race);
     $('#track_id').val(current_track_id);

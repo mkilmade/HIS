@@ -45,12 +45,14 @@ function getNextRaceNumber($race_date, $conn) {
 }
 
 function getCategoryNames($name, $category, $conn) {
+    $searchname=$name."%";
     $query = "SELECT DISTINCT $category
           FROM tb17
-          WHERE $category LIKE \"$name%\"
+          WHERE $category LIKE ?
           ORDER BY $category";
     
     $stmt = $conn->db->prepare($query);
+    $stmt->bind_param('s', $searchname);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($cat);
@@ -58,8 +60,8 @@ function getCategoryNames($name, $category, $conn) {
     $cats = array();
     while ($stmt->fetch()) {
         $cats[] = array(
-            'label' => htmlentities($cat),
-            'value' => htmlentities($cat)
+            'label' => htmlentities($cat, ENT_NOQUOTES),
+            'value' => htmlentities($cat, ENT_NOQUOTES)
         );
     }
     
@@ -69,16 +71,17 @@ function getCategoryNames($name, $category, $conn) {
     return $cats;
 }
 
-function getDomainEntryNames($searchname, $tablename, $conn) {
+function getDomainEntryNames($name, $tablename, $conn) {
     $id = $tablename . "_id";
-    
+    $searchname=$name."%";
     // first list those matching 'shortcut' field
     $query = "SELECT $id, name, shortcut
       FROM $tablename
-      WHERE shortcut LIKE \"$searchname%\"
+      WHERE shortcut LIKE ?
       ORDER BY shortcut";
     
     $stmt = $conn->db->prepare($query);
+    $stmt->bind_param('s', $searchname);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($id, $name, $shortcut);
@@ -87,8 +90,8 @@ function getDomainEntryNames($searchname, $tablename, $conn) {
     if ($stmt->num_rows > 0) {
         while ($stmt->fetch()) {
             $names[] = array(
-                'label' => htmlentities($shortcut . ' - ' . $name),
-                'value' => htmlentities($name) // change to $id when normalized
+                'label' => htmlentities($shortcut . ' - ' . $name, ENT_NOQUOTES),
+                'value' => htmlentities($name, ENT_NOQUOTES) // change to $id when normalized
             );
         }
     }
@@ -98,10 +101,11 @@ function getDomainEntryNames($searchname, $tablename, $conn) {
     // add those matching 'name' field
     $query = "SELECT $id, name
           FROM $tablename
-          WHERE name LIKE \"$searchname%\"
+          WHERE name LIKE ?
           ORDER BY name";
     
     $stmt = $conn->db->prepare($query);
+    $stmt->bind_param('s', $searchname);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($id, $name);
@@ -109,8 +113,8 @@ function getDomainEntryNames($searchname, $tablename, $conn) {
     if ($stmt->num_rows > 0) {
         while ($stmt->fetch()) {
             $names[] = array(
-                'label' => htmlentities($name),
-                'value' => htmlentities($name) // change to $id when normalized
+                'label' => htmlentities($name, ENT_NOQUOTES),
+                'value' => htmlentities($name, ENT_NOQUOTES) // change to $id when normalized
             );
         }
     }
@@ -148,11 +152,14 @@ function getLastWinData($horse, $conn) {
     $query = "SELECT
                 COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
               FROM tb17
-              WHERE previous_date = '$previous_date' AND
-                    previous_track_id = '$previous_track_id' AND
-                    previous_race = '$previous_race'";
+              WHERE previous_date = ? AND
+                    previous_track_id = ? AND
+                    previous_race = ?";
     
     $stmt = $conn->db->prepare($query);
+    $stmt->bind_param('sii', $previous_date,
+                             $previous_track_id,
+                             $previous_race);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($wins);

@@ -2,3 +2,4 @@ logs/**
 jquery/**
 .settings/**
 secure/config.ini
+dummy.php

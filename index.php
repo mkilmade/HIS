@@ -39,18 +39,18 @@
         }
         // -- build basic stats query
         $query="SELECT
-         COUNT(DISTINCT race_date),
-         MAX(race_date),
-         COUNT(DISTINCT race_date, race),
-         SUM(IF(comment LIKE 'dead%',1,0)) as deadheat,
-         TRUNCATE(AVG(post_position),1),
-         SUM(IF(comment LIKE 'dead%',field_size/2,field_size)),
-         TRUNCATE(AVG(IF(odds>0,odds,NULL)),2),
-         COUNT(DISTINCT trainer),
-         COUNT(DISTINCT jockey),
-         COUNT(DISTINCT horse)
-       FROM tb17
-       WHERE {$conn->defaults['meet_filter']} and horse <> ''"; // don't use if no horse enter yet
+                 COUNT(DISTINCT race_date),
+                 MAX(race_date),
+                 COUNT(DISTINCT race_date, race),
+                 SUM(IF(comment LIKE 'dead%',1,0)) as deadheat,
+                 TRUNCATE(AVG(post_position),1),
+                 SUM(IF(comment LIKE 'dead%',field_size/2,field_size)),
+                 TRUNCATE(AVG(IF(odds>0,odds,NULL)),2),
+                 COUNT(DISTINCT trainer),
+                 COUNT(DISTINCT jockey),
+                 COUNT(DISTINCT horse)
+                FROM tb17
+                WHERE {$conn->defaults['meet_filter']} and horse <> ''"; // don't use if no horse enter yet
         
         // -- add WHERE clause
         if ($surface <> 'Total') {
@@ -89,11 +89,11 @@
         }
         // get multiple winners count
         $qry="SELECT
-         COUNT(*) as count
-         FROM (SELECT COUNT(*) AS Wins,
+               COUNT(*) as count
+              FROM (SELECT COUNT(*) AS Wins,
                       horse
-              FROM tb17
-              WHERE {$conn->defaults['meet_filter']} AND horse <> ''"; // don't use if no horse enter yet
+                    FROM tb17
+                    WHERE {$conn->defaults['meet_filter']} AND horse <> ''"; // don't use if no horse enter yet
         // -- add to derived WHERE clause
         if ($surface <> 'Total') {
             $qry .= " AND turf='$turf'";
@@ -142,20 +142,21 @@
         $diff=$date->format('Y-m-d');
         
         $query="SELECT
-          $type as name,
-          COUNT(*) as wins,
-          SUM(IF(favorite='TRUE',1,0)) as favs,
-          SUM(IF(turf='TRUE',1,0)) as turfs,
-          AVG(IF(odds<>0.0,odds,NULL)) as avg_odds
-        FROM tb17
-        WHERE race_date > '$diff' AND trainer <> '' AND jockey <> '' AND {$conn->defaults['meet_filter']}
-        GROUP BY $type
-        ORDER BY wins DESC, $type
-        LIMIT 10
-      ";
+                  $type as name,
+                  COUNT(*) as wins,
+                  SUM(IF(favorite='TRUE',1,0)) as favs,
+                  SUM(IF(turf='TRUE',1,0)) as turfs,
+                  AVG(IF(odds<>0.0,odds,NULL)) as avg_odds
+                FROM tb17
+                WHERE race_date > ? AND trainer <> '' AND jockey <> '' AND {$conn->defaults['meet_filter']}
+                GROUP BY $type
+                ORDER BY wins DESC, $type
+                LIMIT 10
+              ";
           
           // -- run query
           $stmt = $conn->db->prepare($query);
+          $stmt->bind_param('s', $diff);
           $stmt->execute();
           $result=$stmt->get_result();
           $rows=$result->fetch_all(MYSQLI_ASSOC);
@@ -362,6 +363,7 @@
           <td><a target='_blank' href='http://www1.drf.com/formulator-web/#card-selector'>Formulator</a></td>
           <td><a target='_blank' href='https://www.nyrabets.com/#wagering'>NYRA Bets</a></td>
           <td><a target='_blank' href='http://www.brisnet.com/cgi-bin/static.cgi?page=stablealert'>Stable</a></td>
+          <td><a target='_blank' href='https://play.drf.com/#/'>PPs</a></td>       
           <td><a href='trends.php'>Trends/Stats</a></td>
           <td><a href='edit_defaults.php'>Settings</a></td>
         </tr>
@@ -517,25 +519,25 @@
 
     // -- get results for last date run
     $query = "SELECT
-        tb17_id,
-        race,
-        race_date,
-        distance,
-        turf,
-        race_class,
-        sex,
-        age,
-        odds,
-        horse,
-        jockey,
-        trainer,
-        race_flow,
-        comment,
-        favorite
-      FROM tb17
-      WHERE race_date='$lrdate' AND {$conn->defaults['meet_filter']}
-      ORDER BY race
-      ";
+                tb17_id,
+                race,
+                race_date,
+                distance,
+                turf,
+                race_class,
+                sex,
+                age,
+                odds,
+                horse,
+                jockey,
+                trainer,
+                race_flow,
+                comment,
+                favorite
+              FROM tb17
+              WHERE race_date='$lrdate' AND {$conn->defaults['meet_filter']}
+              ORDER BY race
+            ";
 
     $stmt = $conn->db->prepare($query);  
     $stmt->execute();

@@ -66,7 +66,7 @@
         $value=$conn->defaults['previous_track_id'];
       }
       echo "
-        $(\"#$field\").val(\"$value\");";
+        $(\"#$field\").val(\"".addslashes($value)."\");";
     }
     $stmt->close();
     $conn->close();

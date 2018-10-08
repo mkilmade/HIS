@@ -148,18 +148,19 @@ class Connection
         return $race_dates;
     }
 
-    // -- get win count by date for indiviual for current meent
+    // -- get win count by date for indiviual for current meet
     public function getWinCounts($type, $name)
     {
         $win_counts = array();
         $query = "SELECT DISTINCT race_date, 
                      COUNT(*) as win_count
               FROM tb17
-              WHERE $type = \"$name\" AND {$this->defaults['meet_filter']}
+              WHERE $type = ? AND {$this->defaults['meet_filter']}
               GROUP BY race_date
               ORDER BY race_date";
 
         $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s', $name);
         $stmt->execute();
         $stmt->store_result();
         if ($stmt->num_rows == 0) {
@@ -183,12 +184,13 @@ class Connection
         }
 
         $query = "SELECT MAX(race)
-              FROM tb17
-              WHERE race_date='$race_date' AND {$this->defaults['meet_filter']}
-              LIMIT 1
-            ";
+                  FROM tb17
+                  WHERE race_date = ? AND {$this->defaults['meet_filter']}
+                  LIMIT 1
+                 ";
 
         $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s', $race_date);
         $stmt->execute();
         $stmt->store_result();
         if ($stmt->num_rows == 0) {
