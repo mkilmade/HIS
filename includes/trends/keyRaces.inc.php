@@ -3,6 +3,9 @@
 // called by getTrend.php
 function keyRaces($conn)
 {
+    $date = new DateTime();
+    $date->sub(new DateInterval('P90D'));
+    $limit = $date->format('Y-m-d');
     $query = "SELECT *
               FROM
               (
@@ -11,7 +14,7 @@ function keyRaces($conn)
                         previous_track_id,
                         COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
                  FROM tb17
-                 WHERE previous_track_id IS NOT NULL
+                 WHERE previous_track_id IS NOT NULL AND previous_date > '$limit'
                  GROUP BY previous_date,
                           previous_race,
                           previous_track_id
@@ -24,7 +27,7 @@ function keyRaces($conn)
                        previous_date DESC,
                        previous_track_id,
                        previous_race";
-    // echo "<br>$query";
+    //echo "<br>$query";
     $stmt = $conn->db->prepare($query);
     $stmt->execute();
     $stmt->store_result();
@@ -33,7 +36,7 @@ function keyRaces($conn)
     // -- build html key race table
     echo "
       <table id='keyTable' class='tablesorter' style='width:900px; margin: auto; font-size:16px'>
-        <caption>Key Race Information ($stmt->num_rows)</caption>
+        <caption>Key Race Information for last 90 days ($stmt->num_rows)</caption>
         <thead>
           <th>Date</th>
           <th>Key Race #</th>

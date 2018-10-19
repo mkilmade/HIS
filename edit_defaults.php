@@ -58,6 +58,7 @@ $conn = new Connection();
 						<option value="CD">CD</option>
 						<option value="GP">GP</option>
 						<option value="KEE">KEE</option>
+			            <option value="KD">KD</option>
 						<option value="WO">WO</option>
 						<option value="OP">OP</option>
 						<option value="FG">FG</option>

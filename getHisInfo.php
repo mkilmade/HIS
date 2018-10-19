@@ -157,7 +157,7 @@ function getLastWinData($horse, $conn) {
                     previous_race = ?";
     
     $stmt = $conn->db->prepare($query);
-    $stmt->bind_param('sii', $previous_date,
+    $stmt->bind_param('ssi', $previous_date,
                              $previous_track_id,
                              $previous_race);
     $stmt->execute();

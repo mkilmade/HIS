@@ -38,7 +38,6 @@ function previous_trigger() {
     var previous_date=$("#previous_date").val(),
         previous_track_id=$("#previous_track_id").val(),
         previous_race=$("#previous_race").val();
-    
 
     // make ajax call if all 'previous fields are filled in (except 'finish')
     if (previous_date != "" && previous_track_id != "" && previous_race != "") {

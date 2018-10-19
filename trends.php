@@ -87,5 +87,10 @@
   <br>
   <div id='trendDiv' style='margin-right: auto; margin-left: auto;width: 1000px; visibility:hidden;'></div>
 </body>
+<script>
+    $(document).ready(function() {
+    	getTrend('keyRaces');
+    });
+</script>
 
 </html>
