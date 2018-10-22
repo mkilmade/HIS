@@ -365,6 +365,7 @@
           <td><a target='_blank' href='http://www.brisnet.com/cgi-bin/static.cgi?page=stablealert'>Stable</a></td>
           <td><a target='_blank' href='https://play.drf.com/#/'>PPs</a></td>       
           <td><a href='trends.php'>Trends/Stats</a></td>
+          <td><a href='nextOutWinners.php'>NOW</a></td>
           <td><a href='edit_defaults.php'>Settings</a></td>
         </tr>
     </table>

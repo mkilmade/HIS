@@ -27,6 +27,9 @@
         case('last_win_data'):
             $response = getLastWinData($_GET['horse'], $conn);
             break;
+        case('next_out_winners'):
+            $response = next_out_winners($_GET['race_date'], $_GET['race'], $_GET['track_id'], $conn);
+            break;
         case('previous_next_out_winners'):
             $response = previous_next_out_winners($_GET['previous_date'],
                                                   $_GET['previous_track_id'],
@@ -145,28 +148,113 @@ function getLastWinData($horse, $conn) {
     
     return $lastWinData;
     
-}function previous_next_out_winners($previous_date,
-                                    $previous_track_id,
-                                    $previous_race,
-                                    $conn) {
-    $query = "SELECT
+}
+function previous_next_out_winners($previous_date,
+    $previous_track_id,
+    $previous_race,
+    $conn) {
+        $query = "SELECT
                 COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
               FROM tb17
               WHERE previous_date = ? AND
                     previous_track_id = ? AND
                     previous_race = ?";
-    
-    $stmt = $conn->db->prepare($query);
-    $stmt->bind_param('ssi', $previous_date,
-                             $previous_track_id,
-                             $previous_race);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($wins);
-    $stmt->fetch();
-    $stmt->free_result();
-    $stmt->close();
-                                        
-    return array('wins' => $wins);
+        
+        $stmt = $conn->db->prepare($query);
+        $stmt->bind_param('ssi', $previous_date,
+            $previous_track_id,
+            $previous_race);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($wins);
+        $stmt->fetch();
+        $stmt->free_result();
+        $stmt->close();
+        
+        return array('wins' => $wins);
+}
+function next_out_winners($previous_date,
+                          $previous_race,
+                          $previous_track_id,
+                          $conn) {
+        $qry = "SELECT horse,
+                       race_class,
+                       distance,
+                       time_of_race,
+                       turf
+                    FROM tb17
+                    WHERE race_date = '$previous_date' and
+                          race      = '$previous_race' and
+                          track_id  = '$previous_track_id'
+                    LIMIT 1";
+        $stmt = $conn->db->prepare($qry);
+        $stmt->execute();
+        $assoc_data = $stmt->get_result()->fetch_assoc();
+        $html = "<p>";
+        if (count($assoc_data) == 0) {
+              $html .= "Key Race Winner: Sorry, only NYRA races on file. Use race link for chart.";
+        } else {
+              $html = "Key Race Winner: ";
+              $html .= "<b>";
+              $html .= $assoc_data['horse'];
+              $html .= "</b> : ";
+              $html .= $assoc_data['race_class'];
+              $html .= " : ";
+              $html .= $assoc_data['distance'] . ($assoc_data['turf'] == "TRUE" ? ' t' : '');
+              $html .= " : ";
+              $html .= $assoc_data['time_of_race'];
+        }
+        $html .="</p>";
+        $stmt->close();
+        $stmt = "";
+            
+        $qry = "SELECT horse,
+                       race_date,
+                       race,
+                       track_id,
+                       race_class,
+                       distance,
+                       turf,
+                       time_of_race,
+                       previous_finish_position
+                FROM tb17
+                WHERE previous_date      = '$previous_date' and
+                      previous_race      = '$previous_race' and
+                      previous_track_id  = '$previous_track_id'
+                ORDER BY race_date DESC, race
+               ";
+        
+        $stmt = $conn->db->prepare($qry);
+        $stmt->bind_param('sis', $previous_date,
+                                 $previous_race,
+                                 $previous_track_id);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($horse,
+                           $race_date,
+                           $race,
+                           $track_id,
+                           $race_class,
+                           $distance,
+                           $turf,
+                           $time_of_race,
+                           $previous_finish_position);
+        $data = array();
+        $html .= "<table border='1'>";
+        while ($stmt->fetch()) {
+            $html .= "<tr>";
+            $html .= "<td>$horse <sup>$previous_finish_position</sup></td>";
+            $html .= "<td>$race_date</td>";
+            $html .= "<td>$race</td>";
+            $html .= "<td>$track_id</td>";
+            $html .= "<td>$race_class</td>";
+            $html .= "<td>$distance" . ($turf == "TRUE" ? ' t' : '') ."</td>";
+            $html .= "<td>$time_of_race</td>";
+            $html .= "</tr>";
+        }
+        $html .= "</table>";
+        $data["html"] = $html;
+        $stmt->close();
+        return $data;
 }
 ?>
