@@ -190,21 +190,22 @@ function next_out_winners($previous_date,
         $stmt = $conn->db->prepare($qry);
         $stmt->execute();
         $assoc_data = $stmt->get_result()->fetch_assoc();
-        $html = "<p>";
+
         if (count($assoc_data) == 0) {
-              $html .= "Key Race Winner: Sorry, only NYRA races on file. Use race link for chart.";
+            $caption = "<caption><b>Key Race Winner: Sorry, only NYRA races on file. Use race link for chart</b></caption>";
         } else {
-              $html = "Key Race Winner: ";
-              $html .= "<b>";
-              $html .= $assoc_data['horse'];
-              $html .= "</b> : ";
-              $html .= $assoc_data['race_class'];
-              $html .= " : ";
-              $html .= $assoc_data['distance'] . ($assoc_data['turf'] == "TRUE" ? ' t' : '');
-              $html .= " : ";
-              $html .= $assoc_data['time_of_race'];
+            $caption = "<caption><b>Previous Race Specifics: ";
+            $caption .= $assoc_data['horse'];
+            $caption .= " : ";
+            $caption .= $assoc_data['race_class'];
+            $caption .= " : ";
+            $caption .= $assoc_data['distance'];
+            $caption .= " : ";
+            $caption .=($assoc_data['turf'] == "TRUE" ? 'Turf' : 'Dirt');
+            $caption .= " : ";
+            $caption .= $assoc_data['time_of_race'];
+            $caption .= "</b></caption>";
         }
-        $html .="</p>";
         $stmt->close();
         $stmt = "";
             
@@ -240,19 +241,37 @@ function next_out_winners($previous_date,
                            $time_of_race,
                            $previous_finish_position);
         $data = array();
-        $html .= "<table border='1'>";
+        $html="";
+        $html .= "<table id='nowTable' class='tablesorter' style='width:800px; font-size:14px'>$caption
+                    <thead>
+                        <th>Horse</th>
+                        <th>Date</th>
+                        <th>Race</th>
+                        <th>Track</th>
+                        <th>Prev Finish</th>
+                        <th>Class</th>
+                        <th>Distance</th>
+                        <th>Surface</th>
+                        <th>Time</td>
+                    </thead>
+                    <tbody>
+        ";
+        
         while ($stmt->fetch()) {
             $html .= "<tr>";
-            $html .= "<td>$horse <sup>$previous_finish_position</sup></td>";
+            $html .= "<td>$horse</td>";
             $html .= "<td>$race_date</td>";
             $html .= "<td>$race</td>";
             $html .= "<td>$track_id</td>";
+            $html .= "<td>$previous_finish_position</td>";
             $html .= "<td>$race_class</td>";
-            $html .= "<td>$distance" . ($turf == "TRUE" ? ' t' : '') ."</td>";
+            $html .= "<td>$distance</td>";
+            $html .= "<td>". ($turf == "TRUE" ? 'Turf' : 'Dirt') ."</td>";
             $html .= "<td>$time_of_race</td>";
             $html .= "</tr>";
         }
-        $html .= "</table>";
+        $html .= "</tbody></table>";
+        $html .= "<script>$('#nowTable').tablesorter({widgets: ['zebra']});</script>";
         $data["html"] = $html;
         $stmt->close();
         return $data;

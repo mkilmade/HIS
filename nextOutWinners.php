@@ -22,17 +22,17 @@
 }
 
 h2 {
-	text-align: center;
+	text-align: left;
 }
 
-table#resultTable {
+table#nowTable {
 	border: 1px;
 	border-collapse: separate;
 	border-spacing: 2px;
 	text-align: center;
 }
 
-table#resultTable td {
+table#nowTable td {
 	padding: 0px;
 }
 </style>
@@ -90,7 +90,7 @@ function getNextOutWinners() {
 		</tr>
 	</table>
 	<br />
-		<strong>Race Info:</strong>
+		<strong>Select Race:</strong>
 		<form>
 		<table border=1>
 			<thead>
@@ -102,11 +102,47 @@ function getNextOutWinners() {
 			<thead>
 				<tr>
 					<td><input type="date" id="race_date" name="race_date"></td>
-					<td><input type="text" id="race" name="race"></td>
-					<td><input type="text" id="track_id" name="track_id"></td>
-				</tr>
-		
+					<td><input type="number" min="1" max="15" id="race" name="race"></td>
+                    <td><select id="track_id" name="track_id" style="width: 60px;">
+                			<option value="BEL">BEL</option>
+                			<option value="SAR">SAR</option>
+                			<option value="AQU">AQU</option>
+                			<option value="MTH">MTH</option>
+                			<option value="CD">CD</option>
+                			<option value="GP">GP</option>
+                			<option value="KEE">KEE</option>
+                			<option value="KD">KD</option>
+                			<option value="WO">WO</option>
+                			<option value="OP">OP</option>
+                			<option value="FG">FG</option>
+                			<option value="FL">FL</option>
+                			<option value="SA">SA</option>
+                			<option value="LA">LA</option>
+                			<option value="DMR">DMR</option>
+                			<option value="AP">AP</option>
+                			<option value="EIP">EIP</option>
+                			<option value="DEL">DEL</option>
+                			<option value="FL">FL</option>
+                			<option value="LRC">LRC</option>
+                			<option value="LBS">LBS</option>
+                			<option value="LRL">LRL</option>
+                			<option value="PIM">PIM</option>
+                			<option value="HOU">HOU</option>
+                			<option value="LS">LS</option>
+                			<option value="TAM">TAM</option>
+                			<option value="SUF">SUF</option>
+                			<option value="PRX">PRX</option>
+                			<option value="PID">PID</option>
+                			<option value="PEN">PEN</option>
+                			<option value="MED">MED</option>
+                			<option value="ML">ML</option>
+                			<option value="IND">IND</option>
+                			<option value="ASC">ASC</option>
+	                    </select>
+	                </td>			
+	           </tr>
 		</table>
+		
 		<table>
 			<tr>
 				<td><button type="button" onclick="getNextOutWinners()">Find</button></td>
