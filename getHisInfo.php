@@ -27,6 +27,9 @@
         case('last_win_data'):
             $response = getLastWinData($_GET['horse'], $conn);
             break;
+        case('get_track_id'):
+            $response = getTrackId($_GET['race_date'], $conn);
+            break;
         case('next_out_winners'):
             $response = next_out_winners($_GET['race_date'], $_GET['race'], $_GET['track_id'], $conn);
             break;
@@ -149,6 +152,26 @@ function getLastWinData($horse, $conn) {
     return $lastWinData;
     
 }
+function getTrackId($race_date,
+                    $conn) {
+        $query = "SELECT
+                    track_id
+                  FROM race_meet
+                  WHERE start_date <= ? AND
+                        end_date   >= ?
+                  LIMIT 1";
+        
+        $stmt = $conn->db->prepare($query);
+        $stmt->bind_param('ss', $race_date, $race_date);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($track_id);
+        $stmt->fetch();
+        $stmt->free_result();
+        $stmt->close();
+        
+        return array('track_id' => $track_id);
+}
 function previous_next_out_winners($previous_date,
     $previous_track_id,
     $previous_race,
@@ -192,7 +215,7 @@ function next_out_winners($previous_date,
         $assoc_data = $stmt->get_result()->fetch_assoc();
 
         if (count($assoc_data) == 0) {
-            $caption = "<caption><b>Key Race Winner: Sorry, only NYRA races on file. Use race link for chart</b></caption>";
+            $caption = "<caption><b>Previous Race Specifics: Sorry, only NYRA/Tanpa races on file. Use race link for chart</b></caption>";
         } else {
             $caption = "<caption><b>Previous Race Specifics: ";
             $caption .= $assoc_data['horse'];

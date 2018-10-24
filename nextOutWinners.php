@@ -10,6 +10,7 @@
 <script src="jquery/jquery.tablesorter.js"></script>
 <script src="jquery/jquery.tablesorter.pager.js"></script>
 <script src="jquery/jquery-ui.min.js"></script>
+<script src="js/common.js"></script>
 <title>Find Next Out Wins</title>
 
 <style>
@@ -50,7 +51,7 @@ function getNextOutWinners() {
         track_id=$("#track_id").val();
 
     // make ajax call if all 'previous fields are filled in (except 'finish')
-    if (race_date != "" && race != "" && track_id != "") {
+    if (race_date != "" && race > "0" && track_id != "") {
     
       // build query info for GET
       var queryData = new Object();
@@ -101,9 +102,10 @@ function getNextOutWinners() {
 				</tr>
 			<thead>
 				<tr>
-					<td><input type="date" id="race_date" name="race_date"></td>
-					<td><input type="number" min="1" max="15" id="race" name="race"></td>
+					<td><input type="date" id="race_date" name="race_date" ></td>
+					<td><input type="number" min="1" max="15" id="race" name="race" onblur="getTrackId()"></td>
                     <td><select id="track_id" name="track_id" style="width: 60px;">
+                			<option value=""></option>
                 			<option value="BEL">BEL</option>
                 			<option value="SAR">SAR</option>
                 			<option value="AQU">AQU</option>
@@ -145,8 +147,8 @@ function getNextOutWinners() {
 		
 		<table>
 			<tr>
-				<td><button type="button" onclick="getNextOutWinners()">Find</button></td>
-				<td><button type="button" onclick="clearRace()">Clear Race Info</button></td>
+				<td><button id="find_btn"  type="button" onclick="getNextOutWinners()">Find</button></td>
+				<td><button id="clear_btn" type="button" onclick="clearRace()">Clear Race Info</button></td>
 			<tr>
 		
 		</table>
@@ -159,8 +161,15 @@ function getNextOutWinners() {
       currentText: 'Today',
       defaultDate: 0,
       dateFormat: 'yy-mm-dd',
-      showButtonPanel: true
+      showButtonPanel: true,
+      onSelect: function(race_date) {
+          getTrackId(race_date);
+      }
     });
+    $('#track_id, #race_date, #race').keypress(function(e){
+        if(e.keyCode==13)
+        $('#find_btn').click();
+    });    
   });
 </script>
 

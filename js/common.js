@@ -128,3 +128,36 @@ function setupCommonFields() {
   });
 
 }
+
+function getTrackId(race_date) {
+    var race_datex = $("#race_date").val(),
+        track_id  = $("#track_id").val();
+
+    // make ajax call if all 'previous fields are filled in (except 'finish')
+    if (race_date != "" && track_id == "") {
+        
+      // build query info for GET
+      var queryData = new Object();
+      queryData.type = 'get_track_id';
+      queryData.race_date = race_date;
+    
+      // build settings/options for $.ajax call
+      var options = new Object();
+      options.data = queryData;
+      options.dataType = "json";
+      options.method = "GET";
+      options.success = function(response, status, xhr) {
+        console.log("Response Text: " + xhr.responseText);
+        $("#track_id").val(response.track_id);
+      }
+      options.error = function(xhr, status, errorThrown) {
+        console.log("An error has occcured in 'getTrackId' function:");
+        console.log("       Status: " + xhr.status + " - " + xhr.statusText);
+        console.log("Response Text: " + xhr.responseText);
+      }
+      options.url = "getHisInfo.php";
+    
+      $.ajax(options);
+    }
+ }
+
