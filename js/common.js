@@ -120,21 +120,28 @@ function setupCommonFields() {
        minLength: 1
   });
  
-  $('#race_date, #previous_date').datepicker({
-    currentText: 'Today',
-    defaultDate: 0,
-    dateFormat: 'yy-mm-dd',
-    showButtonPanel: true
+  $('#race_date').datepicker({
+	    currentText: 'Today',
+	    defaultDate: 0,
+	    dateFormat: 'yy-mm-dd',
+	    showButtonPanel: true
+  });
+
+  $('#previous_date').datepicker({
+	    currentText: 'Today',
+	    defaultDate: 0,
+	    dateFormat: 'yy-mm-dd',
+	    showButtonPanel: true,
+	    onSelect: function(race_date) {
+	        getTrackId(race_date, '#previous_track_id');
+	    }
   });
 
 }
 
-function getTrackId(race_date) {
-    var race_datex = $("#race_date").val(),
-        track_id  = $("#track_id").val();
-
+function getTrackId(race_date,field) {
     // make ajax call if all 'previous fields are filled in (except 'finish')
-    if (race_date != "" && track_id == "") {
+    if (race_date != "" && $(field).val() == "") {
         
       // build query info for GET
       var queryData = new Object();
@@ -147,8 +154,7 @@ function getTrackId(race_date) {
       options.dataType = "json";
       options.method = "GET";
       options.success = function(response, status, xhr) {
-        console.log("Response Text: " + xhr.responseText);
-        $("#track_id").val(response.track_id);
+        $(field).val(response.track_id);
       }
       options.error = function(xhr, status, errorThrown) {
         console.log("An error has occcured in 'getTrackId' function:");

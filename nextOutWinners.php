@@ -163,7 +163,7 @@ function getNextOutWinners() {
       dateFormat: 'yy-mm-dd',
       showButtonPanel: true,
       onSelect: function(race_date) {
-          getTrackId(race_date);
+          getTrackId(race_date, '#track_id');
       }
     });
     $('#track_id, #race_date, #race').keypress(function(e){

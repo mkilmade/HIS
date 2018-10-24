@@ -13,15 +13,20 @@
             switch($domain) {
                 case('race_class'):
                 case('race_flow'):
-                    $response =  getCategoryNames($_GET['name'], $domain, $conn);
+                    $response =  getCategoryNames($_GET['name'],
+                                                  $domain,
+                                                  $conn);
                     break;
                 case('horse'):
                 case('jockey');
                 case('trainer'):
-                    $response = getDomainEntryNames($_GET['name'], $domain, $conn);
+                    $response = getDomainEntryNames($_GET['name'],
+                                                    $domain,
+                                                    $conn);
                     break;
                 default:
-                    $response =  array('error' => 'Invalid autocorrect request');
+                    $response =  array('error'   => 'Invalid autocorrect request',
+                                       'request' => $domain);
             }
             break;
         case('last_win_data'):
@@ -31,16 +36,20 @@
             $response = getTrackId($_GET['race_date'], $conn);
             break;
         case('next_out_winners'):
-            $response = next_out_winners($_GET['race_date'], $_GET['race'], $_GET['track_id'], $conn);
+            $response = nextOutWinners($_GET['race_date'], 
+                                       $_GET['race'],
+                                       $_GET['track_id'],
+                                       $conn);
             break;
         case('previous_next_out_winners'):
-            $response = previous_next_out_winners($_GET['previous_date'],
-                                                  $_GET['previous_track_id'],
-                                                  $_GET['previous_race'],
-                                                  $conn);
+            $response = previousNextOutWinners($_GET['previous_date'],
+                                               $_GET['previous_track_id'],
+                                               $_GET['previous_race'],
+                                               $conn);
             break;
         default:
-            $response =  array('error' => 'Invalid request');
+            $response =  array('error'  => 'Invalid request',
+                               'request'=> $_GET['type']);
     }
     echo json_encode($response);
     
@@ -152,8 +161,7 @@ function getLastWinData($horse, $conn) {
     return $lastWinData;
     
 }
-function getTrackId($race_date,
-                    $conn) {
+function getTrackId($race_date, $conn) {
         $query = "SELECT
                     track_id
                   FROM race_meet
@@ -166,16 +174,20 @@ function getTrackId($race_date,
         $stmt->execute();
         $stmt->store_result();
         $stmt->bind_result($track_id);
-        $stmt->fetch();
+        if ($stmt->num_rows > 0) {
+            $stmt->fetch();
+        } else {
+            $track_id = "";
+        }
         $stmt->free_result();
         $stmt->close();
         
         return array('track_id' => $track_id);
 }
-function previous_next_out_winners($previous_date,
-    $previous_track_id,
-    $previous_race,
-    $conn) {
+function previousNextOutWinners($previous_date,
+                                   $previous_track_id,
+                                   $previous_race,
+                                   $conn) {
         $query = "SELECT
                 COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
               FROM tb17
@@ -196,7 +208,7 @@ function previous_next_out_winners($previous_date,
         
         return array('wins' => $wins);
 }
-function next_out_winners($previous_date,
+function nextOutWinners($previous_date,
                           $previous_race,
                           $previous_track_id,
                           $conn) {

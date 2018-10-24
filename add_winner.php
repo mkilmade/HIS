@@ -54,7 +54,6 @@
     var last_race_date = '$last_race_date',
         next_race = '$next_race',
         current_track_id = '{$conn->defaults['track_id']}',
-        previous_track_id = '{$conn->defaults['previous_track_id']}',
         dirt_track_condition = '{$_SESSION['dirt_track_condition']}',
         turf_track_condition = '{$_SESSION['turf_track_condition']}';
         
@@ -76,7 +75,6 @@
     $('#race_date').datepicker('setDate', last_race_date);
     $('#race').val(next_race);
     $('#track_id').val(current_track_id);
-    $('#previous_track_id').val(previous_track_id);
     $('#track_condition').val(dirt_track_condition);
     $('input[name=turf]:radio').on('change', function(e) {
         turf=$('input[name=turf]:checked', '#addForm');
