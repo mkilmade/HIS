@@ -78,8 +78,7 @@ function getNextOutWinners() {
     
       $.ajax(options);
     } else {
-    	$("#nextOutWinners").css('visibility', 'visible');
-       	$("#nextOutWinners").html(" (Next Out Winners: tbd)");
+    	$("#nextOutWinners").css('visibility', 'hidden');
     }
  }
 </script>
@@ -103,7 +102,7 @@ function getNextOutWinners() {
 			<thead>
 				<tr>
 					<td><input type="date" id="race_date" name="race_date" ></td>
-					<td><input type="number" min="1" max="15" id="race" name="race" onblur="getTrackId()"></td>
+					<td><input type="number" min="1" max="15" id="race" name="race"></td>
                     <td><select id="track_id" name="track_id" style="width: 60px;">
                 			<option value=""></option>
                 			<option value="BEL">BEL</option>
@@ -166,8 +165,7 @@ function getNextOutWinners() {
           getTrackId(race_date, '#track_id');
       }
     });
-    $('#track_id, #race_date, #race').keypress(function(e){
-        if(e.keyCode==13)
+    $('#track_id, #race_date, #race').on('change',function() {
         $('#find_btn').click();
     });    
   });

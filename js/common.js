@@ -140,7 +140,7 @@ function setupCommonFields() {
 }
 
 function getTrackId(race_date,field) {
-    // make ajax call if all 'previous fields are filled in (except 'finish')
+    // make ajax call if race_date is set and track_id 'field' is blank
     if (race_date != "" && $(field).val() == "") {
         
       // build query info for GET
@@ -155,6 +155,7 @@ function getTrackId(race_date,field) {
       options.method = "GET";
       options.success = function(response, status, xhr) {
         $(field).val(response.track_id);
+        $(field).trigger('change');
       }
       options.error = function(xhr, status, errorThrown) {
         console.log("An error has occcured in 'getTrackId' function:");
