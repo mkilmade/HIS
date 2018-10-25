@@ -277,7 +277,7 @@ function nextOutWinners($previous_date,
                            $previous_finish_position);
         $data = array();
         $html="";
-        $html .= "<table id='nowTable' class='tablesorter' style='width:800px; font-size:14px'>$caption
+        $html .= "<table id='nowTable' class='tablesorter' style='margin: auto; width:800px; font-size:14px'>$caption
                     <thead>
                         <th>Horse</th>
                         <th>Date</th>

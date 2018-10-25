@@ -133,15 +133,15 @@ function setupCommonFields() {
 	    dateFormat: 'yy-mm-dd',
 	    showButtonPanel: true,
 	    onSelect: function(race_date) {
-	        getTrackId(race_date, '#previous_track_id');
+	        getTrackId(race_date, '#previous_track_id', '#previous_race');
 	    }
   });
 
 }
 
-function getTrackId(race_date,field) {
+function getTrackId(race_date, trackField, raceField) {
     // make ajax call if race_date is set and track_id 'field' is blank
-    if (race_date != "" && $(field).val() == "") {
+    if (race_date != "" && $(trackField).val() == "") {
         
       // build query info for GET
       var queryData = new Object();
@@ -154,8 +154,9 @@ function getTrackId(race_date,field) {
       options.dataType = "json";
       options.method = "GET";
       options.success = function(response, status, xhr) {
-        $(field).val(response.track_id);
-        $(field).trigger('change');
+        $(trackField).val(response.track_id);
+        $(trackField).trigger('change');
+        $(raceField).focus();
       }
       options.error = function(xhr, status, errorThrown) {
         console.log("An error has occcured in 'getTrackId' function:");

@@ -23,7 +23,7 @@
 }
 
 h2 {
-	text-align: left;
+	text-align: center;
 }
 
 table#nowTable {
@@ -84,67 +84,33 @@ function getNextOutWinners() {
 </script>
 <body>
 	<h2 id="body_title">Find Next Out Winners</h2>
-	<table>
+	<table style="margin: auto;">
 		<tr>
 			<td><a href='index.php'>Home</a></td>
 		</tr>
 	</table>
 	<br />
-		<strong>Select Race:</strong>
 		<form>
-		<table border=1>
+		<table border=1 style="margin: auto;">
 			<thead>
 				<tr>
 					<th>Date</th>
+					<th>Track</th>
 					<th>Race</th>
-					<th>Track ID</th>
 				</tr>
 			<thead>
 				<tr>
 					<td><input type="date" id="race_date" name="race_date" ></td>
-					<td><input type="number" min="1" max="15" id="race" name="race"></td>
                     <td><select id="track_id" name="track_id" style="width: 60px;">
                 			<option value=""></option>
-                			<option value="BEL">BEL</option>
-                			<option value="SAR">SAR</option>
-                			<option value="AQU">AQU</option>
-                			<option value="MTH">MTH</option>
-                			<option value="CD">CD</option>
-                			<option value="GP">GP</option>
-                			<option value="KEE">KEE</option>
-                			<option value="KD">KD</option>
-                			<option value="WO">WO</option>
-                			<option value="OP">OP</option>
-                			<option value="FG">FG</option>
-                			<option value="FL">FL</option>
-                			<option value="SA">SA</option>
-                			<option value="LA">LA</option>
-                			<option value="DMR">DMR</option>
-                			<option value="AP">AP</option>
-                			<option value="EIP">EIP</option>
-                			<option value="DEL">DEL</option>
-                			<option value="FL">FL</option>
-                			<option value="LRC">LRC</option>
-                			<option value="LBS">LBS</option>
-                			<option value="LRL">LRL</option>
-                			<option value="PIM">PIM</option>
-                			<option value="HOU">HOU</option>
-                			<option value="LS">LS</option>
-                			<option value="TAM">TAM</option>
-                			<option value="SUF">SUF</option>
-                			<option value="PRX">PRX</option>
-                			<option value="PID">PID</option>
-                			<option value="PEN">PEN</option>
-                			<option value="MED">MED</option>
-                			<option value="ML">ML</option>
-                			<option value="IND">IND</option>
-                			<option value="ASC">ASC</option>
-	                    </select>
+                            <?php require_once('includes/track.options.inc.html'); ?>
+  	                    </select>
 	                </td>			
+					<td><input type="number" min="1" max="15" id="race" name="race"></td>
 	           </tr>
 		</table>
 		
-		<table>
+		<table style="margin: auto;">
 			<tr>
 				<td><button id="find_btn"  type="button" onclick="getNextOutWinners()">Find</button></td>
 				<td><button id="clear_btn" type="button" onclick="clearRace()">Clear Race Info</button></td>
@@ -152,7 +118,7 @@ function getNextOutWinners() {
 		
 		</table>
 		</form>
-  <div id='nextOutWinners' style='float: left; visibility:hidden;'></div>
+  <div id='nextOutWinners' style='visibility:hidden;'></div>
 </body>
 <script>
   $(document).ready(function() {
@@ -162,7 +128,7 @@ function getNextOutWinners() {
       dateFormat: 'yy-mm-dd',
       showButtonPanel: true,
       onSelect: function(race_date) {
-          getTrackId(race_date, '#track_id');
+          getTrackId(race_date, '#track_id', '#race');
       }
     });
     $('#track_id, #race_date, #race').on('change',function() {

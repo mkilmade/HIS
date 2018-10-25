@@ -51,40 +51,7 @@ $conn = new Connection();
 			<p>
 				<label>Previous Track Default: <select id="previous_track_id"
 					name="previous_track_id" style="width: 60px;">
-						<option value="BEL">BEL</option>
-						<option value="SAR">SAR</option>
-						<option value="AQU">AQU</option>
-						<option value="MTH">MTH</option>
-						<option value="CD">CD</option>
-						<option value="GP">GP</option>
-						<option value="KEE">KEE</option>
-			            <option value="KD">KD</option>
-						<option value="WO">WO</option>
-						<option value="OP">OP</option>
-						<option value="FG">FG</option>
-						<option value="FL">FL</option>
-						<option value="SA">SA</option>
-						<option value="LA">LA</option>
-						<option value="DMR">DMR</option>
-						<option value="AP">AP</option>
-						<option value="EIP">EIP</option>
-						<option value="DEL">DEL</option>
-						<option value="FL">FL</option>
-						<option value="LRC">LRC</option>
-						<option value="LRL">LRL</option>
-						<option value="LBS">LBS</option>
-						<option value="PIM">PIM</option>
-						<option value="HOU">HOU</option>
-						<option value="LS">LS</option>
-						<option value="TAM">TAM</option>
-						<option value="SUF">SUF</option>
-						<option value="PRX">PRX</option>
-						<option value="PID">PID</option>
-						<option value="PEN">PEN</option>
-						<option value="MED">MED</option>
-						<option value="ML">ML</option>
-						<option value="IND">IND</option>
-						<option value="ASC">ASC</option>
+					<?php require_once('includes/track.options.inc.html'); ?>
 				</select></label>
 			</p>
 
