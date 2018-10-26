@@ -8,13 +8,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  <link href="jquery/jquery-ui.min.css" rel="stylesheet">
-  <script src="jquery/jquery.js"></script>
-  <script src="jquery/jquery.tablesorter.js"></script>
-  <script src="jquery/jquery-ui.min.js"></script>
-  <script src="js/common.js"></script>
-  <title>Edit Winner</title>
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+<link href="jquery/jquery-ui.min.css" rel="stylesheet">
+<link type="text/css"
+	href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
+	rel="stylesheet">
+<script src="jquery/jquery.js"></script>
+<script src="jquery/jquery.tablesorter.js"></script>
+<script src="jquery/jquery.tablesorter.pager.js"></script>
+<script src="jquery/jquery-ui.min.js"></script>
+<script src="js/common.js"></script>
+<title>Add Winner</title>
+<style>
+.turf {
+	background-color: #32CD32;
+}
+
+.dirt {
+	background-color: #F5F5DC;
+}
+
+h2 {
+	text-align: center;
+}
+
+table#nowTable {
+	border: 1px;
+	border-collapse: separate;
+	border-spacing: 2px;
+	text-align: center;
+}
+
+table#nowTable td {
+	padding: 0px;
+}
+</style>
+
+<script type="text/javascript">
+function previous_trigger() {
+    nextOutWinnersTable($("#previous_date").val(),
+    		            $("#previous_race").val(),
+    		            $("#previous_track_id").val());
+}
+</script>
 </head>
 
 <body>

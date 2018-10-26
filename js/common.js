@@ -34,41 +34,6 @@ function horse_trigger() {
       $.ajax(options);
     }
 }
-function previous_trigger() {
-    var previous_date=$("#previous_date").val(),
-        previous_track_id=$("#previous_track_id").val(),
-        previous_race=$("#previous_race").val();
-
-    // make ajax call if all 'previous fields are filled in (except 'finish')
-    if (previous_date != "" && previous_track_id != "" && previous_race != "") {
-
-      // build query info for GET
-      var queryData = new Object();
-      queryData.type = 'previous_next_out_winners';
-      queryData.previous_date = previous_date;
-      queryData.previous_track_id = previous_track_id;
-      queryData.previous_race = previous_race;
-
-      // build settings/options for $.ajax call
-      var options = new Object();
-      options.data = queryData;
-      options.dataType = "json";
-      options.method = "GET";
-      options.success = function(response, status, xhr) {
-        $("#winnersOutOfPrevious").html(" (Winners out of previous race: " + response.wins + ")");
-      }
-      options.error = function(xhr, status, errorThrown) {
-        console.log("An error has occcured in 'previous_trigger' function:");
-        console.log("       Status: " + xhr.status + " - " + xhr.statusText);
-        console.log("Response Text: " + xhr.responseText);
-      }
-      options.url = "getHisInfo.php";
-
-      $.ajax(options);
-    } else {
-    	$("#winnersOutOfPrevious").html(" (Winners out of previous race: tbd)");
-    }
-}
 
 function race_date_trigger(e) {
 	var race_date=$("#race_date").val();
@@ -166,6 +131,39 @@ function getTrackId(race_date, trackField, raceField) {
       options.url = "getHisInfo.php";
     
       $.ajax(options);
+    }
+ }
+
+function nextOutWinnersTable(race_date,race, track_id) {
+    // make ajax call if all 'previous fields are filled in (except 'finish')
+    if (race_date != "" && race > "0" && track_id != "") {
+    
+      // build query info for GET
+      var queryData = new Object();
+      queryData.type = 'next_out_winners';
+      queryData.race_date = race_date;
+      queryData.race = race;
+      queryData.track_id = track_id;
+    
+      // build settings/options for $.ajax call
+      var options = new Object();
+      options.data = queryData;
+      options.dataType = "json";
+      options.method = "GET";
+      options.success = function(response, status, xhr) {
+    	$("#nextOutWinners").css('visibility', 'visible');
+        $("#nextOutWinners").html(response.html);
+      }
+      options.error = function(xhr, status, errorThrown) {
+        console.log("An error has occcured in 'getNextOutWinners' function:");
+        console.log("       Status: " + xhr.status + " - " + xhr.statusText);
+        console.log("Response Text: " + xhr.responseText);
+      }
+      options.url = "getHisInfo.php";
+    
+      $.ajax(options);
+    } else {
+    	$("#nextOutWinners").css('visibility', 'hidden');
     }
  }
 

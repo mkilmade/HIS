@@ -121,5 +121,6 @@
 		id="previous_race" name="previous_race" onchange="previous_trigger()"></label> <label>Finish:
 		<input type="number" min="1" max="20" id="previous_finish_position"
 		name="previous_finish_position">
-	</label><span id="winnersOutOfPrevious">(Winners out of previous race: tbd)</span>
+	  <div id='nextOutWinners' style='visibility:hidden;'></div>
+	
 </p>
