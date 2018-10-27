@@ -292,18 +292,22 @@ function nextOutWinners($previous_date,
                     <tbody>
         ";
         
-        while ($stmt->fetch()) {
-            $html .= "<tr>";
-            $html .= "<td>$horse</td>";
-            $html .= "<td>$race_date</td>";
-            $html .= "<td>$race</td>";
-            $html .= "<td>$track_id</td>";
-            $html .= "<td>$previous_finish_position</td>";
-            $html .= "<td>$race_class</td>";
-            $html .= "<td>$distance</td>";
-            $html .= "<td>". ($turf == "TRUE" ? 'Turf' : 'Dirt') ."</td>";
-            $html .= "<td>$time_of_race</td>";
-            $html .= "</tr>";
+        if ($stmt->num_rows == 0) {
+            $html .= "<tr><td colspan=9>No next out winners found for this race</tr>";
+        } else {
+            while ($stmt->fetch()) {
+                $html .= "<tr>";
+                $html .= "<td>$horse</td>";
+                $html .= "<td>$race_date</td>";
+                $html .= "<td>$race</td>";
+                $html .= "<td>$track_id</td>";
+                $html .= "<td>$previous_finish_position</td>";
+                $html .= "<td>$race_class</td>";
+                $html .= "<td>$distance</td>";
+                $html .= "<td>". ($turf == "TRUE" ? 'Turf' : 'Dirt') ."</td>";
+                $html .= "<td>$time_of_race</td>";
+                $html .= "</tr>";
+            }
         }
         $html .= "</tbody></table>";
         $html .= "<script>$('#nowTable').tablesorter({widgets: ['zebra']});</script>";
