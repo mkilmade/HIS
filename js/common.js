@@ -153,6 +153,7 @@ function nextOutWinnersTable(race_date,race, track_id) {
       options.success = function(response, status, xhr) {
     	$("#nextOutWinners").css('visibility', 'visible');
         $("#nextOutWinners").html(response.html);
+        $('#nowTable').tablesorter({widgets: ['zebra']});
       }
       options.error = function(xhr, status, errorThrown) {
         console.log("An error has occcured in 'getNextOutWinners' function:");

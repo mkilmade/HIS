@@ -41,7 +41,7 @@
                                        $_GET['track_id'],
                                        $conn);
             break;
-        case('previous_next_out_winners'):
+        case('previous_next_out_winners'): // cuurently not used but could be usefull in future
             $response = previousNextOutWinners($_GET['previous_date'],
                                                $_GET['previous_track_id'],
                                                $_GET['previous_race'],
@@ -218,18 +218,21 @@ function nextOutWinners($previous_date,
                        time_of_race,
                        turf
                     FROM tb17
-                    WHERE race_date = '$previous_date' and
-                          race      = '$previous_race' and
-                          track_id  = '$previous_track_id'
+                    WHERE race_date = ? AND
+                          race      = ? AND
+                          track_id  = ?
                     LIMIT 1";
         $stmt = $conn->db->prepare($qry);
+        $stmt->bind_param('sis', $previous_date,
+                                 $previous_race,
+                                 $previous_track_id);
         $stmt->execute();
         $assoc_data = $stmt->get_result()->fetch_assoc();
 
         if (count($assoc_data) == 0) {
-            $caption = "<caption><b>Previous Race Specifics: Sorry, only NYRA/Tanpa races on file. Use race link for chart</b></caption>";
+            $caption = "<b>Previous Race Specifics: Sorry, only NYRA/Tanpa races on file. Use race link for chart</b>";
         } else {
-            $caption = "<caption><b>Previous Race Specifics: ";
+            $caption = "<b>Previous Race Specifics: ";
             $caption .= $assoc_data['horse'];
             $caption .= " : ";
             $caption .= $assoc_data['race_class'];
@@ -239,7 +242,7 @@ function nextOutWinners($previous_date,
             $caption .=($assoc_data['turf'] == "TRUE" ? 'Turf' : 'Dirt');
             $caption .= " : ";
             $caption .= $assoc_data['time_of_race'];
-            $caption .= "</b></caption>";
+            $caption .= "</b>";
         }
         $stmt->close();
         $stmt = "";
@@ -254,9 +257,9 @@ function nextOutWinners($previous_date,
                        time_of_race,
                        previous_finish_position
                 FROM tb17
-                WHERE previous_date      = '$previous_date' and
-                      previous_race      = '$previous_race' and
-                      previous_track_id  = '$previous_track_id'
+                WHERE previous_date      = ? AND
+                      previous_race      = ? AND
+                      previous_track_id  = ?
                 ORDER BY race_date DESC, race
                ";
         
@@ -275,9 +278,10 @@ function nextOutWinners($previous_date,
                            $turf,
                            $time_of_race,
                            $previous_finish_position);
-        $data = array();
+        
         $html="";
-        $html .= "<table id='nowTable' class='tablesorter' style='margin: auto; width:800px; font-size:14px'>$caption
+        $html .= "<table id='nowTable' class='tablesorter' style='margin: auto; width:800px; font-size:14px'>
+                    <caption>$caption</caption>
                     <thead>
                         <th>Horse</th>
                         <th>Date</th>
@@ -310,9 +314,7 @@ function nextOutWinners($previous_date,
             }
         }
         $html .= "</tbody></table>";
-        $html .= "<script>$('#nowTable').tablesorter({widgets: ['zebra']});</script>";
-        $data["html"] = $html;
         $stmt->close();
-        return $data;
+        return array( "html" => $html);
 }
 ?>
