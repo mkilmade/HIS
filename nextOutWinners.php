@@ -11,7 +11,7 @@
 <script src="jquery/jquery.tablesorter.pager.js"></script>
 <script src="jquery/jquery-ui.min.js"></script>
 <script src="js/common.js"></script>
-<title>Find Next Out Wins</title>
+<title>Find Next Out Winners</title>
 
 <style>
 .turf {
@@ -102,8 +102,8 @@ function getNextOutWinners() {
           getTrackId(race_date, '#track_id', '#race');
       }
     });
-    $('#track_id, #race_date, #race').on('change',function() {
-        $('#find_btn').click();
+    $('#track_id, #race_date, #race').on('change', function() {
+    	getNextOutWinners();
     });    
   });
 </script>

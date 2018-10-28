@@ -50,6 +50,7 @@ function race_date_trigger(e) {
     options.method = "GET";
     options.success = function(response, status, xhr) {
       $("#race").val(response.next_race);
+      $("#distance").focus();
     }
     options.error = function(xhr, status, errorThrown) {
       console.log("An error has occcured in request for next race #:");
@@ -134,7 +135,7 @@ function getTrackId(race_date, trackField, raceField) {
     }
  }
 
-function nextOutWinnersTable(race_date,race, track_id) {
+function nextOutWinnersTable(race_date, race, track_id) {
     // make ajax call if all 'previous fields are filled in (except 'finish')
     if (race_date != "" && race > "0" && track_id != "") {
     

@@ -110,6 +110,7 @@ function previous_trigger() {
     });
     $('#race_date').datepicker('setDate', last_race_date);
     $('#race').val(next_race);
+    $("#distance").focus();
     $('#track_id').val(current_track_id);
     $('#track_condition').val(dirt_track_condition);
     $('input[name=turf]:radio').on('change', function(e) {

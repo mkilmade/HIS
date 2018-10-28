@@ -62,9 +62,9 @@ function getNextRaceNumber($race_date, $conn) {
 function getCategoryNames($name, $category, $conn) {
     $searchname=$name."%";
     $query = "SELECT DISTINCT $category
-          FROM tb17
-          WHERE $category LIKE ?
-          ORDER BY $category";
+              FROM tb17
+              WHERE $category LIKE ?
+              ORDER BY $category";
     
     $stmt = $conn->db->prepare($query);
     $stmt->bind_param('s', $searchname);
@@ -91,9 +91,9 @@ function getDomainEntryNames($name, $tablename, $conn) {
     $searchname=$name."%";
     // first list those matching 'shortcut' field
     $query = "SELECT $id, name, shortcut
-      FROM $tablename
-      WHERE shortcut LIKE ?
-      ORDER BY shortcut";
+              FROM $tablename
+              WHERE shortcut LIKE ?
+              ORDER BY shortcut";
     
     $stmt = $conn->db->prepare($query);
     $stmt->bind_param('s', $searchname);
@@ -115,9 +115,9 @@ function getDomainEntryNames($name, $tablename, $conn) {
     
     // add those matching 'name' field
     $query = "SELECT $id, name
-          FROM $tablename
-          WHERE name LIKE ?
-          ORDER BY name";
+              FROM $tablename
+              WHERE name LIKE ?
+              ORDER BY name";
     
     $stmt = $conn->db->prepare($query);
     $stmt->bind_param('s', $searchname);
@@ -143,10 +143,10 @@ function getDomainEntryNames($name, $tablename, $conn) {
 function getLastWinData($horse, $conn) {
     // get the horse parameter from URL
     $query = "SELECT trainer, jockey
-           FROM tb17
-          WHERE horse = ?
-       ORDER BY race_date DESC
-          LIMIT 1";
+              FROM tb17
+              WHERE horse = ?
+              ORDER BY race_date DESC
+              LIMIT 1";
     
     $stmt = $conn->db->prepare($query);
     $stmt->bind_param('s', $horse);
@@ -184,21 +184,23 @@ function getTrackId($race_date, $conn) {
         
         return array('track_id' => $track_id);
 }
+
+// cuurently not used but could be usefull in future
 function previousNextOutWinners($previous_date,
-                                   $previous_track_id,
-                                   $previous_race,
-                                   $conn) {
+                                $previous_track_id,
+                                $previous_race,
+                                $conn) {
         $query = "SELECT
-                COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
-              FROM tb17
-              WHERE previous_date = ? AND
-                    previous_track_id = ? AND
-                    previous_race = ?";
+                   COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
+                  FROM tb17
+                  WHERE previous_date = ? AND
+                        previous_track_id = ? AND
+                        previous_race = ?";
         
         $stmt = $conn->db->prepare($query);
         $stmt->bind_param('ssi', $previous_date,
-            $previous_track_id,
-            $previous_race);
+                                 $previous_track_id,
+                                 $previous_race);
         $stmt->execute();
         $stmt->store_result();
         $stmt->bind_result($wins);
@@ -209,19 +211,19 @@ function previousNextOutWinners($previous_date,
         return array('wins' => $wins);
 }
 function nextOutWinners($previous_date,
-                          $previous_race,
-                          $previous_track_id,
-                          $conn) {
+                        $previous_race,
+                        $previous_track_id,
+                        $conn) {
         $qry = "SELECT horse,
                        race_class,
                        distance,
                        time_of_race,
                        turf
-                    FROM tb17
-                    WHERE race_date = ? AND
-                          race      = ? AND
-                          track_id  = ?
-                    LIMIT 1";
+               FROM tb17
+               WHERE race_date = ? AND
+                     race      = ? AND
+                     track_id  = ?
+               LIMIT 1";
         $stmt = $conn->db->prepare($qry);
         $stmt->bind_param('sis', $previous_date,
                                  $previous_race,
