@@ -45,13 +45,6 @@ table#nowTable td {
 }
 </style>
 
-<script type="text/javascript">
-function previous_trigger() {
-    nextOutWinnersTable($("#previous_date").val(),
-    		            $("#previous_race").val(),
-    		            $("#previous_track_id").val());
-}
-</script>
 </head>
 
 <body>

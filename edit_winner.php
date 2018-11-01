@@ -18,7 +18,7 @@
 <script src="jquery/jquery.tablesorter.pager.js"></script>
 <script src="jquery/jquery-ui.min.js"></script>
 <script src="js/common.js"></script>
-<title>Add Winner</title>
+<title>Edit Winner</title>
 <style>
 .turf {
 	background-color: #32CD32;
@@ -43,14 +43,6 @@ table#nowTable td {
 	padding: 0px;
 }
 </style>
-
-<script type="text/javascript">
-function previous_trigger() {
-    nextOutWinnersTable($("#previous_date").val(),
-    		            $("#previous_race").val(),
-    		            $("#previous_track_id").val());
-}
-</script>
 </head>
 
 <body>
@@ -107,7 +99,7 @@ function previous_trigger() {
     $stmt->close();
     $conn->close();
 ?>
-
+  previous_trigger();
 }); // finish .ready function
 </script>
 </html>

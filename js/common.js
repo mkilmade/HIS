@@ -63,6 +63,7 @@ function race_date_trigger(e) {
 }
 
 function getDomainNames(request, response) {
+	domain = this.element.attr('id');
   $.ajax({
      url: "getHisInfo.php",
      method: 'GET',
@@ -70,10 +71,10 @@ function getDomainNames(request, response) {
      data: {
       type: "autocomplete",
       name: request.term,
-      domain: this.element.attr('id')
+      domain: domain
      },
      success: function( data ) {
-         console.log(data);
+         //console.log(data);
          response( data );
      }
   });
@@ -83,7 +84,14 @@ function setupCommonFields() {
   // populate autocomplete lists options
   $('#horse, #trainer, #jockey, #race_class, #race_flow').autocomplete({
           source: getDomainNames,
-       minLength: 1
+          response: function(event,ui) {
+              if (ui.content.length == 1)
+              {
+            	$("#" + $(this).attr('id')).val(ui.content[0].value);
+                $(this).autocomplete('close');
+              }
+          },
+          minLength: 1
   });
  
   $('#race_date').datepicker({
@@ -135,7 +143,14 @@ function getTrackId(race_date, trackField, raceField) {
     }
  }
 
-function nextOutWinnersTable(race_date, race, track_id) {
+
+function previous_trigger() {
+    nextOutWinnersTable($("#previous_date").val(),
+    		            $("#previous_race").val(),
+    		            $("#previous_track_id").val());
+}
+
+function nextOutWinnersTable(race_date,race, track_id) {
     // make ajax call if all 'previous fields are filled in (except 'finish')
     if (race_date != "" && race > "0" && track_id != "") {
     
