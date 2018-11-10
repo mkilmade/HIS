@@ -79,7 +79,7 @@ function getDomainNames(request, response) {
      }
   });
 }
-
+// used for common entity like fields to use jquery UI autocomplete component
 function acDomainFields(selector) {
 	$(selector).autocomplete({
         source: getDomainNames,
