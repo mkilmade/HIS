@@ -80,25 +80,28 @@ function getDomainNames(request, response) {
   });
 }
 
+function acDomainFields(selector) {
+	$(selector).autocomplete({
+        source: getDomainNames,
+        response: function( event,ui ) {
+            if ( ui.content.length == 1 ) {
+          	ui.item = ui.content[0];
+          	$(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', ui);
+            }
+        },
+        select: function( event,ui ) {
+      	  $("#" + $( this ).attr( 'id' )).val( ui.item.value );
+      	  $(this).autocomplete( 'close' );
+      	  var inputs = $(this).closest( 'form' ).find( ':input' );
+            inputs.eq( inputs.index( this ) + 1 ).focus();
+        },
+        minLength: 1
+      });
+}
+
 function setupCommonFields() {
   // populate autocomplete lists options
-  $('#horse, #trainer, #jockey, #race_class, #race_flow').autocomplete({
-          source: getDomainNames,
-          response: function( event,ui ) {
-              if ( ui.content.length == 1 )
-              {
-            	ui.item = ui.content[0];
-            	$(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', ui);
-              }
-          },
-          select: function( event,ui ) {
-        	  $("#" + $( this ).attr( 'id' )).val( ui.item.value );
-        	  $(this).autocomplete( 'close' );
-        	  var inputs = $(this).closest( 'form' ).find( ':input' );
-              inputs.eq( inputs.index( this ) + 1 ).focus();
-          },
-          minLength: 1
-  });
+  acDomainFields('#horse, #trainer, #jockey, #race_class, #race_flow, #previous_track_id');
  
   $('#race_date').datepicker({
 	    currentText: 'Today',

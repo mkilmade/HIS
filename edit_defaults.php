@@ -49,10 +49,8 @@ $conn = new Connection();
 			</p>
 
 			<p>
-				<label>Previous Track Default: <select id="previous_track_id"
-					name="previous_track_id" style="width: 60px;">
-					<?php require_once('includes/track.options.inc.html'); ?>
-				</select></label>
+				<label>Previous Track Default: <input id="previous_track_id"
+					name="previous_track_id" style="width: 60px;"></label>
 			</p>
 
 		</fieldset>
@@ -65,6 +63,7 @@ $conn = new Connection();
 </body>
 <script>
  $(document).ready(function() {
+	 acDomainFields('#previous_track_id');
 
 <?php
 $query = "SELECT cd.current_defaults_id,

@@ -95,7 +95,7 @@
 			<option value="Wet Fast">Wet Fast</option>
 	</select>
 	</label> <label>Time: <input size="8" type="text" id="time_of_race"
-		name="time_of_race" pattern="[0-4][:][0-5][0-9][.][0-4]"></label>
+		name="time_of_race" pattern="[0-4]{0,1}[:][0-5][0-9][.][0-4]"></label>
 </p>
 
 <p>
@@ -110,17 +110,14 @@
 <p>
 	<label>Previous Date: <input size="10" type="date"
 		id="previous_date" name="previous_date"  onchange="previous_trigger()"></label> <label>Track:
-		<select id="previous_track_id" name="previous_track_id" onchange="previous_trigger()"
-		style="width: 60px;">
-			<option value=""></option>
-			<?php require_once('includes/track.options.inc.html'); ?>
-	</select>
-	</label>
+		<input id="previous_track_id" name="previous_track_id" onchange="previous_trigger()"
+		style="width: 60px;"></label>
+</p>
 <p>
 	<label>Race: <input type="number" min="1" max="15"
 		id="previous_race" name="previous_race" onchange="previous_trigger()"></label> <label>Finish:
 		<input type="number" min="1" max="20" id="previous_finish_position"
-		name="previous_finish_position">
-	  <div id='nextOutWinners' style='visibility:hidden;'></div>
-	
+		name="previous_finish_position"></label>
 </p>
+	  <div id='nextOutWinners' style='visibility:hidden;'></div>
+	  

@@ -8,7 +8,9 @@ class Connection
     public $db;
 
     public $defaults;
-
+	/*
+	 * @name main constructor
+	 */
     function __construct()
     {
         // get databace connection.inc

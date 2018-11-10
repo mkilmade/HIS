@@ -72,11 +72,7 @@ function getNextOutWinners() {
 			<thead>
 				<tr>
 					<td><input type="date" id="race_date" name="race_date" ></td>
-                    <td><select id="track_id" name="track_id" style="width: 60px;">
-                			<option value=""></option>
-                            <?php require_once('includes/track.options.inc.html'); ?>
-  	                    </select>
-	                </td>			
+                    <td><input id="track_id" name="track_id" style="width: 60px;"></td>			
 					<td><input type="number" min="1" max="15" id="race" name="race"></td>
 	           </tr>
 		</table>
@@ -101,11 +97,14 @@ function getNextOutWinners() {
       onSelect: function(race_date) {
           getTrackId(race_date, '#track_id', '#race');
       }
-    });
+    });  // datepicker
+    
     $('#track_id, #race_date, #race').on('change', function() {
     	getNextOutWinners();
-    });    
-  });
+    });
+    
+    acDomainFields('#track_id');
+  });  // ready
 </script>
 
 </html>

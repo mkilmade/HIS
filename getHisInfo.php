@@ -1,4 +1,13 @@
 <?php
+/**
+ * AJAX request handlers for HIS databace information
+ * 
+ * @name getHorseInfo
+ *
+ * @author Mike Kilmade
+ * @version v0.0.1
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
     session_start();
     require_once('includes/config.inc.php');
     require_once('includes/connection.inc.php');;
@@ -20,10 +29,15 @@
                 case('horse'):
                 case('jockey');
                 case('trainer'):
-                    $response = getDomainEntryNames($_GET['name'],
-                                                    $domain,
-                                                    $conn);
-                    break;
+                	$response = getDomainEntryNames($_GET['name'],
+                	                                $domain,
+                	                                $conn);
+                	break;
+                case('track_id'):
+                case('previous_track_id'):
+                	$response = getTracks($_GET['name'],
+                	                      $conn);
+                	break;
                 default:
                     $response =  array('error'   => 'Invalid autocorrect request',
                                        'request' => $domain);
@@ -139,7 +153,42 @@ function getDomainEntryNames($name, $tablename, $conn) {
     return $names;
     
 }
+function getTracks($id, $conn) {
+    $searchid=$id."%";
 
+    $query = "SELECT track_id
+              FROM track
+              WHERE track_id LIKE ?
+              ORDER BY track_id";
+    
+    $stmt = $conn->db->prepare($query);
+    $stmt->bind_param('s', $searchid);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($track_id);
+    
+    $tracks = array();
+    if ($stmt->num_rows > 0) {
+        while ($stmt->fetch()) {
+            $tracks[] = array(
+            		'label' => $track_id,
+            		'value' => $track_id
+            );
+        }
+    }
+    $stmt->free_result();
+    $stmt->close();
+        
+    return $tracks;
+}
+/**
+ * Queries HIS database to find the last race horse won and returns the train and jockey of that win
+ *
+ * @param string $horse horse id
+ * @param Connection $conn HIS database connection object instance
+ * @return array keys of 'trainer' and 'jockey'
+ * 
+ */
 function getLastWinData($horse, $conn) {
     // get the horse parameter from URL
     $query = "SELECT trainer, jockey
