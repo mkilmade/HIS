@@ -100,7 +100,7 @@ function acDomainFields(selector) {
 }
 
 function setupCommonFields() {
-  // populate autocomplete lists options
+  // populate autocomplete fields
   acDomainFields('#horse, #trainer, #jockey, #race_class, #race_flow, #previous_track_id');
  
   $('#race_date').datepicker({

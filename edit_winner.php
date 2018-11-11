@@ -62,7 +62,7 @@ table#nowTable td {
 
   <p><label>ID: <input type="number" min="1" max="99999" id="tb17_id" name="tb17_id" value="" readonly></label></p>
 
-  <?php require_once('includes/entry_input.inc.php'); ?>
+  <?php require_once('includes/entry_input.inc.html'); ?>
 
   </fieldset>
 

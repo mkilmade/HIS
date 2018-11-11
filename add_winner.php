@@ -61,7 +61,7 @@ table#nowTable td {
 		<fieldset style="width: 425px; background-color: Azure">
 			<legend style="text-align: center">Add Entry</legend>
 
-  <?php require_once('includes/entry_input.inc.php'); ?>
+  <?php require_once('includes/entry_input.inc.html'); ?>
 
  </fieldset>
 
