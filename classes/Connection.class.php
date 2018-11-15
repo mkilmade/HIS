@@ -1,9 +1,9 @@
 <?php
-
 /** 
  * @author mkilmade
  * 
  */
+
 class Connection {
 
 	// datebase connection.inc object used for queries/inserts/etc

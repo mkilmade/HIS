@@ -40,18 +40,8 @@
     </thead>
 <?php
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $query = "SELECT *
-                FROM tb17
-                WHERE tb17_id = ?
-                LIMIT 1
-               ";
-      $stmt = $conn->db->prepare($query);
-      $stmt->bind_param('s', $_POST['tb17_id']);  
-      $stmt->execute();
-      $entry=$stmt->get_result()->fetch_assoc();
-      
-      $fldvals="";
-      $post=$_POST;
+      $fldvals = "";
+      $post = $_POST;
       unset($post['submit']);
       
       // update $_SESSION with current race date conditions for automatic setting of last known condition
@@ -70,12 +60,15 @@
           unset($post['previous_finish_position']);
           //clog("previous values has been unset!");
       }
-
+	  // get current values for comparisons via object
+      require_once('classes/TB17.class.php');
+      $entry = new TB17($_POST['tb17_id']);
+      
       foreach($post as $field => $value) {
-        if ($field=='tb17_id') $id=$value;
+        if ($field == 'tb17_id') $id=$value;
         
         // no need to update field if same value
-        if ($value==$entry[$field]) {
+        if ($value == $entry->$field) { //[$field]) {
           unset($post[$field]);
           continue;
         }
@@ -99,7 +92,7 @@
         echo "<tr>
                 <td>$field</td>
                 <td>$value $status</td>
-                <td>{$entry[$field]}</td>
+				<td>{$entry->$field}</td>
               </tr>";
 
         $fldvals=$fldvals.($fldvals=="" ? "" : ", ").$field."='".addslashes($value)."'";
@@ -144,9 +137,8 @@
 
       } // count() else
     } // REQUEST_METHOD if
-    $stmt->close();
     $conn->close();
-    ?>
+?>
   </table>
 </body>
 </html>

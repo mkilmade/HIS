@@ -5,11 +5,12 @@
  *
  */
 spl_autoload_register(function ($class) {
+	//echo "...including " . $class;
 	include $class . '.class.php';
 });
 	
 	abstract class HisEntity {
-		protected $table = "";
+		protected $table = NULL;
 		protected $conn = NULL;
 		/**
 		 */
@@ -18,7 +19,7 @@ spl_autoload_register(function ($class) {
 			$query = "SELECT *
               FROM $this->table
               WHERE $this->table"."_id = ?";
-			//echo $query;
+
 			$stmt = $this->conn->db->prepare($query);
 			$stmt->bind_param('i', $id);
 			$stmt->execute();

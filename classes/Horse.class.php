@@ -5,11 +5,10 @@
  *
  */
 require_once('HisEntity.class.php');
-
-	class Horse extends HisEntity{
+	
+	class Horse extends HisEntity {
 		function __construct($id) {
-			$this->table = "tb17";
+			$this->table = "horse";
 			parent::__construct($id);
 		}
 	}
-	

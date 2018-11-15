@@ -1,11 +1,13 @@
 <?php
 $ini = parse_ini_file('config.ini', true);
 
-define('DB_HOST', $ini['database']['host']);
-define('DB_USER', $ini['database']['user']);
-define('DB_NAME', $ini['database']['name']);
-define('DB_PORT', $ini['database']['port']);
-define('DB_PRODUCTION', $ini['database']['production']);
+if (!defined('DB_HOST')) {
+	define('DB_HOST', $ini['database']['host']);
+	define('DB_USER', $ini['database']['user']);
+	define('DB_NAME', $ini['database']['name']);
+	define('DB_PORT', $ini['database']['port']);
+	define('DB_PRODUCTION', $ini['database']['production']);
+}
 
 $db = @new mysqli(DB_HOST, DB_USER, $ini['database']['password'], DB_NAME, DB_PORT);
 
