@@ -75,9 +75,10 @@ table#nowTable td {
 <script>
   $(document).ready(function() {
 <?php
+    require_once('classes/TB17.class.php');
     // -- get last race date a& next race #
-    $last_race_date = $conn->last_race_date();
-    $next_race = $conn->last_race($last_race_date) + 1;
+    $last_race_date = TB17::last_race_date($conn->defaults['meet_filter']);
+    $next_race = TB17::last_race($last_race_date, $conn->defaults['meet_filter']) + 1;
     $conn->close();
     echo "
     var last_race_date = '$last_race_date',

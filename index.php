@@ -2,6 +2,7 @@
     ini_set('session.gc_maxlifetime',3600);
     session_start();
 
+    require_once('classes/TB17.class.php');
     require_once('includes/config.inc.php');
     require_once('includes/connection.inc.php');
     $conn = new Connection();
@@ -395,7 +396,7 @@
       <tbody>
 <?php
     // -- get last racing date and defaults
-    $lrdate=$conn->last_race_date();
+$lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
 
     // if meet has not started or no winners entered yet for meet, return
     if ($lrdate=='') {

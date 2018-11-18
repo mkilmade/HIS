@@ -1,5 +1,6 @@
 <?php 
   session_start();
+  require_once('classes/TB17.class.php');
   require_once('includes/config.inc.php');
   require_once('includes/connection.inc.php');
   $conn = new Connection();
@@ -61,14 +62,13 @@
           //clog("previous values has been unset!");
       }
 	  // get current values for comparisons via object
-      require_once('classes/TB17.class.php');
-      $entry = new TB17($_POST['tb17_id']);
+      $current = new TB17($_POST['tb17_id']);
       
       foreach($post as $field => $value) {
         if ($field == 'tb17_id') $id=$value;
         
         // no need to update field if same value
-        if ($value == $entry->$field) { //[$field]) {
+        if ($value == $current->$field) { //[$field]) {
           unset($post[$field]);
           continue;
         }
@@ -92,9 +92,9 @@
         echo "<tr>
                 <td>$field</td>
                 <td>$value $status</td>
-				<td>{$entry->$field}</td>
+				<td>{$current->$field}</td>
               </tr>";
-
+        $current = NULL;
         $fldvals=$fldvals.($fldvals=="" ? "" : ", ").$field."='".addslashes($value)."'";
       }
 

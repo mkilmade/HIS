@@ -9,13 +9,16 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
     session_start();
+    spl_autoload_register(function ($class) {
+    	include "classes/". $class . '.class.php';
+    });
     require_once('includes/config.inc.php');
     require_once('includes/connection.inc.php');;
     $conn = new Connection();
     
     switch($_GET['type']) {
         case('next_race'):
-            $response = getNextRaceNumber($_GET['race_date'], $conn);
+        	$response = getNextRaceNumber($_GET['race_date'], $conn->defaults['meet_filter']);
             break;
         case('autocomplete'):
             $domain = $_GET['domain'];
@@ -35,8 +38,7 @@
                 	break;
                 case('track_id'):
                 case('previous_track_id'):
-                	$response = getTracks($_GET['name'],
-                	                      $conn);
+                	$response = getTracks($_GET['name']);
                 	break;
                 default:
                     $response =  array('error'   => 'Invalid autocorrect request',
@@ -44,16 +46,15 @@
             }
             break;
         case('last_win_data'):
-            $response = getLastWinData($_GET['horse'], $conn);
+            $response = getLastWinData($_GET['horse']);
             break;
         case('get_track_id'):
-            $response = getTrackId($_GET['race_date'], $conn);
+            $response = getTrackId($_GET['race_date']);
             break;
         case('next_out_winners'):
             $response = nextOutWinners($_GET['race_date'], 
                                        $_GET['race'],
-                                       $_GET['track_id'],
-                                       $conn);
+                                       $_GET['track_id']);
             break;
         case('previous_next_out_winners'): // cuurently not used but could be usefull in future
             $response = previousNextOutWinners($_GET['previous_date'],
@@ -69,8 +70,8 @@
     
     $conn->close();
     
-function getNextRaceNumber($race_date, $conn) {
-    return array('next_race' => $conn->last_race($race_date) + 1);
+function getNextRaceNumber($race_date, $meet_filter) {
+	return array('next_race' => TB17::last_race($race_date, $meet_filter) + 1);
 }
 
 function getCategoryNames($name, $category, $conn) {
@@ -153,32 +154,17 @@ function getDomainEntryNames($name, $tablename, $conn) {
     return $names;
     
 }
-function getTracks($id, $conn) {
-    $searchid=$id."%";
-
-    $query = "SELECT track_id
-              FROM track
-              WHERE track_id LIKE ?
-              ORDER BY track_id";
-    
-    $stmt = $conn->db->prepare($query);
-    $stmt->bind_param('s', $searchid);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($track_id);
-    
+function getTracks($id) {
+	$trackObjs = Track::getTracks($id);
     $tracks = array();
-    if ($stmt->num_rows > 0) {
-        while ($stmt->fetch()) {
+    if (count($trackObjs) > 0) {
+    	foreach ($trackObjs as $trackObj) {
             $tracks[] = array(
-            		'label' => $track_id,
-            		'value' => $track_id
+            		'label' => $trackObj->track_id,
+            		'value' => $trackObj->track_id
             );
         }
     }
-    $stmt->free_result();
-    $stmt->close();
-        
     return $tracks;
 }
 /**
@@ -189,49 +175,12 @@ function getTracks($id, $conn) {
  * @return array keys of 'trainer' and 'jockey'
  * 
  */
-function getLastWinData($horse, $conn) {
-    // get the horse parameter from URL
-    $query = "SELECT trainer, jockey
-              FROM tb17
-              WHERE horse = ?
-              ORDER BY race_date DESC
-              LIMIT 1";
-    
-    $stmt = $conn->db->prepare($query);
-    $stmt->bind_param('s', $horse);
-    $stmt->execute();
-    $lastWinData = $stmt->get_result()->fetch_assoc();
-    if (count($lastWinData) == 0) {
-        $lastWinData["trainer"] = "";
-        $lastWinData["jockey"] = "";
-    }
-    $stmt->close();
-    
-    return $lastWinData;
-    
+function getLastWinData($horse) {
+	$horseObj = new Horse($horse);
+	return $horseObj->getLastWinData();
 }
-function getTrackId($race_date, $conn) {
-        $query = "SELECT
-                    track_id
-                  FROM race_meet
-                  WHERE start_date <= ? AND
-                        end_date   >= ?
-                  LIMIT 1";
-        
-        $stmt = $conn->db->prepare($query);
-        $stmt->bind_param('ss', $race_date, $race_date);
-        $stmt->execute();
-        $stmt->store_result();
-        $stmt->bind_result($track_id);
-        if ($stmt->num_rows > 0) {
-            $stmt->fetch();
-        } else {
-            $track_id = "";
-        }
-        $stmt->free_result();
-        $stmt->close();
-        
-        return array('track_id' => $track_id);
+function getTrackId($race_date) {
+	return Meet::getTrackId($race_date);
 }
 
 // cuurently not used but could be usefull in future
@@ -261,75 +210,26 @@ function previousNextOutWinners($previous_date,
 }
 function nextOutWinners($previous_date,
                         $previous_race,
-                        $previous_track_id,
-                        $conn) {
-        $qry = "SELECT horse,
-                       race_class,
-                       distance,
-                       time_of_race,
-                       turf
-               FROM tb17
-               WHERE race_date = ? AND
-                     race      = ? AND
-                     track_id  = ?
-               LIMIT 1";
-        $stmt = $conn->db->prepare($qry);
-        $stmt->bind_param('sis', $previous_date,
-                                 $previous_race,
-                                 $previous_track_id);
-        $stmt->execute();
-        $assoc_data = $stmt->get_result()->fetch_assoc();
-
-        if (count($assoc_data) == 0) {
+                        $previous_track_id) {
+        $winnerObj = TB17::getRaceInfo($previous_date,
+                        			   $previous_race,
+                        			   $previous_track_id);
+        if ($winnerObj == NULL) {
             $caption = "<b>Previous Race Specifics: Sorry, only NYRA/Tanpa races on file. Use race link for chart</b>";
         } else {
             $caption = "<b>Previous Race Specifics: ";
-            $caption .= $assoc_data['horse'];
+            $caption .= $winnerObj->horse;
             $caption .= " : ";
-            $caption .= $assoc_data['race_class'];
+            $caption .= $winnerObj->race_class;
             $caption .= " : ";
-            $caption .= $assoc_data['distance'];
+            $caption .= $winnerObj->distance;
             $caption .= " : ";
-            $caption .=($assoc_data['turf'] == "TRUE" ? 'Turf' : 'Dirt');
+            $caption .=($winnerObj->turf == "TRUE" ? 'Turf' : 'Dirt');
             $caption .= " : ";
-            $caption .= $assoc_data['time_of_race'];
+            $caption .= $winnerObj->time_of_race;
             $caption .= "</b>";
         }
-        $stmt->close();
-        $stmt = "";
             
-        $qry = "SELECT horse,
-                       race_date,
-                       race,
-                       track_id,
-                       race_class,
-                       distance,
-                       turf,
-                       time_of_race,
-                       previous_finish_position
-                FROM tb17
-                WHERE previous_date      = ? AND
-                      previous_race      = ? AND
-                      previous_track_id  = ?
-                ORDER BY race_date DESC, race
-               ";
-        
-        $stmt = $conn->db->prepare($qry);
-        $stmt->bind_param('sis', $previous_date,
-                                 $previous_race,
-                                 $previous_track_id);
-        $stmt->execute();
-        $stmt->store_result();
-        $stmt->bind_result($horse,
-                           $race_date,
-                           $race,
-                           $track_id,
-                           $race_class,
-                           $distance,
-                           $turf,
-                           $time_of_race,
-                           $previous_finish_position);
-        
         $html="";
         $html .= "<table id='nowTable' class='tablesorter' style='margin: auto; width:800px; font-size:14px'>
                     <caption>$caption</caption>
@@ -346,26 +246,27 @@ function nextOutWinners($previous_date,
                     </thead>
                     <tbody>
         ";
-        
-        if ($stmt->num_rows == 0) {
+        $nows = TB17::getNextOutWinners($previous_date,
+        		                        $previous_race,
+        		                        $previous_track_id);
+        if (count($nows) == 0) {
             $html .= "<tr><td colspan=9>No next out winners found for this race</tr>";
         } else {
-            while ($stmt->fetch()) {
+        	foreach ($nows as $winnerObj) {
                 $html .= "<tr>";
-                $html .= "<td>$horse</td>";
-                $html .= "<td>$race_date</td>";
-                $html .= "<td>$race</td>";
-                $html .= "<td>$track_id</td>";
-                $html .= "<td>$previous_finish_position</td>";
-                $html .= "<td>$race_class</td>";
-                $html .= "<td>$distance</td>";
-                $html .= "<td>". ($turf == "TRUE" ? 'Turf' : 'Dirt') ."</td>";
-                $html .= "<td>$time_of_race</td>";
+                $html .= "<td>$winnerObj->horse</td>";
+                $html .= "<td>$winnerObj->race_date</td>";
+                $html .= "<td>$winnerObj->race</td>";
+                $html .= "<td>$winnerObj->track_id</td>";
+                $html .= "<td>$winnerObj->previous_finish_position</td>";
+                $html .= "<td>$winnerObj->race_class</td>";
+                $html .= "<td>$winnerObj->distance</td>";
+                $html .= "<td>". ($winnerObj->turf == "TRUE" ? 'Turf' : 'Dirt') ."</td>";
+                $html .= "<td>$winnerObj->time_of_race</td>";
                 $html .= "</tr>";
             }
         }
         $html .= "</tbody></table>";
-        $stmt->close();
         return array( "html" => $html);
 }
 ?>
