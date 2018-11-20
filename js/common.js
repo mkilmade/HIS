@@ -62,6 +62,28 @@ function race_date_trigger(e) {
     $.ajax(options);	
 }
 
+function showIndividualStats(domain, name) {
+  $.ajax({
+     url: "getHisInfo.php",
+     method: 'GET',
+     dataType: 'json',
+     data: {
+      type: "individual_stats",
+      name: name,
+      domain: domain
+     },
+     success: function( response, status, xhr ) {
+         $("#individual_info").html(response.html);
+         $("#individual_info").css('visibility', 'visible');
+     },
+     error: function(xhr, status, errorThrown) {
+         console.log("An error has occcured in request for individual stats:");
+         console.log("       Status: " + xhr.status + " - " + xhr.statusText);
+         console.log("Response Text: " + xhr.responseText);
+     }
+  });
+}
+
 function getDomainNames(request, response) {
 	domain = this.element.attr('id');
   $.ajax({

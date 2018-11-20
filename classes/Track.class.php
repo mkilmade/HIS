@@ -2,7 +2,6 @@
 
 require_once('HisEntity.class.php');
 require_once('Connection.class.php');
-
 /** 
  * @author mkilmade
  * 

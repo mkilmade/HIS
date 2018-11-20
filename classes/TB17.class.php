@@ -124,6 +124,37 @@ require_once('Connection.class.php');
 		    $conn->close();
 		    return $nows;	    
 		}
+		public static function getIndividualMeetStats($table, $name, $meet_filter) {
+			$conn = new HIS\Connection();
+			$query = "SELECT
+			             COUNT(*) as 'Wins',
+			             SUM(IF(turf='FALSE',1,0)) as 'Dirt',
+			             SUM(IF(turf='TRUE',1,0)) as 'Turf',
+			             TRUNCATE(AVG(odds),1) as 'Odds',
+			             TRUNCATE(AVG(IF(favorite='TRUE',odds,NULL)),1) as 'Favs Odds',
+			             SUM(IF(distance<'8',1,0)) as 'Sprints',
+			             SUM(IF(distance<'8' and turf='FALSE',1,0)) as 'Dirt Sprints',
+			             SUM(IF(distance<'8' and turf='TRUE',1,0)) as 'Turf Sprints',
+			             SUM(IF(distance>='8',1,0)) as 'Routes',
+			             SUM(IF(distance>='8' and turf='FALSE',1,0)) as 'Dirt Routes',
+			             SUM(IF(distance>='8' and turf='TRUE',1,0)) as 'Turf Routes'
+			          FROM tb17
+			          WHERE $table = ? AND $meet_filter
+			          GROUP BY $table";
+			$stmt = $conn->db->prepare($query);
+			$stmt->bind_param('s', $name);
+			if ($stmt->execute()) {
+				$result = $stmt->get_result();
+				if ($result->num_rows > 0) {
+					return $result->fetch_assoc();
+				} else {
+					return array();
+				}
+			} else {
+				return array();
+			}
+		}
+		
 	}
 	
 	

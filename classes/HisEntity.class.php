@@ -4,6 +4,7 @@
  * @author Mike Kilmade
  *
  */
+require_once('Connection.class.php');
 spl_autoload_register(function ($class) {
 	//echo "...including " . $class;
 	include $class . '.class.php';
@@ -31,13 +32,16 @@ spl_autoload_register(function ($class) {
 			
 			$stmt = $conn->db->prepare($query);
 			$stmt->bind_param($this->bindings['type'], $id);
-			$stmt->execute();
-			
-			// dynamically create properties corresponding to each field in table
-			foreach($stmt->get_result()->fetch_assoc() as $field => $value) {
-				$this->$field = $value;
+			if ($stmt->execute()) {
+				$result = $stmt->get_result();
+				if ($result->num_rows > 0) {
+					// dynamically create properties corresponding to each field in table
+					foreach($result->fetch_assoc() as $field => $value) {
+						$this->$field = $value;
+					}
+				}
+				$result->free();
 			}
-			
 			$stmt->free_result();
 			$stmt->close();
 		}

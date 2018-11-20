@@ -49,8 +49,11 @@
             $response = getLastWinData($_GET['horse']);
             break;
         case('get_track_id'):
-            $response = getTrackId($_GET['race_date']);
-            break;
+        	$response = getTrackId($_GET['race_date']);
+        	break;
+        case('individual_stats'):
+        	$response = getIndividualMeetStats($_GET['domain'], $_GET['name'], $conn->defaults['meet_filter']);
+        	break;
         case('next_out_winners'):
             $response = nextOutWinners($_GET['race_date'], 
                                        $_GET['race'],
@@ -268,5 +271,23 @@ function nextOutWinners($previous_date,
         }
         $html .= "</tbody></table>";
         return array( "html" => $html);
+}
+
+function getIndividualMeetStats($table, $name, $meet_filter) {
+	$html = "";
+	$html .= "<table style='border: 3px solid black; color: black;background-color: #F5F5DC;'>";
+	$html .= "<caption style='text-align: center; font-weight: bold;'>'$name'</caption>";
+	
+	$stats = TB17::getIndividualMeetStats($table, $name, $meet_filter);
+	
+	foreach ($stats as $field => $value) {
+		$html .= "<tr>";
+		$html .= "  <td style='text-align:right; border-bottom: 1px dotted;'>$field:</td>";
+		$html .= "  <td style='text-align:left; font-weight: bold; border-bottom: 1px dotted;'>$value</td>";
+		$html .= "</tr>";
+	}
+	
+	$html .= "</table>";
+	return array("html" => $html);
 }
 ?>

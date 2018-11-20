@@ -3,6 +3,8 @@
   session_start();
   require_once('includes/config.inc.php');
   require_once('includes/connection.inc.php');
+  require_once('classes/TB17.class.php');
+  
   $conn = new Connection();
 ?>
 <!DOCTYPE html>
@@ -74,18 +76,11 @@ table#nowTable td {
  $(document).ready(function() {
    setupCommonFields();
  <?php
-    $query = "SELECT *
-              FROM tb17
-              WHERE tb17_id = ?
-              LIMIT 1
-             ";
-    $stmt = $conn->db->prepare($query);
-    $stmt->bind_param('s', $_GET['tb17_id']);  
-    $stmt->execute();
+    $winnerObj = new TB17($_GET['tb17_id']);
     echo "
-        // fill in form fields with database values";
-    foreach($stmt->get_result()->fetch_assoc() as $field => $value) {
-      if ($field=='favorite' || $field=='turf') {
+    // fill in form fields with winner object values";
+    foreach($winnerObj as $field => $value) {
+    	if ($field=='favorite' || $field=='turf') {
         echo "
         $(\"input[name='$field'][value='$value']\").prop(\"checked\", true);";
         continue;
@@ -96,7 +91,6 @@ table#nowTable td {
       echo "
         $(\"#$field\").val(\"".addslashes($value)."\");";
     }
-    $stmt->close();
     $conn->close();
 ?>
   previous_trigger();

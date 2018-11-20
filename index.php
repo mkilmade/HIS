@@ -178,6 +178,8 @@
   <script src="jquery/jquery.tablesorter.js"></script>
   <script src="jquery/jquery.tablesorter.pager.js"></script>
   <script src="jquery/jquery-ui.min.js"></script>
+  <script src="js/common.js"></script>
+
   <title>HIS</title>
 
   <style>
@@ -302,40 +304,12 @@
     }
 
   </style>
-  <script>
+ <script>
 
   function showGraphic(type, id) {
     $("#individual_info").css('visibility', 'visible');
     uri=encodeURI("graphic_test.php?type=" + type + "&name=" + id);
     $("#individual_info").html('<img src="' + uri + '" >');
-  }
-
-  function showStats(type, id) {
-      //console.log("in func");
-      if (id.length == 0) { 
-          clearInfo();
-          return;
-      } else {
-          var xmlhttp = new XMLHttpRequest();
-          if (type=="race") {
-            htmlid="#race_info";
-          } else {
-            htmlid="#individual_info";
-          }
-          xmlhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                  $(htmlid).html(this.responseText);
-                  $(htmlid).css('visibility', 'visible');
-              }
-          };
-          if (type=="race") {
-            uri="get_race_info.php?tb17_id=" + id;
-          } else {
-            uri="get_individual_stats.php?type=" + type + "&name=" + id;
-          }
-          xmlhttp.open("GET", encodeURI(uri), true);
-          xmlhttp.send();
-      }
   }
 
   function clearInfo() {
@@ -345,7 +319,7 @@
     $('#undividual_info').css('visibility', 'hidden');
   }
 
-  </script>
+</script>
 </head>
 
 <body>
@@ -459,7 +433,7 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
     for($row=0; $row<count($topJockeys); ++$row) {
       echo "
         <tr>
-          <td onmouseover=\"showStats('trainer', '".addslashes($topTrainers[$row]['name'])."')\">{$topTrainers[$row]['name']}</td>
+          <td onmouseover=\"showIndividualStats('trainer', '".$topTrainers[$row]['name']."')\">{$topTrainers[$row]['name']}</td>
           <td onmouseover=\"showGraphic('trainer', '".addslashes($topTrainers[$row]['name'])."')\"
               class='nums'>
               <div class='tooltip2'>{$topTrainers[$row]['wins']}
@@ -470,7 +444,7 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
               </div>
           </td>
 
-          <td onmouseover=\"showStats('trainer', '".addslashes($topTrainersRecent[$row]['name'])."')\">{$topTrainersRecent[$row]['name']}</td>
+          <td onmouseover=\"showIndividualStats('trainer', '".addslashes($topTrainersRecent[$row]['name'])."')\">{$topTrainersRecent[$row]['name']}</td>
           <td onmouseover=\"showGraphic('trainer', '".addslashes($topTrainersRecent[$row]['name'])."')\"
               class='nums'>
             <div class='tooltip2'>{$topTrainersRecent[$row]['wins']}
@@ -482,7 +456,7 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
           </td>
 
           <td class='thick' 
-              onmouseover=\"showStats('jockey', '".addslashes($topJockeys[$row]['name'])."')\">{$topJockeys[$row]['name']}</td>
+              onmouseover=\"showIndividualStats('jockey', '".addslashes($topJockeys[$row]['name'])."')\">{$topJockeys[$row]['name']}</td>
           <td 
               onmouseover=\"showGraphic('jockey', '".addslashes($topJockeys[$row]['name'])."')\"
               class='nums'>
@@ -494,7 +468,7 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
             </div>
           </td>
 
-          <td onmouseover=\"showStats('jockey', '".addslashes($topJockeysRecent[$row]['name'])."')\">{$topJockeysRecent[$row]['name']}</td>
+          <td onmouseover=\"showIndividualStats('jockey', '".addslashes($topJockeysRecent[$row]['name'])."')\">{$topJockeysRecent[$row]['name']}</td>
           <td onmouseover=\"showGraphic('jockey', '".addslashes($topJockeysRecent[$row]['name'])."')\"
               class='nums'>
             <div class='tooltip2'>{$topJockeysRecent[$row]['wins']}
@@ -584,7 +558,7 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
     //$type="'id'"; // this line probably should be removed
     while($stmt->fetch()) {
       echo "
-        <tr onmouseover=\"showStats('race',$tb17_id)\">
+        <tr onmouseover=\"showIndividualStats('race',$tb17_id)\">
           <td class='nums'><a href='$url=$tb17_id'>$race</a></td>
           <td class='nums ".($turf=='TRUE' ? 'turf' : '')."'>$distance</td>
           <td>$race_class <sup>".($sex=='female' ? 'f ' :'')."$age</sup></td>
