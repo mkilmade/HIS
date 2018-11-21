@@ -4,6 +4,9 @@
     session_start();
     require_once('includes/config.inc.php');
     require_once('includes/connection.inc.php');;
+    spl_autoload_register(function ($class) {
+    	require_once 'classes/' . $class . '.class.php';
+    });;
     $conn = new Connection();
 ?>
 <!DOCTYPE html>
@@ -75,7 +78,6 @@ table#nowTable td {
 <script>
   $(document).ready(function() {
 <?php
-    require_once('classes/TB17.class.php');
     // -- get last race date a& next race #
     $last_race_date = TB17::last_race_date($conn->defaults['meet_filter']);
     $next_race = TB17::last_race($last_race_date, $conn->defaults['meet_filter']) + 1;

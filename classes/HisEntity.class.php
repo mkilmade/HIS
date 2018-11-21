@@ -6,8 +6,7 @@
  */
 require_once('Connection.class.php');
 spl_autoload_register(function ($class) {
-	//echo "...including " . $class;
-	include $class . '.class.php';
+	require_once $class . '.class.php';
 });
 	abstract class HisEntity {
 		// database table bindings[] (table, key_fld and type)
@@ -40,7 +39,6 @@ spl_autoload_register(function ($class) {
 						$this->$field = $value;
 					}
 				}
-				$result->free();
 			}
 			$stmt->free_result();
 			$stmt->close();

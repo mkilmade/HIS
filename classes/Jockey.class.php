@@ -4,11 +4,11 @@
  * @author Mike Kilmade
  *
  */
+require_once('Connection.class.php');
 spl_autoload_register(function ($class) {
-	//echo "...including " . $class;
-	include $class . '.class.php';
+	require_once $class . '.class.php';
 });
-
+	
 	class Jockey extends \HisEntity {
 	public function __construct($id, $conn = NULL) {
 		$this->bindings['table']   = "jockey";

@@ -2,10 +2,9 @@
 //      form to update winning entry in the tbd.tb17 table
   session_start();
   require_once('includes/config.inc.php');
-  require_once('includes/connection.inc.php');
-  require_once('classes/TB17.class.php');
-  
-  $conn = new Connection();
+  spl_autoload_register(function ($class) {
+  	require_once 'classes/' . $class . '.class.php';
+  });;
 ?>
 <!DOCTYPE html>
 <html>
@@ -85,13 +84,9 @@ table#nowTable td {
         $(\"input[name='$field'][value='$value']\").prop(\"checked\", true);";
         continue;
       }
-      if ($field=='previous_track_id' && $value=='') {
-        $value=$conn->defaults['previous_track_id'];
-      }
       echo "
         $(\"#$field\").val(\"".addslashes($value)."\");";
     }
-    $conn->close();
 ?>
   previous_trigger();
 }); // finish .ready function

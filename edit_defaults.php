@@ -3,9 +3,9 @@
 // form to updatte entry in the tbd.current_defaults table
 session_start();
 require_once ('includes/config.inc.php');
-require_once ('includes/connection.inc.php');
-;
-$conn = new Connection();
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});;
 ?>
 <!DOCTYPE html>
 <html>
@@ -66,45 +66,18 @@ $conn = new Connection();
 	 acDomainFields('#previous_track_id');
 
 <?php
-$query = "SELECT cd.current_defaults_id,
-                     cd.past_days,
-                     cd.previous_track_id,
-                     rm.race_meet_id
-              FROM current_defaults AS cd
-              INNER JOIN race_meet AS rm
-                 USING (race_meet_id)
-              LIMIT 1
-             ";
-$stmt = $conn->db->prepare($query);
-$stmt->execute();
-// fill in form fields with database values";
-foreach ($stmt->get_result()->fetch_assoc() as $field => $value) {
-    if ($field == 'race_meet_id') {
-        $current_race_meet_id = $value;
-        continue;
-    }
+$cdObj = new Defaults();
+// iterate through properties and set corresponding form fields
+foreach ($cdObj as $field => $value) {
     echo "
         $(\"#$field\").val(\"$value\");
         ";
 }
-$stmt->close();
 
-// set <option> tags for meet <select>
-$query = "SELECT race_meet_id,
-                     name
-              FROM race_meet
-              ORDER BY start_date DESC
-             ";
-$stmt = $conn->db->prepare($query);
-$stmt->execute();
-$stmt->store_result();
-$stmt->bind_result($race_meet_id, $name);
-while ($stmt->fetch()) {
-    $selected = $race_meet_id == $current_race_meet_id ? 'selected' : '';
-    echo "$('#race_meet_id').append(\"<option value='$race_meet_id' $selected>" . addslashes($name) . "</option>\");";
+foreach (Meet::getMeets() as $rmObj) {
+    $selected = $rmObj->race_meet_id == $cdObj->race_meet_id ? 'selected' : '';
+    echo "$('#race_meet_id').append(\"<option value='{$rmObj->race_meet_id}' $selected>" . addslashes($rmObj->name) . "</option>\");";
 }
-$stmt->close();
-$conn->close();
 ?>
 
 }); // finish .ready function

@@ -1,8 +1,10 @@
 <?php
 
-require_once('HisEntity.class.php');
 require_once('Connection.class.php');
-
+spl_autoload_register(function ($class) {
+	require_once $class . '.class.php';
+});
+	
 /**
  *
  * @author mkilmade
@@ -35,8 +37,8 @@ class Meet extends \HisEntity {
 		$stmt->bind_result($race_meet_id);
 		if ($stmt->num_rows > 0) {
 			$stmt->fetch();
-			$meetObj = new Meet($race_meet_id);
-			$track_id = $meetObj->track_id;
+			$rmObj = new Meet($race_meet_id);
+			$track_id = $rmObj->track_id;
 		} else {
 			$track_id = "";
 		}
@@ -47,5 +49,32 @@ class Meet extends \HisEntity {
 		return array('track_id' => $track_id);
 	}
 	
+	public function meet_filter($comparefield) {
+		$filter  = "$comparefield >= '{$this->start_date}' AND ";
+        $filter .= "$comparefield <= '{$this->end_date}' AND ";
+        $filter .= "track_id = '{$this->track_id}'";
+        
+		return $filter;
+	}
+	
+	public static function getMeets() {
+		$conn = new HIS\Connection();
+		$query = "SELECT race_meet_id
+		              FROM race_meet
+		              ORDER BY start_date DESC
+		             ";
+		$stmt = $conn->db->prepare($query);
+		$stmt->execute();
+		$stmt->store_result();
+		$stmt->bind_result($race_meet_id);
+		$meets = array();
+		while ($stmt->fetch()) {
+			$meets[] = new Meet($race_meet_id);
+		}
+		$stmt->close();
+		$conn->close();	
+		
+		return $meets;
+	}
 }
 

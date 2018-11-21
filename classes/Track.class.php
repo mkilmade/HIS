@@ -1,8 +1,10 @@
 <?php
 
-require_once('HisEntity.class.php');
 require_once('Connection.class.php');
-/** 
+spl_autoload_register(function ($class) {
+	require_once $class . '.class.php';
+});
+	/** 
  * @author mkilmade
  * 
  */

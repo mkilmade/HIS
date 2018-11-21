@@ -2,9 +2,11 @@
     ini_set('session.gc_maxlifetime',3600);
     session_start();
 
-    require_once('classes/TB17.class.php');
     require_once('includes/config.inc.php');
     require_once('includes/connection.inc.php');
+    spl_autoload_register(function ($class) {
+    	require_once 'classes/' . $class . '.class.php';
+    });;
     $conn = new Connection();
     //print_r($_SESSION);
 

@@ -10,7 +10,7 @@
  */
     session_start();
     spl_autoload_register(function ($class) {
-    	include "classes/". $class . '.class.php';
+    	require_once "classes/". $class . '.class.php';
     });
     require_once('includes/config.inc.php');
     require_once('includes/connection.inc.php');;
