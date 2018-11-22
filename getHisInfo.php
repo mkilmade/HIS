@@ -52,7 +52,18 @@
         	$response = getTrackId($_GET['race_date']);
         	break;
         case('individual_stats'):
-        	$response = getIndividualMeetStats($_GET['domain'], $_GET['name'], $conn->defaults['meet_filter']);
+        	$domain = $_GET['domain'];
+        	switch($domain) {
+        		case('trainer'):
+        	    case('jockey'):
+        	    	$response = getIndividualMeetStats($domain, $_GET['name'], $conn->defaults['meet_filter']);
+        	    	break;
+        	    default:
+        	    	$response =  array('html'   => '<b>Invalid domain: ' . $domain. '</b>');
+        	}
+        	break;
+        case('race_summary'):
+        	$response = getRaceSummary($_GET['race_id']);
         	break;
         case('next_out_winners'):
             $response = nextOutWinners($_GET['race_date'], 
@@ -287,6 +298,22 @@ function getIndividualMeetStats($table, $name, $meet_filter) {
 		$html .= "</tr>";
 	}
 	
+	$html .= "</table>";
+	return array("html" => $html);
+}
+
+function getRaceSummary($race_id) {
+	$html = "";
+	$html .= "<table style='border: 3px solid black; color: black; background-color: #F5F5DC;'>";
+	$html .= "<caption style='text-align: center; font-weight: bold;'>Race Information</caption>";
+	
+	$race_summary = TB17::getRaceSummaryInfo($race_id);
+	foreach ($race_summary as $field => $value) {
+		$html .= "<tr>";
+		$html .= "   <td style='text-align:right; border-bottom: 1px dotted;'>$field: </td>";
+		$html .= "   <td style='text-align:left; font-weight: bold; border-bottom: 1px dotted;'>$value</td>";
+		$html .= "</tr>";
+	}
 	$html .= "</table>";
 	return array("html" => $html);
 }

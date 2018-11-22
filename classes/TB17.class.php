@@ -157,6 +157,35 @@ spl_autoload_register(function ($class) {
 			}
 		}
 		
+		public static function getRaceSummaryInfo($tb17_id) {
+			$conn = new HIS\Connection();
+			$query = "SELECT race as 'Race',
+				             track_condition as 'Condition',
+				             turf as 'Turf',
+				             horse as 'Horse',
+				             time_of_race as 'Time',
+				             IF(favorite='TRUE',CONCAT(CAST(odds as char),'<sup>*</sup>'),odds) as 'Odds',
+				             race_flow as 'Flow',
+				             post_position as 'Post',
+				             field_size as 'Field',
+				             jockey as 'Jockey',
+				             trainer as 'Trainer',
+				             comment as 'Comment'
+			          FROM tb17
+			          WHERE tb17_id = ?";
+			$stmt = $conn->db->prepare($query);
+			$stmt->bind_param('s', $tb17_id);
+			if ($stmt->execute()) {
+				$result = $stmt->get_result();
+				if ($result->num_rows > 0) {
+					return $result->fetch_assoc();
+				} else {
+					return array();
+				}
+			} else {
+				return array();
+			}
+		}
 	}
 	
 	

@@ -84,6 +84,27 @@ function showIndividualStats(domain, name) {
   });
 }
 
+function showRaceSummaryInfo(race_id) {
+	  $.ajax({
+	     url: "getHisInfo.php",
+	     method: 'GET',
+	     dataType: 'json',
+	     data: {
+	      type: "race_summary",
+	      race_id: race_id
+	     },
+	     success: function( response, status, xhr ) {
+	         $("#race_summary").html(response.html);
+	         $("#race_summary").css('visibility', 'visible');
+	     },
+	     error: function(xhr, status, errorThrown) {
+	         console.log("An error has occcured in request for race summary info:");
+	         console.log("       Status: " + xhr.status + " - " + xhr.statusText);
+	         console.log("Response Text: " + xhr.responseText);
+	     }
+	  });
+}
+
 function getDomainNames(request, response) {
 	domain = this.element.attr('id');
   $.ajax({

@@ -315,8 +315,8 @@
   }
 
   function clearInfo() {
-    $('#race_info').html("");
-    $('#race_info').css('visibility', 'hidden');
+    $('#race_summary').html("");
+    $('#race_summary').css('visibility', 'hidden');
     $('#individual_info').html("");
     $('#undividual_info').css('visibility', 'hidden');
   }
@@ -560,7 +560,7 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
     //$type="'id'"; // this line probably should be removed
     while($stmt->fetch()) {
       echo "
-        <tr onmouseover=\"showIndividualStats('race',$tb17_id)\">
+        <tr onmouseover=\"showRaceSummaryInfo($tb17_id)\">
           <td class='nums'><a href='$url=$tb17_id'>$race</a></td>
           <td class='nums ".($turf=='TRUE' ? 'turf' : '')."'>$distance</td>
           <td>$race_class <sup>".($sex=='female' ? 'f ' :'')."$age</sup></td>
@@ -574,7 +574,7 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
         </tbody>
         </table>
         </div>
-        <div id='race_info' style='float: left; visibility:hidden;'></div>
+        <div id='race_summary' style='float: left; visibility:hidden;'></div>
       </div>
       <script>
         $(document).ready(function() {
