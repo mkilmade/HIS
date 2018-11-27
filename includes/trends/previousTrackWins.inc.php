@@ -1,25 +1,16 @@
 <?php
-
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});;
 // called by getTrend.php
 function previousTrackWins($conn)
 {
-    $total = 0;
-    $query = "SELECT previous_track_id,
-                     COUNT(*) as wins
-              FROM tb17
-              WHERE previous_track_id IS NOT NULL AND
-                    {$conn->defaults['meet_filter']}
-              GROUP By previous_track_id
-              ORDER BY wins DESC, previous_track_id";
-
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($previous_track_id, $wins);
+	$rm = new Meet($conn->defaults['race_meet_id']);
+	$tallies = $rm->getPreviousTrackWins();
 
     echo "
       <table id='trackTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
-        <caption>Previous Track Stats ($stmt->num_rows)</caption>
+        <caption>Previous Track Stats (" . count($tallies) . ")</caption>
         <thead>
           <th>Track</th>
           <th>Wins</th>
@@ -27,35 +18,22 @@ function previousTrackWins($conn)
     <tbody>
     ";
     $total = 0;
-    while ($stmt->fetch()) {
-        echo "<tr>";
-        echo "<td>$previous_track_id</td>";
-        echo "<td>$wins</td>";
+    foreach($tallies as $tally) {
+    	$total += $tally['wins'];
+    	echo "<tr>";
+        echo "<td>{$tally['previous_track_id']}</td>";
+        echo "<td>{$tally['wins']}</td>";
         echo "</tr>";
-        $total += $wins;
     }
-    $stmt->free_result();
-    $stmt->close();
 
     // get FTS (first time starter) wins for meet
-    $query = "SELECT COUNT(*)
-              FROM tb17
-              WHERE comment LIKE '%FTS%' and
-                    {$conn->defaults['meet_filter']}
-              LIMIT 1";
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($wins);
-
-    while ($stmt->fetch()) {
-        echo "<tr>";
-        echo "<td>Firsters</td>";
-        echo "<td>$wins</td>";
-        echo "</tr>";
-        $total += $wins;
-    }
-
+    $wins = $rm->getFtsWins();
+    $total += $wins;
+    echo "<tr>";
+    echo "<td>Firsters</td>";
+    echo "<td>$wins</td>";
+    echo "</tr>";
+ 
     // add total row
     echo "
         <tr>
@@ -70,8 +48,6 @@ function previousTrackWins($conn)
             });
         </script>
         ";
-    $stmt->free_result();
-    $stmt->close();
 } // function
 
 ?>

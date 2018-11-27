@@ -29,7 +29,8 @@ class Connection
     // -- get current meet default values
     public function get_his_defaults()
     {
-        $query = "SELECT rm.track_id,
+        $query = "SELECT cd.race_meet_id,
+                     rm.track_id,
                      rm.start_date,
                      rm.end_date,
                      rm.name AS meet_name,

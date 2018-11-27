@@ -56,6 +56,49 @@ class Meet extends \HisEntity {
         
 		return $filter;
 	}
+
+	public function getClassTally() {
+		$query = "SELECT
+	                 count(DISTINCT race_date,race) AS races,
+	                 race_class
+	              FROM tb17
+	              WHERE " . $this->meet_filter('race_date') . "
+	              GROUP By race_class
+	              ORDER BY races DESC, race_class";		
+		return TB17::getResultArray($query);		
+	}
+
+	public function getPreviousTrackWins() {
+		$query = "SELECT previous_track_id,
+		                     COUNT(*) as wins
+		              FROM tb17
+		              WHERE previous_track_id IS NOT NULL AND " . $this->meet_filter('race_date') . "
+		              GROUP By previous_track_id
+		              ORDER BY wins DESC, previous_track_id";
+		return TB17::getResultArray($query);
+	}
+
+	public function getFtsWins() {
+		$conn = new HIS\Connection();
+		$query = "SELECT COUNT(*)
+		              FROM tb17
+		              WHERE comment LIKE '%FTS%' AND " . $this->meet_filter('race_date') . "
+		              LIMIT 1";
+		$stmt = $conn->db->prepare($query);
+		$stmt->execute();
+		$stmt->store_result();
+		$stmt->bind_result($wins);
+		if ($stmt->num_rows == 1) {
+			$stmt->fetch();
+		} else {
+			$wins = 0;
+		}
+		$stmt->free_result();
+		$stmt->close();
+		$conn->close();
+		return $wins;
+	}
+	
 	
 	public static function getMeets() {
 		$conn = new HIS\Connection();

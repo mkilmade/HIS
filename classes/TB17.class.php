@@ -186,6 +186,21 @@ spl_autoload_register(function ($class) {
 				return array();
 			}
 		}
+		
+		public static function getResultArray($query) {
+			$conn = new HIS\Connection();
+			$stmt = $conn->db->prepare($query);
+			if ($stmt->execute()) {
+				$result = $stmt->get_result();
+				if ($result->num_rows > 0) {
+					return $result->fetch_all(MYSQLI_ASSOC);
+				} else {
+					return array();
+				}
+			} else {
+				return array();
+			}
+		}
 	}
 	
 	

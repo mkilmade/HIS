@@ -1,24 +1,17 @@
 <?php
 
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});;
 // called by getTrend.php
 function classTally($conn)
 {
-    $query = "SELECT 
-                 count(DISTINCT race_date,race) AS races,
-                 race_class
-              FROM tb17
-              WHERE {$conn->defaults['meet_filter']}
-              GROUP By race_class
-              ORDER BY races DESC, race_class";
-
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($races, $class);
-
+	$rm = new Meet($conn->defaults['race_meet_id']);
+	$tallies = $rm->getClassTally();
+	
     echo "
       <table id='classTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
-        <caption>Class Breakdown for Meet ($stmt->num_rows)</caption>
+        <caption>Class Breakdown for Meet (" . count($tallies) . ")</caption>
         <thead>
           <th>Class</th>
           <th>Races</th>
@@ -27,11 +20,11 @@ function classTally($conn)
     ";
 
     $total = 0;
-    while ($stmt->fetch()) {
-        $total += $races;
+    foreach($tallies as $tally) {
+    	$total += $tally['races'];
         echo "<tr>";
-        echo "<td style='text-align:left;'>$class</td>";
-        echo "<td>$races</td>";
+        echo "<td style='text-align:left;'>{$tally['race_class']}</td>";
+        echo "<td>{$tally['races']}</td>";
         echo "</tr>";
     }
 
@@ -46,8 +39,6 @@ function classTally($conn)
         </script>
         ";
 
-    $stmt->free_result();
-    $stmt->close();
 } // function
 
 ?> 
