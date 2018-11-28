@@ -1,42 +1,15 @@
 <?php
-
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});
 // called by getTrend.php
 function keyRaces($conn)
 {
-    $date = new DateTime();
-    $date->sub(new DateInterval('P90D'));
-    $limit = $date->format('Y-m-d');
-    $query = "SELECT *
-              FROM
-              (
-                SELECT  previous_date,
-                        previous_race,
-                        previous_track_id,
-                        COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
-                 FROM tb17
-                 WHERE previous_track_id IS NOT NULL AND previous_date > '$limit'
-                 GROUP BY previous_date,
-                          previous_race,
-                          previous_track_id
-              ) AS key_races
-              
-              WHERE (wins > 2 AND previous_track_id <> '{$conn->defaults['track_id']}')
-                    ||
-                    (wins > 1 AND previous_track_id = '{$conn->defaults['track_id']}')
-              ORDER BY wins DESC,
-                       previous_date DESC,
-                       previous_track_id,
-                       previous_race";
-    //echo "<br>$query";
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($previous_date, $previous_race, $previous_track_id, $wins);
-
-    // -- build html key race table
+	$key_races = TB17::findKeyRaces(90, $conn->defaults['track_id']);
+	    // -- build html key race table
     echo "
       <table id='keyTable' class='tablesorter' style='width:900px; margin: auto; font-size:16px'>
-        <caption>Key Race Information for last 90 days ($stmt->num_rows)</caption>
+        <caption>Key Race Information for last 90 days (" . count($key_races) . ")</caption>
         <thead>
           <th>Date</th>
           <th>Key Race #</th>
@@ -48,69 +21,44 @@ function keyRaces($conn)
     ";
 
     $n = 0;
-    while ($stmt->fetch()) {
-        // build key race data
-        $qry = "SELECT horse,
-                       race_class,
-                       distance,
-                       time_of_race,
-                       turf
-                FROM tb17
-                WHERE race_date = '$previous_date' and
-                      race      = '$previous_race' and
-                      track_id  = '$previous_track_id'
-                LIMIT 1";
-        $stmt2 = $conn->db->prepare($qry);
-        $stmt2->execute();
-        $assoc_data = $stmt2->get_result()->fetch_assoc();
-        if (count($assoc_data) == 0) {
+    foreach ($key_races as $key_race) {
+    	$previous_date = $key_race['previous_date'];
+    	$previous_race = $key_race['previous_race'];
+    	$previous_track_id = $key_race['previous_track_id'];
+    	$wins = $key_race['wins'];
+        // get key race data
+    	$key_raceObj = TB17::getRaceInfo($previous_date,
+    			                         $previous_race,
+    			                         $previous_track_id);
+    	if ($key_raceObj == NULL) {
             $key_race_data = "Key Race Winner: Sorry, only NYRA races on file. Use race link for chart.";
         } else {
             $key_race_data = "Key Race Winner: ";
             $key_race_data .= "<b>";
-            $key_race_data .= $assoc_data['horse'];
+            $key_race_data .= $key_raceObj->horse;
             $key_race_data .= "</b> : ";
-            $key_race_data .= $assoc_data['race_class'];
+            $key_race_data .= $key_raceObj->race_class;
             $key_race_data .= " : ";
-            $key_race_data .= $assoc_data['distance'] . ($assoc_data['turf'] == "TRUE" ? ' t' : '');
+            $key_race_data .= $key_raceObj->distance . ($key_raceObj->turf == "TRUE" ? ' t' : '');
             $key_race_data .= " : ";
-            $key_race_data .= $assoc_data['time_of_race'];
+            $key_race_data .= $key_raceObj->time_of_race;
         }
-        $stmt2->close();
-
+        
         // get last winner data from key race
-        $qry = "SELECT horse,
-                       race_date,
-                       race,
-                       track_id,
-                       race_class,
-                       distance,
-                       turf,
-                       time_of_race,
-                       previous_finish_position
-                FROM tb17
-                WHERE previous_date      = '$previous_date' and
-                      previous_race      = '$previous_race' and
-                      previous_track_id  = '$previous_track_id'
-                ORDER BY race_date DESC, race
-               ";
-
-        $stmt2 = $conn->db->prepare($qry);
-        $stmt2->execute();
-        $stmt2->store_result();
-        $stmt2->bind_result($horse, $race_date, $race, $track_id, $race_class, $distance, $turf, $time_of_race, $previous_finish_position);
+        $next_out_winers = TB17::getNextOutWinners($previous_date,
+        		                                   $previous_race,
+        		                                   $previous_track_id);
         $key_race_data .= "<br>Next Out Winners:";
 
-        while ($stmt2->fetch()) {
+        foreach ($next_out_winers as $winnerObj) {
             $key_race_data .= "<br> - ";
-            $key_race_data .= "<b>$horse</b> <sup>$previous_finish_position</sup> : ";
-            $key_race_data .= "$race_date ";
-            $key_race_data .= "$track_id <sup> R$race </sup> : ";
-            $key_race_data .= "$race_class : ";
-            $key_race_data .= "$distance" . ($turf == "TRUE" ? ' t' : '') . " : ";
-            $key_race_data .= "$time_of_race";
+            $key_race_data .= "<b>{$winnerObj->horse}</b> <sup>{$winnerObj->previous_finish_position}</sup> : ";
+            $key_race_data .= "{$winnerObj->race_date} ";
+            $key_race_data .= "{$winnerObj->track_id} <sup> R{$winnerObj->race} </sup> : ";
+            $key_race_data .= "{$winnerObj->race_class} : ";
+            $key_race_data .= "{$winnerObj->distance}" . ($winnerObj->turf == "TRUE" ? ' t' : '') . " : ";
+            $key_race_data .= "{$winnerObj->time_of_race}";
         }
-        $stmt2->close();
 
         // $date = new DateTime($previous_date, new DateTimeZone('America/New_York'));
         $date = new DateTime($previous_date, new DateTimeZone(HIS_TIMEZONE));
@@ -144,9 +92,6 @@ function keyRaces($conn)
         });
       </script>
     ";
-
-    $stmt->free_result();
-    $stmt->close();
 } // function
 
 ?>

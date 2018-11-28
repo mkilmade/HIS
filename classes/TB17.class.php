@@ -99,6 +99,34 @@ spl_autoload_register(function ($class) {
 
 		}
 		
+		public static function findKeyRaces($search_limit, $track_id) {
+			$date = new DateTime();
+			$date->sub(new DateInterval('P' . $search_limit . 'D'));
+			$limit = $date->format('Y-m-d');
+			$query = "SELECT *
+              FROM
+              (
+                SELECT  previous_date,
+                        previous_race,
+                        previous_track_id,
+                        COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
+                 FROM tb17
+                 WHERE previous_track_id IS NOT NULL AND previous_date > '$limit'
+                 GROUP BY previous_date,
+                          previous_race,
+                          previous_track_id
+              ) AS key_races
+              
+              WHERE (wins > 2 AND previous_track_id <> '$track_id')
+                    ||
+                    (wins > 1 AND previous_track_id = '$track_id')
+              ORDER BY wins DESC,
+                       previous_date DESC,
+                       previous_track_id,
+                       previous_race";
+			return TB17::getResultArray($query);			
+		}
+		
 		public static function getNextOutWinners($previous_date,
 				                                 $previous_race,
 				                                 $previous_track_id) {
@@ -126,6 +154,7 @@ spl_autoload_register(function ($class) {
 		    $conn->close();
 		    return $nows;	    
 		}
+		
 		public static function getIndividualMeetStats($table, $name, $meet_filter) {
 			$conn = new HIS\Connection();
 			$query = "SELECT

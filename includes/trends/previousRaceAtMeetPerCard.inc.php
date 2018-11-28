@@ -1,25 +1,14 @@
 <?php
 
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});
 // called by getTrend.php
 function previousRaceAtMeetPerCard($conn)
 {
-    $query = "SELECT
-                 COUNT(*) AS races,
-                 SUM(IF(previous_track_id  = '{$conn->defaults['track_id']}'   AND
-                            previous_date >= '{$conn->defaults['start_date']}' AND
-                            previous_date <= '{$conn->defaults['end_date']}'
-                    ,1,0)) As wins,
-                 race_date
-              FROM tb17
-              WHERE {$conn->defaults['meet_filter']}
-              GROUP BY race_date
-              ORDER BY race_date DESC";
-
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($races, $wins, $race_date);
-
+	$rm = new Meet($conn->defaults['race_meet_id']);
+	$tallies = $rm->getPreviousRaceAtMeetPerCard();
+	
     echo "
       <table id='previousMeetDateCountTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
         <caption>Winner's Previous Race At Meet</caption>
@@ -30,14 +19,14 @@ function previousRaceAtMeetPerCard($conn)
     <tbody>
     ";
 
-    while ($stmt->fetch()) {
-        if ($wins == 0) {
+    foreach ($tallies as $date_tally) {
+    	if ($date_tally['wins'] == 0) {
             continue;
         }
-        $dt = substr($race_date, 5, 5);
+        $dt = substr($date_tally['race_date'], 5, 5);
         echo "<tr>";
         echo "<td>$dt</td>";
-        echo "<td>$wins of $races</td>";
+        echo "<td>{$date_tally['wins']} of {$date_tally['races']}</td>";
         echo "</tr>";
     }
 
@@ -54,7 +43,4 @@ function previousRaceAtMeetPerCard($conn)
            });
         </script>
         ";
-
-    $stmt->free_result();
-    $stmt->close();
 } // function

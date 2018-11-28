@@ -6,7 +6,7 @@
     require_once('includes/connection.inc.php');
     spl_autoload_register(function ($class) {
     	require_once 'classes/' . $class . '.class.php';
-    });;
+    });
     $conn = new Connection();
     //print_r($_SESSION);
 

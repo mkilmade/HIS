@@ -1,26 +1,15 @@
 <?php
-
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});
 // called by getTrend.php
 function previouslyRanAtMeet($conn)
 {
-    $query = "SELECT
-                 horse,
-                 race_date
-              FROM tb17
-              WHERE {$conn->defaults['meet_filter']} AND
-                    previous_track_id = '{$conn->defaults['track_id']}' AND
-                    previous_date >= '{$conn->defaults['start_date']}' AND
-                    previous_date <= '{$conn->defaults['end_date']}'
-              ORDER BY horse, race_date DESC";
-
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($horse, $race_date);
-
+	$rm = new Meet($conn->defaults['race_meet_id']);
+	$tallies = $rm->getPreviouslyRanAtMeet();
     echo "
       <table id='previouslyRanAtMeetWinTable' class='tablesorter' style='width:300px; margin: auto; font-size:14px'>
-        <caption>Previous Race At Meet Before Win ($stmt->num_rows)</caption>
+        <caption>Previous Race At Meet Before Win (". count($tallies) . ")</caption>
         <thead>
           <th>Horse</th>
           <th>Date</th>
@@ -28,10 +17,10 @@ function previouslyRanAtMeet($conn)
     <tbody>
     ";
 
-    while ($stmt->fetch()) {
-        $dt = substr($race_date, 5, 5);
+    foreach ($tallies as $race) {
+        $dt = substr($race['race_date'], 5, 5);
         echo "<tr>";
-        echo "<td>$horse</td>";
+        echo "<td>{$race['horse']}</td>";
         echo "<td>$dt</td>";
         echo "</tr>";
     }
@@ -43,9 +32,6 @@ function previouslyRanAtMeet($conn)
             });
         </script>
     ";
-
-    $stmt->free_result();
-    $stmt->close();
 } // function
 
 ?>

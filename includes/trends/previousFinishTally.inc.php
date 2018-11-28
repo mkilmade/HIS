@@ -1,24 +1,14 @@
 <?php
-
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});
 // called by getTrend.php
 function previousFinishTally($conn)
 {
-    $query = "SELECT 
-                 COUNT(DISTINCT race_date,race),
-                 previous_finish_position
-              FROM tb17
-              WHERE {$conn->defaults['meet_filter']} AND 
-                    previous_track_id = '{$conn->defaults['track_id']}' AND 
-                    previous_date >= '{$conn->defaults['start_date']}' AND 
-                    previous_date <= '{$conn->defaults['end_date']}'
-              GROUP BY previous_finish_position";
-
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($count, $previous_finish_position);
-
-    echo "
+	$rm = new Meet($conn->defaults['race_meet_id']);
+	$tallies = $rm->getPreviousFinishTally();
+	
+   echo "
       <table id='previousFinishTable' class='tablesorter' style='width:225px; margin: auto; font-size:14px'>
         <caption>Previous Race At Meet</caption>
         <thead>
@@ -28,11 +18,11 @@ function previousFinishTally($conn)
     <tbody>
     ";
     $total = 0;
-    while ($stmt->fetch()) {
-        $total += $count;
+    foreach ($tallies as $finishes) {
+    	$total += $finishes['count'];
         echo "<tr>";
-        echo "<td>$previous_finish_position</td>";
-        echo "<td>$count</td>";
+        echo "<td>{$finishes['previous_finish_position']}</td>";
+        echo "<td>{$finishes['count']}</td>";
         echo "</tr>";
     }
     echo "
@@ -52,9 +42,6 @@ function previousFinishTally($conn)
                 }
           });
           ";
-
-    $stmt->free_result();
-    $stmt->close();
 } // function
 
 ?>

@@ -99,7 +99,62 @@ class Meet extends \HisEntity {
 		return $wins;
 	}
 	
+	public function getPreviouslyRanAtMeet() {
+		$query = "SELECT
+                   horse,
+                   race_date
+	              FROM tb17
+	              WHERE " . $this->meet_filter('race_date') . " AND
+	                    previous_track_id = '{$this->track_id}' AND
+	                    previous_date >= '{$this->start_date}'  AND
+	                    previous_date <= '{$this->end_date}'
+	              ORDER BY horse, race_date DESC";
+		return TB17::getResultArray($query);
+	} // function
 	
+	
+	public function getPreviousRaceAtMeetPerCard() {
+		$query = "SELECT
+                 COUNT(*) AS races,
+                 SUM(IF(previous_track_id  = '{$this->track_id}'  AND
+                            previous_date >= '{$this->start_date}' AND
+                            previous_date <= '{$this->end_date}'
+                    ,1,0)) As wins,
+                 race_date
+              FROM tb17
+              WHERE " . $this->meet_filter('race_date') . "
+              GROUP BY race_date
+              ORDER BY race_date DESC";
+		return TB17::getResultArray($query);
+	}
+	
+	public function getMultipleWins() {
+		$query = "SELECT
+                wins, horse
+              FROM (
+                    SELECT count(*) AS wins, horse
+                    FROM tb17
+                    WHERE " . $this->meet_filter('race_date') . "
+                    GROUP BY horse
+                   ) AS multi_winners
+              WHERE wins > '1'
+              ORDER BY wins, horse";
+		return TB17::getResultArray($query);		
+	}
+	
+	public function getPreviousFinishTally() {
+		$query = "SELECT
+	                 COUNT(DISTINCT race_date,race) AS count,
+	                 previous_finish_position
+	              FROM tb17
+	              WHERE " . $this->meet_filter('race_date') . " AND
+	                    previous_track_id = '{$this->track_id}' AND
+	                    previous_date >= '{$this->start_date}' AND
+	                    previous_date <= '{$this->end_date}'
+	              GROUP BY previous_finish_position";
+		return TB17::getResultArray($query);
+	}
+
 	public static function getMeets() {
 		$conn = new HIS\Connection();
 		$query = "SELECT race_meet_id
