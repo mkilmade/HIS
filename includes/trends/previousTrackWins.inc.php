@@ -17,6 +17,7 @@ function previousTrackWins($conn)
         </thead>
     <tbody>
     ";
+    
     $total = 0;
     foreach($tallies as $tally) {
     	$total += $tally['wins'];

@@ -7,6 +7,7 @@ function previouslyRanAtMeet($conn)
 {
 	$rm = new Meet($conn->defaults['race_meet_id']);
 	$tallies = $rm->getPreviouslyRanAtMeet();
+	
     echo "
       <table id='previouslyRanAtMeetWinTable' class='tablesorter' style='width:300px; margin: auto; font-size:14px'>
         <caption>Previous Race At Meet Before Win (". count($tallies) . ")</caption>

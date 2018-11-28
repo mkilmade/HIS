@@ -6,7 +6,7 @@ spl_autoload_register(function ($class) {
 function keyRaces($conn)
 {
 	$key_races = TB17::findKeyRaces(90, $conn->defaults['track_id']);
-	    // -- build html key race table
+	// -- build html key race table
     echo "
       <table id='keyTable' class='tablesorter' style='width:900px; margin: auto; font-size:16px'>
         <caption>Key Race Information for last 90 days (" . count($key_races) . ")</caption>
@@ -26,6 +26,7 @@ function keyRaces($conn)
     	$previous_race = $key_race['previous_race'];
     	$previous_track_id = $key_race['previous_track_id'];
     	$wins = $key_race['wins'];
+    	
         // get key race data
     	$key_raceObj = TB17::getRaceInfo($previous_date,
     			                         $previous_race,

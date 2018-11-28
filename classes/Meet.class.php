@@ -81,9 +81,9 @@ class Meet extends \HisEntity {
 	public function getFtsWins() {
 		$conn = new HIS\Connection();
 		$query = "SELECT COUNT(*)
-		              FROM tb17
-		              WHERE comment LIKE '%FTS%' AND " . $this->meet_filter('race_date') . "
-		              LIMIT 1";
+	              FROM tb17
+	              WHERE comment LIKE '%FTS%' AND " . $this->meet_filter('race_date') . "
+	              LIMIT 1";
 		$stmt = $conn->db->prepare($query);
 		$stmt->execute();
 		$stmt->store_result();
