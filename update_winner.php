@@ -69,6 +69,7 @@
         
         // no need to update field if same value
         if ($value == $current->$field) { //[$field]) {
+          //echo "<hr>" . $field . ": new: " . $value . " database: " . $current->$field;
           unset($post[$field]);
           continue;
         }
@@ -94,9 +95,9 @@
                 <td>$value $status</td>
 				<td>{$current->$field}</td>
               </tr>";
-        $current = NULL;
         $fldvals=$fldvals.($fldvals=="" ? "" : ", ").$field."='".addslashes($value)."'";
       }
+      $current = NULL;
 
       if ((count($post))==0){
         echo "<tr>

@@ -46,12 +46,12 @@ function keyRaces($conn)
         }
         
         // get last winner data from key race
-        $next_out_winers = TB17::getNextOutWinners($previous_date,
+        $nows = TB17::getNextOutWinners($previous_date,
         		                                   $previous_race,
         		                                   $previous_track_id);
         $key_race_data .= "<br>Next Out Winners:";
 
-        foreach ($next_out_winers as $winnerObj) {
+        foreach ($nows as $winnerObj) {
             $key_race_data .= "<br> - ";
             $key_race_data .= "<b>{$winnerObj->horse}</b> <sup>{$winnerObj->previous_finish_position}</sup> : ";
             $key_race_data .= "{$winnerObj->race_date} ";

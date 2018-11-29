@@ -1,6 +1,9 @@
 <?php
 session_start();
-require_once('includes/config.inc.php');
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});
+	require_once('includes/config.inc.php');
 require_once('includes/connection.inc.php');;
 $conn = new Connection();
 ?>
@@ -98,16 +101,8 @@ table#resultTable td {
 // -- find last race date if no filters set
 $post = $_POST;
 if (! isset($post['filterrace_date']) && ! isset($post['filtertrainer']) && ! isset($post['filterjockey']) && ! isset($post['filterhorse'])) {
-    $query = "SELECT MAX(race_date) as rdate FROM tb17";
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($rdate);
-    $stmt->fetch();
-    $stmt->free_result();
-    $stmt->close();
-
-    $post['filterrace_date'] = $rdate;
+	 $rdate = TB17::last_race_date();
+     $post['filterrace_date'] = $rdate;
 } else {
     $rdate = $post['filterrace_date'];
 }

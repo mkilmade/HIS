@@ -17,13 +17,12 @@ spl_autoload_register(function ($class) {
 		    parent::__construct ($id, $conn);
 		}
 
-		public static function last_race_date($meet_filter) {
+		public static function last_race_date($meet_filter = NULL) {
 			$conn = new HIS\Connection();
 			$query = "SELECT MAX(race_date)
-	              FROM tb17
-	              WHERE $meet_filter
-	              LIMIT 1
-	             ";
+		              FROM tb17" . ($meet_filter == NULL ? "" : " WHERE $meet_filter") . "
+		              LIMIT 1
+	                 ";
 			$stmt = $conn->db->prepare($query);
 			$stmt->execute();
 			$stmt->store_result();

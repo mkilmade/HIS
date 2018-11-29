@@ -131,7 +131,7 @@ function getDomainNames(request, response) {
 // used for common entity like fields to use jquery UI autocomplete component
 function acDomainFields(selector) {
 	$(selector).autocomplete({
-		delay: 750,
+		delay: 500,
         source: getDomainNames,
         response: function( event,ui ) {
             if ( ui.content.length == 1 ) {
