@@ -24,10 +24,10 @@ function report_errors($num, $msg, $file, $line)
     $date = new DateTime("now", new DateTimeZone(HIS_TIMEZONE));
     $now = $date->format("Y-m-d H:i:s");
     $m = "\n Logged: $now";
-    $m .= "\nError #: $num";
-    $m .= "\nMessage: $msg";
-    $m .= "\n   File: $file";
-    $m .= "\n   Line: $line\n";
+    $m .= "\nError Level: $num";
+    $m .= "\n    Message: $msg";
+    $m .= "\n       File: $file";
+    $m .= "\n       Line: $line\n";
     error_log($m, 3, ERROR_LOG_FILE);
 
     // send generic message to browser, if possible

@@ -9,8 +9,8 @@ spl_autoload_register(function ($class) {
 	require_once $class . '.class.php';
 });
 	
-	class Horse extends \HisEntity {
-		public function __construct($id, $conn = NULL) {
+	class Horse extends \Resource {
+		public function __construct($id = NULL, HIS\Connection $conn = NULL) {
 			$this->bindings['table']   = "horse";
 			$this->bindings['key_fld'] = "name";
 			$this->bindings['type']    = "s";

@@ -142,8 +142,8 @@ function acDomainFields(selector) {
         select: function( event,ui ) {
       	  $("#" + $( this ).attr( 'id' )).val( ui.item.value );
       	  $(this).autocomplete( 'close' );
-      	  //var inputs = $(this).closest( 'form' ).find( ':input' );
-          //inputs.eq( inputs.index( this ) + 1 ).focus();
+      	  var inputs = $(this).closest( 'form' ).find( ':input' );
+          inputs.eq( inputs.index( this ) + 1 ).focus();
         },
         minLength: 1
       });

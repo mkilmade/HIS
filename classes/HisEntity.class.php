@@ -13,7 +13,10 @@ spl_autoload_register(function ($class) {
 		protected $bindings = array();
 		/**
 		 */
-		function __construct($id, $conn = NULL) {
+		function __construct($id, HIS\Connection $conn = NULL) {
+			if ($id == NULL) {
+				return;
+			}
 			if ($conn == NULL) {
 				$conn = new HIS\Connection();
 				$this->propertyInit($id, $conn);
@@ -23,7 +26,7 @@ spl_autoload_register(function ($class) {
 			}
 		}
 		
-		private function propertyInit($id, $conn) {
+		private function propertyInit($id, HIS\Connection $conn) {
 			// todo: change to always use id field when tables are normalized
 			$query = "SELECT *
                       FROM {$this->bindings['table']}
@@ -35,17 +38,48 @@ spl_autoload_register(function ($class) {
 				$result = $stmt->get_result();
 				if ($result->num_rows > 0) {
 					// dynamically create properties corresponding to each field in table
-					foreach($result->fetch_assoc() as $field => $value) {
-						$this->$field = $value;
-					}
+					$this->setProperties($result->fetch_assoc()); 
 				}
 			}
 			$stmt->free_result();
 			$stmt->close();
 		}
 		
+		private function setProperties(array $data) {
+			foreach($data as $property => $value) {
+				$this->$property = $value;
+			}
+		}
+		
 		function __destruct() {
 		}
+		
+		public function insert_entry(array $data) {
+			$conn = new HIS\Connection();
+			$status = $conn->insert_row($data, $this->bindings['table']);
+			if ($status) {
+				$id_field = $this->bindings['key_fld'];
+				// todo: remove when resources use id field as key
+				if ($this instanceof Resource) {
+					$id_field = $this->bindings['table'] . "_id";
+				}
+				$data[$id_field] = $status;
+				$this->setProperties($data);
+			}
+			$conn->close();
+			return $status;
+		}
+		
+		public function update_entry(array &$data, $id) {
+			$conn = new HIS\Connection();
+			$status =  $conn->update_row($data, $this->bindings['table'], $id);
+			if ($status) {
+				$this->setProperties($data);
+			}
+			$conn->close();
+			return $status;
+		}
+		
 	}
 	
 	

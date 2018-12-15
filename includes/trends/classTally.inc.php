@@ -3,9 +3,9 @@ spl_autoload_register(function ($class) {
 	require_once 'classes/' . $class . '.class.php';
 });
 // called by getTrend.php
-function classTally($conn)
+	function classTally($defaults)
 {
-	$rm = new Meet($conn->defaults['race_meet_id']);
+	$rm = new Meet($defaults['race_meet_id']);
 	$tallies = $rm->getClassTally();
 	
     echo "

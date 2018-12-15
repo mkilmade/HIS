@@ -12,14 +12,14 @@ class Track extends \HisEntity {
 
 	/**
 	 */
-	public function __construct($id, $conn = NULL) {
+	public function __construct($id, HIS\Connection $conn = NULL) {
 		$this->bindings['table']   = "track";
 		$this->bindings['key_fld'] = "track_id";
 		$this->bindings['type']    = "s";
 		parent::__construct($id, $conn);
 	}
 	
-	public static function getTracks($id) {
+	public static function getTracks(string $id) {
 		$conn = new HIS\Connection();
 		$searchid=$id."%";
 		

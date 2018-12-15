@@ -14,14 +14,14 @@ class Meet extends \HisEntity {
 
 	/**
 	 */
-	public function __construct($id, $conn = NULL) {
+	public function __construct($id = NULL, HIS\Connection $conn = NULL) {
 		$this->bindings['table']   = "race_meet";
 		$this->bindings['key_fld'] = "race_meet_id";
 		$this->bindings['type']    = "i";
 		parent::__construct ( $id, $conn);
 	}
 	
-	public static function getTrackId($race_date) {
+	public static function getTrackId(string $race_date) {
 		$conn = new HIS\Connection();
 		$query = "SELECT
                     race_meet_id
@@ -49,7 +49,7 @@ class Meet extends \HisEntity {
 		return array('track_id' => $track_id);
 	}
 	
-	public function meet_filter($comparefield) {
+	public function meet_filter(string $comparefield) {
 		$filter  = "$comparefield >= '{$this->start_date}' AND ";
         $filter .= "$comparefield <= '{$this->end_date}' AND ";
         $filter .= "track_id = '{$this->track_id}'";
@@ -174,5 +174,137 @@ class Meet extends \HisEntity {
 		
 		return $meets;
 	}
+	
+	public function getSummaryStats(array $qryParams) {
+		$conn = new HIS\Connection();
+		// -- build basic stats query
+		$query="SELECT
+                 COUNT(DISTINCT race_date) AS dates,
+                 MAX(race_date) AS last_date,
+                 COUNT(DISTINCT race_date, race) AS races,
+                 SUM(IF(comment LIKE 'dead%',1,0)) AS deadheat,
+                 TRUNCATE(AVG(post_position),1) AS avg_post,
+                 SUM(IF(comment LIKE 'dead%',field_size/2,field_size)) AS sum_field_size,
+                 TRUNCATE(AVG(IF(odds>0,odds,NULL)),2) AS avg_odds,
+                 COUNT(DISTINCT trainer) AS trainers,
+                 COUNT(DISTINCT jockey) AS jockeys,
+                 COUNT(DISTINCT horse) AS horses
+                FROM tb17
+                WHERE {$this->meet_filter('race_date')} and horse <> ''"; // don't use if no horse enter yet
+		
+		// -- add WHERE clause
+		if ($qryParams['turf'] <> '') {
+			$query .= " AND turf='{$qryParams['turf']}'";
+			if ($qryParams['distance'] <> 'total') {
+				$query .= "AND distance ".($qryParams['distance']=='sprints' ? "<'8'" : ">='8'");
+			}
+		}
+		// will only get 1 entry and 'LIMIT' 1 is more efficient
+		$query .= " LIMIT 1";
+		
+		// -- run query
+		$stmt = $conn->db->prepare($query);
+		$stmt->execute();
+		$result=$stmt->get_result();
+		$stat_line=$result->fetch_assoc();
+		$stmt->free_result();
+		$stmt->close();
+		$conn->close();
+		
+		return $stat_line;
+	}
+	
+	public function getMultipleWinnerCount(array $qryParams) {
+		$conn = new HIS\Connection();
+		// get multiple winners count
+		$qry="SELECT
+               COUNT(*) as count
+              FROM (SELECT COUNT(*) AS Wins,
+                      horse
+                    FROM tb17
+                    WHERE {$this->meet_filter('race_date')} AND horse <> ''"; // don't use if no horse enter yet
+		// -- add to derived WHERE clause
+		if ($qryParams['turf'] <> '') {
+			$qry .= " AND turf='{$qryParams['turf']}'";
+		}
+		$qry .= " GROUP BY horse) AS multi_winners_count
+         WHERE Wins > '1' LIMIT 1";
+		
+		//echo "<br>$sum_field_size:$races";
+		// -- run query
+		$stmt = $conn->db->prepare($qry);
+		$stmt->execute();
+		$stmt->store_result();
+		$stmt->bind_result($multi_winners_count);
+		$stmt->fetch();
+		$stmt->free_result();
+		$stmt->close();
+		$conn->close();
+		return $multi_winners_count;
+	}
+	
+	function getTopTen(string $type, string $as_of_date, int $days) {
+		$conn = new HIS\Connection();
+		// -- build basic stats query
+		if ($days>0) {
+			$date= new DateTime($as_of_date);
+			$date->sub(new DateInterval('P'.$days.'D'));
+		} else {
+			$date= new DateTime($as_of_date);
+			$date->sub(new DateInterval('P1D'));
+		}
+		$date_diff=$date->format('Y-m-d');
+		
+		$query="SELECT
+	                  $type as name,
+	                  COUNT(*) as wins,
+	                  SUM(IF(favorite='TRUE',1,0)) as favs,
+	                  SUM(IF(turf='TRUE',1,0)) as turfs,
+	                  AVG(IF(odds<>0.0,odds,NULL)) as avg_odds
+	                FROM tb17
+	                WHERE race_date > ? AND trainer <> '' AND jockey <> '' AND {$this->meet_filter('race_date')}
+	                GROUP BY $type
+	                ORDER BY wins DESC, $type
+	                LIMIT 10
+	              ";
+	                  
+       // -- run query
+       $stmt = $conn->db->prepare($query);
+       $stmt->bind_param('s', $date_diff);
+       $stmt->execute();
+       $result=$stmt->get_result();
+       $rows=$result->fetch_all(MYSQLI_ASSOC);
+       $stmt->free_result();
+       $stmt->close();
+       $conn->close();
+       //print_r($rows);
+       return $rows;
+	}
+	
+	public function getRacesForDate(string $race_date) {
+		$conn = new HIS\Connection();
+		// -- get results for last date run
+		$query = "SELECT
+                    tb17_id
+                  FROM tb17
+                  WHERE race_date = ? AND {$this->meet_filter('race_date')}
+                  ORDER BY race
+                 ";
+		
+		$stmt = $conn->db->prepare($query);
+		$stmt->bind_param('s', $race_date);
+		$stmt->execute();
+		$stmt->store_result();
+		$stmt->bind_result($tb17_id);
+		$races = [];
+		while($stmt->fetch()) {
+			$races[] = new TB17($tb17_id);
+		}		
+		$stmt->free_result();
+		$stmt->close();
+		$conn->close();
+		return $races;
+	}
+	
 }
 

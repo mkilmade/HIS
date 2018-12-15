@@ -3,9 +3,9 @@ spl_autoload_register(function ($class) {
 	require_once 'classes/' . $class . '.class.php';
 });
 // called by getTrend.php
-function previousFinishTally($conn)
+	function previousFinishTally($defaults)
 {
-	$rm = new Meet($conn->defaults['race_meet_id']);
+	$rm = new Meet($defaults['race_meet_id']);
 	$tallies = $rm->getPreviousFinishTally();
 	
    echo "

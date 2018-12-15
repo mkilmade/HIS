@@ -1,6 +1,9 @@
 <?php
 require_once ('lib.php');
-
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});
+	
 class Connection
 {
 
@@ -16,7 +19,7 @@ class Connection
         // get databace connection.inc
         include (MYSQL);
         $this->db = $db;
-        $this->defaults = $this->get_his_defaults();
+        $this->defaults = Defaults::get_his_defaults();
     }
 
     // close database connection.inc object
@@ -24,40 +27,6 @@ class Connection
     {
         $this->db->close();
         // clog('Connection to database '.DB_NAME.' has been closed!');
-    }
-
-    // -- get current meet default values
-    public function get_his_defaults()
-    {
-        $query = "SELECT cd.race_meet_id,
-                     rm.track_id,
-                     rm.start_date,
-                     rm.end_date,
-                     rm.name AS meet_name,
-                     cd.past_days,
-                     cd.previous_track_id,
-                     trk.site_url,
-                     trk.scratches_url,
-                     trk.name AS track_name
-              FROM current_defaults AS cd
-              INNER JOIN race_meet AS rm
-                 USING (race_meet_id)
-              INNER JOIN track as trk
-                 USING (track_id)
-              LIMIT 1
-             ";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        $defaults = $stmt->get_result()->fetch_assoc();
-        $defaults['meet_name'] = addslashes($defaults['meet_name']);
-        $defaults['track_name'] = addslashes($defaults['track_name']);
-        $defaults['meet_filter'] = "race_date >= '{$defaults['start_date']}' AND 
-                                race_date <= '{$defaults['end_date']}' AND
-                                track_id = '{$defaults['track_id']}'";
-        $stmt->free_result();
-        $stmt->close();
-        return $defaults;
     }
     
     public function execute_query($query)
@@ -218,7 +187,10 @@ class Connection
             $data = [
                 "name" => $resourceName
             ];
-            $status = $this->insert_row($data, $tableName);
+            $className = ucfirst($tableName);
+            $resObj = new $className();
+            $status = $resObj->insert_entry($data);
+            //$status = $this->insert_row($data, $tableName);
         } else {
             $status="";
         }

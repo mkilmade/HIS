@@ -10,14 +10,14 @@ spl_autoload_register(function ($class) {
 });
 	
 	class TB17 extends \HisEntity {
-		public function __construct($id, $conn = NULL) {
+		public function __construct($id = NULL, HIS\Connection $conn = NULL) {
 			$this->bindings['table']   = "tb17";
 			$this->bindings['key_fld'] = "tb17_id";
 			$this->bindings['type']    = "i";
 		    parent::__construct ($id, $conn);
 		}
 
-		public static function last_race_date($meet_filter = NULL) {
+		public static function last_race_date(string $meet_filter = NULL) {
 			$conn = new HIS\Connection();
 			$query = "SELECT MAX(race_date)
 		              FROM tb17" . ($meet_filter == NULL ? "" : " WHERE $meet_filter") . "
@@ -38,7 +38,7 @@ spl_autoload_register(function ($class) {
 		}
 		
 		// -- get last race # for a date for current meet (null) or for a specific date during meet
-		public static function last_race($race_date = null, $meet_filter)
+		public static function last_race(string $race_date = null, string $meet_filter)
 		{
 			$conn = new HIS\Connection();
 			
@@ -68,9 +68,9 @@ spl_autoload_register(function ($class) {
 			return $last_race;
 		}
 		
-		public static function getRaceInfo($previous_date,
-				                           $previous_race,
-				                           $previous_track_id) {
+		public static function getRaceInfo(string $previous_date,
+				                           string $previous_race,
+				                           string $previous_track_id) {
 		    $conn = new HIS\Connection();
 			$qry = "SELECT tb17_id
                     FROM tb17
@@ -98,7 +98,7 @@ spl_autoload_register(function ($class) {
 
 		}
 		
-		public static function findKeyRaces($search_limit, $track_id) {
+		public static function findKeyRaces(int $search_limit, string $track_id) {
 			$date = new DateTime();
 			$date->sub(new DateInterval('P' . $search_limit . 'D'));
 			$limit = $date->format('Y-m-d');
@@ -126,9 +126,9 @@ spl_autoload_register(function ($class) {
 			return TB17::getResultArray($query);			
 		}
 		
-		public static function getNextOutWinners($previous_date,
-				                                 $previous_race,
-				                                 $previous_track_id) {
+		public static function getNextOutWinners(string $previous_date,
+				                                 string $previous_race,
+				                                 string $previous_track_id) {
 		    $conn = new HIS\Connection();
 		    $qry = "SELECT tb17_id
                 FROM tb17
@@ -154,7 +154,7 @@ spl_autoload_register(function ($class) {
 		    return $nows;	    
 		}
 		
-		public static function getIndividualMeetStats($table, $name, $meet_filter) {
+		public static function getIndividualMeetStats(string $table, string $name, string $meet_filter) {
 			$conn = new HIS\Connection();
 			$query = "SELECT
 			             COUNT(*) as 'Wins',
@@ -185,7 +185,7 @@ spl_autoload_register(function ($class) {
 			}
 		}
 		
-		public static function getRaceSummaryInfo($tb17_id) {
+		public static function getRaceSummaryInfo(int $tb17_id) {
 			$conn = new HIS\Connection();
 			$query = "SELECT race as 'Race',
 				             track_condition as 'Condition',
@@ -215,7 +215,7 @@ spl_autoload_register(function ($class) {
 			}
 		}
 		
-		public static function getResultArray($query) {
+		public static function getResultArray(string $query) {
 			$conn = new HIS\Connection();
 			$stmt = $conn->db->prepare($query);
 			if ($stmt->execute()) {

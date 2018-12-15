@@ -3,9 +3,9 @@ spl_autoload_register(function ($class) {
 	require_once 'classes/' . $class . '.class.php';
 });
 // called by getTrend.php
-function keyRaces($conn)
+function keyRaces($defaults)
 {
-	$key_races = TB17::findKeyRaces(90, $conn->defaults['track_id']);
+	$key_races = TB17::findKeyRaces(90, $defaults['track_id']);
 	// -- build html key race table
     echo "
       <table id='keyTable' class='tablesorter' style='width:900px; margin: auto; font-size:16px'>

@@ -1,174 +1,7 @@
 <?php
-    ini_set('session.gc_maxlifetime',3600);
-    session_start();
-
+    require_once('session.php');
     require_once('includes/config.inc.php');
     require_once('includes/connection.inc.php');
-    spl_autoload_register(function ($class) {
-    	require_once 'classes/' . $class . '.class.php';
-    });
-    $conn = new Connection();
-    //print_r($_SESSION);
-
-    // initialize track conditions to have more accurate input when
-    // adding winner entries by race # (lower to higher)
-    if(!isset($_SESSION['dirt_track_condition'])) $_SESSION['dirt_track_condition'] = "Fast";
-    if(!isset($_SESSION['turf_track_condition'])) $_SESSION['turf_track_condition'] = "Firm";
-
-    /*
-     --build stat line for display
-     statLine(connection.inc, turf [TRUE|FALSE])
-     */
-    $horse_cnts['Dirt']=0;
-    $horse_cnts['Turf']=0;
-    $horse_cnts['Total']=0;
-    $deadheat_cnt=0;
-    
-    function statLine(&$conn, $turf, $distance) {
-        
-        switch($turf) {
-            case 'TRUE':
-                $surface='Turf';
-                $surface_class='turf';
-                break;
-            case 'FALSE':
-                $surface='Dirt';
-                $surface_class='dirt';
-                break;
-            default:
-                $surface='Total';
-                $surface_class='total';
-                break;
-        }
-        // -- build basic stats query
-        $query="SELECT
-                 COUNT(DISTINCT race_date),
-                 MAX(race_date),
-                 COUNT(DISTINCT race_date, race),
-                 SUM(IF(comment LIKE 'dead%',1,0)) as deadheat,
-                 TRUNCATE(AVG(post_position),1),
-                 SUM(IF(comment LIKE 'dead%',field_size/2,field_size)),
-                 TRUNCATE(AVG(IF(odds>0,odds,NULL)),2),
-                 COUNT(DISTINCT trainer),
-                 COUNT(DISTINCT jockey),
-                 COUNT(DISTINCT horse)
-                FROM tb17
-                WHERE {$conn->defaults['meet_filter']} and horse <> ''"; // don't use if no horse enter yet
-        
-        // -- add WHERE clause
-        if ($surface <> 'Total') {
-            $query .= " AND turf='$turf'";
-            if ($distance <> 'total') {
-                $query .= "AND distance ".($distance=='sprints' ? "<'8'" : ">='8'");
-            }
-        }
-        // will only get 1 entry and 'LIMIT' 1 is more efficient
-        $query .= " LIMIT 1";
-        
-        // -- run query
-        $stmt = $conn->db->prepare($query);
-        $stmt->execute();
-        $stmt->store_result();
-        $stmt->bind_result($dates,
-            $last_date,
-            $races,
-            $deadheat,
-            $avg_post,
-            $sum_field_size,
-            $avg_odds,
-            $trainers,
-            $jockeys,
-            $horses);
-        $stmt->fetch();
-        $stmt->free_result();
-        $stmt->close();
-        
-        global $horse_cnts;
-        global $deadheat_cnt;
-        
-        if ($distance=='total') {
-            $horse_cnts[$surface] = $horse_cnts[$surface] + $horses;
-            $deadheat_cnt += ($deadheat/2);
-        }
-        // get multiple winners count
-        $qry="SELECT
-               COUNT(*) as count
-              FROM (SELECT COUNT(*) AS Wins,
-                      horse
-                    FROM tb17
-                    WHERE {$conn->defaults['meet_filter']} AND horse <> ''"; // don't use if no horse enter yet
-        // -- add to derived WHERE clause
-        if ($surface <> 'Total') {
-            $qry .= " AND turf='$turf'";
-        }
-        $qry .= " GROUP BY horse) AS multi_winners_count
-         WHERE Wins > '1' LIMIT 1";
-        
-        //echo "<br>$sum_field_size:$races";
-        // -- run query
-        $stmt2 = $conn->db->prepare($qry);
-        $stmt2->execute();
-        $stmt2->store_result();
-        $stmt2->bind_result($multi_winners_count);
-        $stmt2->fetch();
-        $stmt2->free_result();
-        $stmt2->close();
-        
-        
-        // -- build stat line for display
-        echo "
-      <tr class=$surface_class>
-        <td>$surface".($distance=='total' ? '' : '/'.$distance)."</td>
-        <td>$dates</td>
-        <td>$last_date</td>
-        <td>$races</td>
-        <td>$avg_post</td>
-        <td>".($races>0 ? round($sum_field_size/$races,2) : 0)."</td>
-        <td>$avg_odds</td>
-        <td>$trainers</td>
-        <td>$jockeys</td>
-        <td>$horses</td>
-        <td>$multi_winners_count</td>
-      </tr>
-      ";
-    }
-    
-    function topTen(&$conn, $type, $as_of_date, $days) {
-        // -- build basic stats query
-        if ($days>0) {
-            $date= new DateTime($as_of_date);
-            $date->sub(new DateInterval('P'.$days.'D'));
-        } else {
-            $date= new DateTime($conn->defaults['start_date']);
-            $date->sub(new DateInterval('P1D'));
-        }
-        $diff=$date->format('Y-m-d');
-        
-        $query="SELECT
-                  $type as name,
-                  COUNT(*) as wins,
-                  SUM(IF(favorite='TRUE',1,0)) as favs,
-                  SUM(IF(turf='TRUE',1,0)) as turfs,
-                  AVG(IF(odds<>0.0,odds,NULL)) as avg_odds
-                FROM tb17
-                WHERE race_date > ? AND trainer <> '' AND jockey <> '' AND {$conn->defaults['meet_filter']}
-                GROUP BY $type
-                ORDER BY wins DESC, $type
-                LIMIT 10
-              ";
-          
-          // -- run query
-          $stmt = $conn->db->prepare($query);
-          $stmt->bind_param('s', $diff);
-          $stmt->execute();
-          $result=$stmt->get_result();
-          $rows=$result->fetch_all(MYSQLI_ASSOC);
-          $stmt->free_result();
-          $stmt->close();
-          //print_r($rows);
-          return $rows;
-    }
-    
 ?>
 <!DOCTYPE html>
 <html>
@@ -344,6 +177,7 @@
           <td><a href='trends.php'>Trends/Stats</a></td>
           <td><a href='nextOutWinners.php'>NOW</a></td>
           <td><a href='edit_defaults.php'>Settings</a></td>
+          <td><a href='session.php?reset_session=1'>Reset</a></td>
         </tr>
     </table>
     <br>
@@ -371,112 +205,158 @@
       </tr></thead>
       <tbody>
 <?php
-    // -- get last racing date and defaults
-$lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
+/*
+ --build stat line for display
+ statLine(connection.inc, turf [TRUE|FALSE])
+ */
+$horse_cnts['Dirt']=0;
+$horse_cnts['Turf']=0;
+$horse_cnts['Total']=0;
+$deadheat_cnt=0;
 
-    // if meet has not started or no winners entered yet for meet, return
+function statLine($turf, $distance) {
+	
+	switch($turf) {
+		case 'TRUE':
+			$surface='Turf';
+			$surface_class='turf';
+			break;
+		case 'FALSE':
+			$surface='Dirt';
+			$surface_class='dirt';
+			break;
+		default:
+			$surface='Total';
+			$surface_class='total';
+			break;
+	}
+	
+	$meetObj = new Meet($_SESSION['defaults']['race_meet_id']);
+	$stat_line = $meetObj->getSummaryStats(['turf' => $turf, 'distance' => $distance] );
+	
+	global $horse_cnts;
+	global $deadheat_cnt;
+	if ($distance=='total') {
+		$horse_cnts[$surface] = $horse_cnts[$surface] + $stat_line['horses'];
+		$deadheat_cnt += ($stat_line['deadheat']/2);
+	}
+	
+	$multi_winners_count = $meetObj->getMultipleWinnerCount(['turf' => $turf]);
+	
+	// -- build stat line for display
+	echo "
+      <tr class=$surface_class>
+        <td>$surface".($distance=='total' ? '' : '/'.$distance)."</td>
+        <td>{$stat_line['dates']}</td>
+        <td>{$stat_line['last_date']}</td>
+        <td>{$stat_line['races']}</td>
+        <td>{$stat_line['avg_post']}</td>
+        <td>".($stat_line['races']>0 ? round($stat_line['sum_field_size']/$stat_line['races'],2) : 0)."</td>
+        <td>{$stat_line['avg_odds']}</td>
+        <td>{$stat_line['trainers']}</td>
+        <td>{$stat_line['jockeys']}</td>
+        <td>{$stat_line['horses']}</td>
+        <td>$multi_winners_count</td>
+      </tr>
+      ";
+}
+// -- get last racing date and defaults
+$lrdate=TB17::last_race_date($_SESSION['defaults']['meet_filter']);
+
+    // if meet has not started or no winners entered yet for meet, return/abort
     if ($lrdate=='') {
       echo "
       </tbody>
     </body>
-        <script>
-          $(document).ready(function() {
-            $('#scratches_url').attr('href','{$conn->defaults['scratches_url']}');
-            $('#site_url').attr('href','{$conn->defaults['site_url']}');
-            $('#title').text('{$conn->defaults['meet_name']}".(DB_PRODUCTION == 1 ? '' :' ['.DB_NAME.']')."');
-           });
-        </script>
     </html>
       ";
       return;
     }
     // -- build major stat lines
-    statLine($conn, '', 'total');
+    statLine('', 'total');
 
-    statLine($conn, 'FALSE', 'total');
-    //statLine($conn, 'FALSE', 'sprints');
-    //statLine($conn, 'FALSE', 'routes');
+    statLine('FALSE', 'total');
+    //statLine('FALSE', 'sprints');
+    //statLine('FALSE', 'routes');
 
-    statLine($conn, 'TRUE', 'total');
-    //statLine($conn, 'TRUE', 'sprints');
-    //statLine($conn, 'TRUE', 'routes');
+    statLine('TRUE', 'total');
+    //statLine('TRUE', 'sprints');
+    //statLine('TRUE', 'routes');
 ?>
-
       </tbody>
     </table>
     <br>
 
 <?php
-    // -- build top ten lists
-
+    $meetObj = new Meet($_SESSION['defaults']['race_meet_id']);
     // -- get top ten list data and send
-    $topJockeys=topTen($conn, "jockey", $lrdate, 0);
-    $topTrainers=topTen($conn, "trainer", $lrdate, 0);
-    $topJockeysRecent=topTen($conn, "jockey", $lrdate, $conn->defaults['past_days']);
-    $topTrainersRecent=topTen($conn, "trainer", $lrdate, $conn->defaults['past_days']);
+	$tj  = $meetObj->getTopTen("jockey", $_SESSION['defaults']['start_date'], 0);
+	$tt  = $meetObj->getTopTen("trainer", $_SESSION['defaults']['start_date'], 0);
+	$tjr = $meetObj->getTopTen("jockey", $lrdate, $_SESSION['defaults']['past_days']);
+	$ttr = $meetObj->getTopTen("trainer", $lrdate, $_SESSION['defaults']['past_days']);
     echo "
     <div class='center'>
     <div style='float: left;' onmouseout=\"clearInfo()\">
     <table id='topTenLists'>
-      <caption>Top 10 Wins Lists for {$conn->defaults['start_date']} thru $lrdate & Last {$conn->defaults['past_days']} Days</caption>
+      <caption>Top 10 Wins Lists for {$_SESSION['defaults']['start_date']} thru $lrdate & Last {$_SESSION['defaults']['past_days']} Days</caption>
       <thead>
         <th>Trainer</th>
         <th>Meet</th>
         <th>Trainer</th>
-        <th>Last {$conn->defaults['past_days']}</th>
+        <th>Last {$_SESSION['defaults']['past_days']}</th>
         <th class='thick'>Jockey</th>
         <th>Meet</th>
         <th>Jockey</th>
-        <th>Last {$conn->defaults['past_days']}</th>
+        <th>Last {$_SESSION['defaults']['past_days']}</th>
       </thead>
       <tbody>
     ";
 
-    for($row=0; $row<count($topJockeys); ++$row) {
+    for($row=0; $row<count($tj); ++$row) {
       echo "
         <tr>
-          <td onmouseover=\"showIndividualStats('trainer', '".$topTrainers[$row]['name']."')\">{$topTrainers[$row]['name']}</td>
-          <td onmouseover=\"showGraphic('trainer', '".addslashes($topTrainers[$row]['name'])."')\"
+          <td onmouseover=\"showIndividualStats('trainer', '".$tt[$row]['name']."')\">{$tt[$row]['name']}</td>
+          <td onmouseover=\"showGraphic('trainer', '".addslashes($tt[$row]['name'])."')\"
               class='nums'>
-              <div class='tooltip2'>{$topTrainers[$row]['wins']}
-                <span class='tooltiptext2'>{$topTrainers[$row]['favs']} fav
-                                       <br>{$topTrainers[$row]['turfs']} turf
-                                       <br>$".round($topTrainers[$row]['avg_odds'],1)." odds
+              <div class='tooltip2'>{$tt[$row]['wins']}
+                <span class='tooltiptext2'>{$tt[$row]['favs']} fav
+                                       <br>{$tt[$row]['turfs']} turf
+                                       <br>$".round($tt[$row]['avg_odds'],1)." odds
                 </span>
               </div>
           </td>
 
-          <td onmouseover=\"showIndividualStats('trainer', '".addslashes($topTrainersRecent[$row]['name'])."')\">{$topTrainersRecent[$row]['name']}</td>
-          <td onmouseover=\"showGraphic('trainer', '".addslashes($topTrainersRecent[$row]['name'])."')\"
+          <td onmouseover=\"showIndividualStats('trainer', '".addslashes($ttr[$row]['name'])."')\">{$ttr[$row]['name']}</td>
+          <td onmouseover=\"showGraphic('trainer', '".addslashes($ttr[$row]['name'])."')\"
               class='nums'>
-            <div class='tooltip2'>{$topTrainersRecent[$row]['wins']}
-              <span class='tooltiptext2'>{$topTrainersRecent[$row]['favs']} fav
-                                     <br>{$topTrainersRecent[$row]['turfs']} turf
-                                     <br>$".round($topTrainersRecent[$row]['avg_odds'],1)." odds
+            <div class='tooltip2'>{$ttr[$row]['wins']}
+              <span class='tooltiptext2'>{$ttr[$row]['favs']} fav
+                                     <br>{$ttr[$row]['turfs']} turf
+                                     <br>$".round($ttr[$row]['avg_odds'],1)." odds
               </span>
             </div>
           </td>
 
           <td class='thick' 
-              onmouseover=\"showIndividualStats('jockey', '".addslashes($topJockeys[$row]['name'])."')\">{$topJockeys[$row]['name']}</td>
+              onmouseover=\"showIndividualStats('jockey', '".addslashes($tj[$row]['name'])."')\">{$tj[$row]['name']}</td>
           <td 
-              onmouseover=\"showGraphic('jockey', '".addslashes($topJockeys[$row]['name'])."')\"
+              onmouseover=\"showGraphic('jockey', '".addslashes($tj[$row]['name'])."')\"
               class='nums'>
-            <div class='tooltip2'>{$topJockeys[$row]['wins']}
-              <span class='tooltiptext2'>{$topJockeys[$row]['favs']} fav
-                                     <br>{$topJockeys[$row]['turfs']} turf
-                                     <br>$".round($topJockeys[$row]['avg_odds'],1)." odds
+            <div class='tooltip2'>{$tj[$row]['wins']}
+              <span class='tooltiptext2'>{$tj[$row]['favs']} fav
+                                     <br>{$tj[$row]['turfs']} turf
+                                     <br>$".round($tj[$row]['avg_odds'],1)." odds
               </span>
             </div>
           </td>
 
-          <td onmouseover=\"showIndividualStats('jockey', '".addslashes($topJockeysRecent[$row]['name'])."')\">{$topJockeysRecent[$row]['name']}</td>
-          <td onmouseover=\"showGraphic('jockey', '".addslashes($topJockeysRecent[$row]['name'])."')\"
+          <td onmouseover=\"showIndividualStats('jockey', '".addslashes($tjr[$row]['name'])."')\">{$tjr[$row]['name']}</td>
+          <td onmouseover=\"showGraphic('jockey', '".addslashes($tjr[$row]['name'])."')\"
               class='nums'>
-            <div class='tooltip2'>{$topJockeysRecent[$row]['wins']}
-              <span class='tooltiptext2'>{$topJockeysRecent[$row]['favs']} fav
-                                     <br>{$topJockeysRecent[$row]['turfs']} turf
-                                     <br>$".round($topJockeysRecent[$row]['avg_odds'],1)." odds
+            <div class='tooltip2'>{$tjr[$row]['wins']}
+              <span class='tooltiptext2'>{$tjr[$row]['favs']} fav
+                                     <br>{$tjr[$row]['turfs']} turf
+                                     <br>$".round($tjr[$row]['avg_odds'],1)." odds
               </span>
             </div>
           </td>
@@ -494,56 +374,16 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
     
     // --- entry url
     $url="edit_winner.php?tb17_id";
-
     // -- get results for last date run
-    $query = "SELECT
-                tb17_id,
-                race,
-                race_date,
-                distance,
-                turf,
-                race_class,
-                sex,
-                age,
-                odds,
-                horse,
-                jockey,
-                trainer,
-                race_flow,
-                comment,
-                favorite
-              FROM tb17
-              WHERE race_date='$lrdate' AND {$conn->defaults['meet_filter']}
-              ORDER BY race
-            ";
-
-    $stmt = $conn->db->prepare($query);  
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($tb17_id, 
-                       $race,
-                       $race_date,
-                       $distance,
-                       $turf,
-                       $race_class,
-                       $sex,
-                       $age,
-                       $odds,
-                       $horse,
-                       $jockey,
-                       $trainer,
-                       $race_flow,
-                       $comment,
-                       $favorite);
-
+    $races = $meetObj->getRacesForDate($lrdate);
     // -- build html result table
     $date = new DateTime($lrdate, new DateTimeZone('America/New_York'));
-    $chart_file="http://www.equibase.com/premium/chartEmb.cfm?track={$conn->defaults['track_id']}&raceDate=".$date->format("m/d/y")."&cy=USA&rn=1";
+    $chart_file="http://www.equibase.com/premium/chartEmb.cfm?track={$_SESSION['defaults']['track_id']}&raceDate=".$date->format("m/d/y")."&cy=USA&rn=1";
     echo "
       <div class='center'>
       <div style='clear: left; float: left;' onmouseout=\"clearInfo()\">
       <table id='resultTable' class='tablesorter'>
-        <caption>Latest Racing Day Results (Date: $lrdate - ".$date->format('l')."  $stmt->num_rows races)  <a target='_blank' href='$chart_file'>Charts</a></caption>
+        <caption>Latest Racing Day Results (Date: $lrdate - " . $date->format('l') . "  " . count($races) . " races)  <a target='_blank' href='$chart_file'>Charts</a></caption>
       <thead>
         <tr>
           <th>Race</th>
@@ -557,19 +397,19 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
       <tbody>
       ";
 
-    //$type="'id'"; // this line probably should be removed
-    while($stmt->fetch()) {
+    foreach($races as $tb17Obj) {
       echo "
-        <tr onmouseover=\"showRaceSummaryInfo($tb17_id)\">
-          <td class='nums'><a href='$url=$tb17_id'>$race</a></td>
-          <td class='nums ".($turf=='TRUE' ? 'turf' : '')."'>$distance</td>
-          <td>$race_class <sup>".($sex=='female' ? 'f ' :'')."$age</sup></td>
-          <td>$horse".($favorite=='TRUE' ? '<sup>*</sup>' : '')."</td>
-          <td>$jockey</td>
-          <td>$trainer</td>
+        <tr onmouseover=\"showRaceSummaryInfo({$tb17Obj->tb17_id})\">
+          <td class='nums'><a href='$url={$tb17Obj->tb17_id}'>{$tb17Obj->race}</a></td>
+          <td class='nums ".($tb17Obj->turf=='TRUE' ? 'turf' : '')."'>{$tb17Obj->distance}</td>
+          <td>{$tb17Obj->race_class} <sup>".($tb17Obj->sex=='female' ? 'f ' :'')."{$tb17Obj->age}</sup></td>
+          <td>{$tb17Obj->horse}".($tb17Obj->favorite=='TRUE' ? '<sup>*</sup>' : '')."</td>
+          <td>{$tb17Obj->jockey}</td>
+          <td>{$tb17Obj->trainer}</td>
          </tr>
       ";
     }
+    
     echo "
         </tbody>
         </table>
@@ -578,21 +418,20 @@ $lrdate=TB17::last_race_date($conn->defaults['meet_filter']);
       </div>
       <script>
         $(document).ready(function() {
+          $('#scratches_url').attr('href','{$_SESSION['defaults']['scratches_url']}');
+          $('#site_url').attr('href','{$_SESSION['defaults']['site_url']}');
+          $('#title').text('{$_SESSION['defaults']['meet_name']}".(DB_PRODUCTION == 1 ? '' :' ['.DB_NAME.']')."');
           $('#resultTable').tablesorter({widgets: ['zebra']});
           $('#deadheats').text('".($deadheat_cnt/2)." races were deadheats');
           $('#multiwinners').text('".(($horse_cnts['Turf']+$horse_cnts['Dirt'])-$horse_cnts['Total'])." horses won on dirt & turf');
-          $('#scratches_url').attr('href','{$conn->defaults['scratches_url']}');
-          $('#site_url').attr('href','{$conn->defaults['site_url']}');
-          $('#title').text('{$conn->defaults['meet_name']}".(DB_PRODUCTION == 1 ? '' : ' ['.DB_NAME.']')."');
+          $('#scratches_url').attr('href','{$_SESSION['defaults']['scratches_url']}');
+          $('#site_url').attr('href','{$_SESSION['defaults']['site_url']}');
+          $('#title').text('{$_SESSION['defaults']['meet_name']}".(DB_PRODUCTION == 1 ? '' : ' ['.DB_NAME.']')."');
           // clear/hide dynamic eleemnts
           clearInfo();
         });
       </script>
     ";
-
-    $stmt->free_result();
-    $stmt->close();
-    $conn->close();
 ?>
 </body>
 </html>

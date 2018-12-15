@@ -1,8 +1,9 @@
 <?php
 session_start();
 require_once ('includes/config.inc.php');
-require_once ('includes/connection.inc.php');
-$conn = new Connection();
+spl_autoload_register(function ($class) {
+	require_once "classes/". $class . '.class.php';
+});
 ?>
 <!DOCTYPE html>
 <html>
@@ -69,15 +70,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // check for resource and insert new jockey or trainer or horse if does not exist
         if ($field == 'jockey' || $field == 'trainer' || $field == 'horse') {
-            $status = $conn->addResource($field, $value);
-            switch($status) {
-                case(1):
-                    $status = "(Added)";
-                    break;
-                case(""):
-                    break;
-                default:
-                    $status = "(Insertion Failed: $status";                
+        	$className = ucfirst($field);
+        	$resObj = new $className();
+        	$status = $resObj->addResource($value);
+        	if ($status) {
+        		$id_field = $field."_id";
+        		$status = "(Added #{$resObj->$id_field})";
+        	} elseif($status == "") {
+        		$status = "";
+        	} else {
+        		$status = "(Insertion Failed: $status)";                
             }
         } else {
             $status = "";
@@ -102,18 +104,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               <td>SQL</td>
               <td>INSERT INTO 'tbd'.'tb17' ($fields) VALUES ($values)</td>
             </tr>";
-
-    $status = $conn->insert_row($post, "tb17");
-    $status = ($status == 1) ? "Success" : "Failed: " . $status;
-    $status_style = ($status == "Success") ? "" : "style='color: #DC143C';";
+    $tb17Obj = new TB17();
+    $status = $tb17Obj->insert_entry($post);
+    if ($status) {
+    	$status_txt = "Success: Inserted row id = " . $tb17Obj->tb17_id;
+    	$status_style = "";
+    } else {
+    	$status_txt = "Failed: " . $status;
+    	$status_style = "style='color: #DC143C';";
+    }
 
     echo "<tr>
               <td $status_style >Insertion Status</td>
-              <td $status_style >$status $wins</td>
+              <td $status_style >$status_txt</td>
             </tr>
       ";
 
-    if ($status != "Success") {
+    if (!$status) {
         // log warning
         trigger_error("Warning -> Insert " . $status, E_USER_WARNING);
 
@@ -125,7 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ";
     } // if
 }
-$conn->close();
 ?>
   </table>
 </body>

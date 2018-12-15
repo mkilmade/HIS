@@ -4,9 +4,9 @@ spl_autoload_register(function ($class) {
 	require_once 'classes/' . $class . '.class.php';
 });
 // called by getTrend.php
-function previousRaceAtMeetPerCard($conn)
+	function previousRaceAtMeetPerCard($defaults)
 {
-	$rm = new Meet($conn->defaults['race_meet_id']);
+	$rm = new Meet($defaults['race_meet_id']);
 	$tallies = $rm->getPreviousRaceAtMeetPerCard();
 	
     echo "
