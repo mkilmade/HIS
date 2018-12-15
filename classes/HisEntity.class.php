@@ -70,9 +70,10 @@ spl_autoload_register(function ($class) {
 			return $status;
 		}
 		
-		public function update_entry(array &$data, $id) {
+		public function update_entry(array &$data) {
 			$conn = new HIS\Connection();
-			$status =  $conn->update_row($data, $this->bindings['table'], $id);
+			$key_fld = $this->bindings['key_fld'];
+			$status =  $conn->update_row($data, $this->bindings['table'], $this->$key_fld);
 			if ($status) {
 				$this->setProperties($data);
 			}

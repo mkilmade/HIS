@@ -65,11 +65,8 @@
       $current = new TB17($_POST['tb17_id']);
       
       foreach($post as $field => $value) {
-        if ($field == 'tb17_id') $id=$value;
-        
         // no need to update field if same value
         if ($value == $current->$field) { //[$field]) {
-          //echo "<hr>" . $field . ": new: " . $value . " database: " . $current->$field;
           unset($post[$field]);
           continue;
         }
@@ -109,10 +106,10 @@
         echo "<tr>
                 <td>SQL</td>
                 <td># of fields: ".(count($post))."</td>
-                <td>UPDATE tb17 SET $fldvals WHERE tb17_id='$id'</td>
+                <td>UPDATE tb17 SET $fldvals WHERE tb17_id='{$_POST['tb17_id']}'</td>
               </tr>";
 
-        $status = $current->update_entry($post, $id);
+        $status = $current->update_entry($post);
         if ($status) {
         	$status_txt = "Success";
         	$status_style = "";

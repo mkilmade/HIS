@@ -1,25 +1,19 @@
 <?php
 session_start();
 require_once('includes/config.inc.php');
-require_once('includes/connection.inc.php');
-$conn = new Connection();
-
 header('Location: session.php?reset_session=1');
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $post = $_POST;
     unset($post['submit']);
-    $query = "SELECT *
-              FROM current_defaults
-              LIMIT 1
-             ";
-    $stmt = $conn->db->prepare($query);
-    $stmt->execute();
-    $entry = $stmt->get_result()->fetch_assoc();
-
+    // get current values for comparisons via object
+    $current = new Defaults();
     foreach ($post as $field => $value) {
-        if ($field == 'current_defaults_id')
-            $id = $value;
-        if ($value == $entry[$field]) {
+    	if ($field == 'current_defaults_id') {
+            unset($post[$field]);
+            continue;
+        }
+        if ($value == $current->$field) {
             unset($post[$field]);
             continue;
         } else {
@@ -31,14 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } // value check 'else'
 
     if ((count($post)) > 0) {
-        $status = $conn->update_row($post, 'current_defaults', $id);
-        if ($status != "Success") {
+    	$status = $current->update_entry($post);
+        if (!$status) {
             // log warning
             trigger_error("Warning -> Update " . $status, E_USER_WARNING);
         } // $status if
     } // count if
 } // REQUEST_METHOD if
-
-$stmt->close();
-$conn->close();
 ?>
