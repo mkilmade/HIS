@@ -1,7 +1,9 @@
 <?php
-    require_once('session.php');
-    require_once('includes/config.inc.php');
-    require_once('includes/connection.inc.php');
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});
+require_once('session.php');
+require_once('includes/config.inc.php');
 ?>
 <!DOCTYPE html>
 <html>

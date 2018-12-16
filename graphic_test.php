@@ -1,20 +1,24 @@
 <?php
 session_start();
+spl_autoload_register(function ($class) {
+	require_once 'classes/' . $class . '.class.php';
+});
 require_once('includes/config.inc.php');
-require_once('includes/connection.inc.php');;
-$conn = new Connection();
 
 $type = $_GET['type'];
 $name = urldecode($_GET['name']);
 
-// -- get last racing date and defaults
-$race_dates = $conn->getRaceDates();
+// -- get meet object
+$meetObj = new Meet($_SESSION['defaults']['race_meet_id']);
+// -- get array race dates for meet
+$race_dates = $meetObj->getRaceDates();
 $days_in_meet = end($race_dates);
 $win_tally = 0;
 $graphValues = array(
     0
 );
-$win_counts = $conn->getWinCounts($type, $name);
+// -- get win count for resource (trn/jock)
+$win_counts = $meetObj->getWinCounts($type, $name);
 foreach ($race_dates as $race_date => $win_count) {
     if (isset($win_counts[$race_date])) {
         $win_tally = $win_tally + $win_counts[$race_date];
@@ -109,5 +113,4 @@ imagestring($image, 3, 115, 15, ucfirst($type) . ": $name", $colorBlue);
 // Output graph and clear image from memory
 imagepng($image);
 imagedestroy($image);
-$conn->close();
 ?>

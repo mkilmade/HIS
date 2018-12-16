@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Tampa Bay Downs 2017/18 Entry</title>
+<title>Quick Entry Dump</title>
 </head>
 <body>
-	<h1>Raw Entry Result</h1>
+	<h1>Quick Entry Dump</h1>
 	<table>
 		<tr>
 			<td><a href='index.php'>Home</a></td>
@@ -12,28 +12,18 @@
 		</tr>
 	</table>
 	<br />
-	<table>
-	
+	<table>	
 <?php
     session_start();
-    require_once('includes/config.inc.php');
-    require_once('includes/connection.inc.php');;
-    $conn = new Connection();
-    
-    // each entry field/value pairs
-    $stmt = $conn->db->prepare("SELECT * FROM tb17 WHERE tb17_id = ?");
-    $stmt->bind_param('s', $_GET['tb17_id']);
-    $stmt->execute();
-    
-    // format html
+    spl_autoload_register(function ($class) {
+    	require_once 'classes/' . $class . '.class.php';
+    });
+    $tb17Obj = new TB17($_GET['tb17_id']);
+    // format html table rows
     $html="";
-    foreach ($stmt->get_result()->fetch_assoc() as $field => $value) {
+    foreach ($tb17Obj as $field => $value) {
         $html .= "<tr><td align='right'>$field:</td><td><b>$value</b></td></tr>";
     }
-    $stmt->free_result();
-    $stmt->close();
-    $conn->close();
-    
     // send html to browser
     echo $html;
 ?>

@@ -305,6 +305,63 @@ class Meet extends \HisEntity {
 		$conn->close();
 		return $races;
 	}
+
+	public function getRaceDates()
+	{
+		$conn = new HIS\Connection();
+		$race_dates = array();
+		$query = "SELECT DISTINCT race_date
+              FROM tb17
+              WHERE {$this->meet_filter('race_date')}
+              ORDER BY race_date";
+		
+		$stmt = $conn->db->prepare($query);
+		$stmt->execute();
+		$stmt->store_result();
+		if ($stmt->num_rows == 0) {
+			return $race_dates;
+		}
+		$stmt->bind_result($race_date);
+		$day_of_meet = 0;
+		while ($stmt->fetch()) {
+			$day_of_meet = $day_of_meet + 1;
+			$race_dates[$race_date] = $day_of_meet;
+		}
+		$stmt->free_result();
+		$stmt->close();
+		$conn->close();
+		return $race_dates;
+	}
+	
+	public function getWinCounts(string $type, string $name)
+	{
+		$conn = new HIS\Connection();
+		$win_counts = array();
+		$query = "SELECT DISTINCT race_date,
+                     COUNT(*) as win_count
+              FROM tb17
+              WHERE $type = ? AND {$this->meet_filter('race_date')}
+              GROUP BY race_date
+              ORDER BY race_date";
+		
+		$stmt = $conn->db->prepare($query);
+		$stmt->bind_param('s', $name);
+		$stmt->execute();
+		$stmt->store_result();
+		if ($stmt->num_rows == 0) {
+			return $win_counts;
+		}
+		$stmt->bind_result($race_date, $win_count);
+		while ($stmt->fetch()) {
+			$win_counts[$race_date] = $win_count;
+		}
+		$stmt->free_result();
+		$stmt->close();
+		$conn->close();
+		return $win_counts;
+	}
+	
+	
 	
 }
 
