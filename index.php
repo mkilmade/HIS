@@ -398,12 +398,15 @@ $lrdate=TB17::last_race_date($_SESSION['defaults']['meet_filter']);
       ";
 
     foreach($races as $tb17Obj) {
-      echo "
+    	$class_sup = ($tb17Obj->sex=='female' ? 'f ' :'') . $tb17Obj->age;
+    	$distance_sup = (strpos($tb17Obj->comment, "OTT") !== false ? 'OTT' : '');
+    	$horse_sup = ($tb17Obj->favorite=='TRUE' ? '* ' : '') . (strpos($tb17Obj->comment, "FTS") !== false ? 'FTS' : '');
+    	echo "
         <tr onmouseover=\"showRaceSummaryInfo({$tb17Obj->tb17_id})\">
           <td class='nums'><a href='$url={$tb17Obj->tb17_id}'>{$tb17Obj->race}</a></td>
-          <td class='nums ".($tb17Obj->turf=='TRUE' ? 'turf' : '')."'>{$tb17Obj->distance}</td>
-          <td>{$tb17Obj->race_class} <sup>".($tb17Obj->sex=='female' ? 'f ' :'')."{$tb17Obj->age}</sup></td>
-          <td>{$tb17Obj->horse}".($tb17Obj->favorite=='TRUE' ? '<sup>*</sup>' : '')."</td>
+          <td class='nums ".($tb17Obj->turf=='TRUE' ? 'turf' : '')."'>{$tb17Obj->distance} <sup>$distance_sup</sup></td>
+          <td>{$tb17Obj->race_class} <sup>$class_sup</sup></td>
+          <td>{$tb17Obj->horse} <sup>$horse_sup</sup></td>
           <td>{$tb17Obj->jockey}</td>
           <td>{$tb17Obj->trainer}</td>
          </tr>

@@ -50,6 +50,7 @@ class Defaults extends \HisEntity {
                                 track_id = '{$defaults['track_id']}'";
 		$stmt->free_result();
 		$stmt->close();
+		$conn->close();
 		return $defaults;
 	}
 	
