@@ -26,5 +26,60 @@ spl_autoload_register(function ($class) {
 			}
 		}
 		
+		public static function getResourceNames($name) {
+			$tablename = lcfirst(get_called_class()); 
+			$conn = new HIS\Connection();
+			$id = $tablename . "_id";
+			$searchname=$name."%";
+			// first list those matching 'shortcut' field
+			$query = "SELECT $id, name, shortcut
+              FROM $tablename
+              WHERE shortcut LIKE ?
+              ORDER BY shortcut";
+			
+			$stmt = $conn->db->prepare($query);
+			$stmt->bind_param('s', $searchname);
+			$stmt->execute();
+			$stmt->store_result();
+			$stmt->bind_result($id, $name, $shortcut);
+			
+			$names = array();
+			if ($stmt->num_rows > 0) {
+				while ($stmt->fetch()) {
+					$names[] = array(
+							'label' => htmlentities($shortcut . ' - ' . $name, ENT_NOQUOTES),
+							'value' => htmlentities($name, ENT_NOQUOTES) // change to $id when normalized
+					);
+				}
+			}
+			$stmt->free_result();
+			$stmt->close();
+			
+			// add those matching 'name' field
+			$query = "SELECT $id, name
+              FROM $tablename
+              WHERE name LIKE ?
+              ORDER BY name";
+			
+			$stmt = $conn->db->prepare($query);
+			$stmt->bind_param('s', $searchname);
+			$stmt->execute();
+			$stmt->store_result();
+			$stmt->bind_result($id, $name);
+			
+			if ($stmt->num_rows > 0) {
+				while ($stmt->fetch()) {
+					$names[] = array(
+							'label' => htmlentities($name, ENT_NOQUOTES),
+							'value' => htmlentities($name, ENT_NOQUOTES) // change to $id when normalized
+					);
+				}
+			}
+			$stmt->free_result();
+			$stmt->close();
+			$conn->close();
+			
+			return $names;
+		}
 	}
-
+	

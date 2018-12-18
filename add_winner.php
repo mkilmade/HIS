@@ -3,8 +3,6 @@
     // form to log winning entry into the tbd.tb17 table
 require_once('session.php');
 require_once('includes/config.inc.php');
-require_once('includes/connection.inc.php');
-$conn = new Connection();
 ?>
 <!DOCTYPE html>
 <html>
@@ -76,13 +74,12 @@ table#nowTable td {
   $(document).ready(function() {
 <?php
     // -- get last race date a& next race #
-    $last_race_date = TB17::last_race_date($conn->defaults['meet_filter']);
-    $next_race = TB17::last_race($last_race_date, $conn->defaults['meet_filter']) + 1;
-    $conn->close();
+$last_race_date = TB17::last_race_date($_SESSION['defaults']['meet_filter']);
+    $next_race = TB17::last_race($last_race_date, $_SESSION['defaults']['meet_filter']) + 1;
     echo "
     var last_race_date = '$last_race_date',
         next_race = '$next_race',
-        current_track_id = '{$conn->defaults['track_id']}',
+        current_track_id = '{$_SESSION['defaults']['track_id']}',
         dirt_track_condition = '{$_SESSION['dirt_track_condition']}',
         turf_track_condition = '{$_SESSION['turf_track_condition']}';
         

@@ -126,6 +126,31 @@ spl_autoload_register(function ($class) {
 			return TB17::getResultArray($query);			
 		}
 		
+		public static function getPreviousNextOutWinnersCount($previous_date,
+					                                          $previous_track_id,
+					                                          $previous_race) {
+		   $conn = new HIS\Connection();
+		   $query = "SELECT
+                   		COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
+                  	FROM tb17
+                  	WHERE previous_date = ? AND
+                    	  previous_track_id = ? AND
+                       	  previous_race = ?";
+					
+			$stmt = $conn->db->prepare($query);
+			$stmt->bind_param('ssi', $previous_date,
+									 $previous_track_id,
+									 $previous_race);
+			$stmt->execute();
+			$stmt->store_result();
+			$stmt->bind_result($wins);
+			$stmt->fetch();
+			$stmt->free_result();
+			$stmt->close();
+					
+			return array('wins' => $wins);
+		}
+		
 		public static function getNextOutWinners(string $previous_date,
 				                                 string $previous_race,
 				                                 string $previous_track_id) {
@@ -229,6 +254,36 @@ spl_autoload_register(function ($class) {
 				return array();
 			}
 		}
+		
+		public static function getCategoryNames($name, $category) {
+			$conn = new HIS\Connection();
+			$searchname=$name."%";
+			$query = "SELECT DISTINCT $category
+              FROM tb17
+              WHERE $category LIKE ?
+              ORDER BY $category";
+			
+			$stmt = $conn->db->prepare($query);
+			$stmt->bind_param('s', $searchname);
+			$stmt->execute();
+			$stmt->store_result();
+			$stmt->bind_result($cat);
+			
+			$cats = array();
+			while ($stmt->fetch()) {
+				$cats[] = array(
+						'label' => htmlentities($cat, ENT_NOQUOTES),
+						'value' => htmlentities($cat, ENT_NOQUOTES)
+				);
+			}
+			
+			$stmt->free_result();
+			$stmt->close();
+			$conn->close();
+			
+			return $cats;
+		}
+	
 	}
 	
 	

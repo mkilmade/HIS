@@ -129,7 +129,7 @@ $query = "SELECT tb17_id,
                     trainer LIKE ? and 
                     jockey LIKE ? and
                     horse LIKE ? and
-                    {$conn->defaults['meet_filter']}
+                    {$_SESSION['defaults']['meet_filter']}
               ORDER BY race_date DESC,
                        race DESC";
 
@@ -143,7 +143,7 @@ $stmt->bind_result($tb17_id, $track_id, $race, $race_date, $distance, $turf, $ra
 echo "
       <div style='overflow-x:auto;'>
       <table id='resultTable' class='tablesorter' style='width:950px; font-size:14px'>
-        <caption>{$conn->defaults['track_name']} Results ($stmt->num_rows races)</caption>
+        <caption>{$_SESSION['defaults']['track_name']} Results ($stmt->num_rows races)</caption>
         <thead>
           <th>id</th>
           <th>Date</th>
@@ -213,8 +213,8 @@ echo "
         $('#trainer').val('" . addslashes(isset($post['filtertrainer']) ? $post['filtertrainer'] : '') . "');
         $('#jockey').val('" . addslashes(isset($post['filterjockey']) ? $post['filterjockey'] : '') . "');
         $('#horse').val('" . addslashes(isset($post['filterhorse']) ? $post['filterhorse'] : '') . "');
-        document.title='{$conn->defaults['meet_name']} (Browse)';
-        $('#body_title').text('{$conn->defaults['meet_name']}');
+        document.title='{$_SESSION['defaults']['meet_name']} (Browse)';
+        $('#body_title').text('{$_SESSION['defaults']['meet_name']}');
       });
     </script>
     ";
