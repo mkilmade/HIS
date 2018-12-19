@@ -1,9 +1,4 @@
 <?php
-
-require_once('Connection.class.php');
-spl_autoload_register(function ($class) {
-	require_once $class . '.class.php';
-});
 	/** 
  * @author mkilmade
  * 
@@ -12,7 +7,7 @@ class Track extends \HisEntity {
 
 	/**
 	 */
-	public function __construct($id, HIS\Connection $conn = NULL) {
+	public function __construct($id, Connection $conn = NULL) {
 		$this->bindings['table']   = "track";
 		$this->bindings['key_fld'] = "track_id";
 		$this->bindings['type']    = "s";
@@ -20,7 +15,7 @@ class Track extends \HisEntity {
 	}
 	
 	public static function getTracks(string $id) {
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		$searchid=$id."%";
 		
 		$query = "SELECT track_id

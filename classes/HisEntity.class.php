@@ -4,21 +4,17 @@
  * @author Mike Kilmade
  *
  */
-require_once('Connection.class.php');
-spl_autoload_register(function ($class) {
-	require_once $class . '.class.php';
-});
 	abstract class HisEntity {
 		// database table bindings[] (table, key_fld and type)
 		protected $bindings = array();
 		/**
 		 */
-		function __construct($id, HIS\Connection $conn = NULL) {
+		function __construct($id, Connection $conn = NULL) {
 			if ($id == NULL) {
 				return;
 			}
 			if ($conn == NULL) {
-				$conn = new HIS\Connection();
+				$conn = new Connection();
 				$this->propertyInit($id, $conn);
 				$conn->close();
 			} else {
@@ -26,7 +22,7 @@ spl_autoload_register(function ($class) {
 			}
 		}
 		
-		private function propertyInit($id, HIS\Connection $conn) {
+		private function propertyInit($id, Connection $conn) {
 			// todo: change to always use id field when tables are normalized
 			$query = "SELECT *
                       FROM {$this->bindings['table']}
@@ -55,7 +51,7 @@ spl_autoload_register(function ($class) {
 		}
 		
 		public function insert_entry(array $data) {
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$status = $conn->insert_row($data, $this->bindings['table']);
 			if ($status) {
 				$id_field = $this->bindings['key_fld'];
@@ -71,7 +67,7 @@ spl_autoload_register(function ($class) {
 		}
 		
 		public function update_entry(array &$data) {
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$key_fld = $this->bindings['key_fld'];
 			$status =  $conn->update_row($data, $this->bindings['table'], $this->$key_fld);
 			if ($status) {

@@ -1,11 +1,7 @@
 <?php
 // edit_defaults.php # script mjk 4/28/18
 // form to updatte entry in the tbd.current_defaults table
-session_start();
-require_once ('includes/config.inc.php');
-spl_autoload_register(function ($class) {
-	require_once 'classes/' . $class . '.class.php';
-});;
+require_once('session.php');
 ?>
 <!DOCTYPE html>
 <html>

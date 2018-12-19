@@ -14,11 +14,8 @@
 	<br />
 	<table>	
 <?php
-    session_start();
-    spl_autoload_register(function ($class) {
-    	require_once 'classes/' . $class . '.class.php';
-    });
-    $tb17Obj = new TB17($_GET['tb17_id']);
+	require_once('session.php');
+	$tb17Obj = new TB17($_GET['tb17_id']);
     // format html table rows
     $html="";
     foreach ($tb17Obj as $field => $value) {

@@ -2,7 +2,6 @@
 // add_winner.php script mjk 4/19/18
     // form to log winning entry into the tbd.tb17 table
 require_once('session.php');
-require_once('includes/config.inc.php');
 ?>
 <!DOCTYPE html>
 <html>

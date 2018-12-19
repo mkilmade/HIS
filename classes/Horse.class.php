@@ -4,13 +4,8 @@
  * @author Mike Kilmade
  *
  */
-require_once('Connection.class.php');
-spl_autoload_register(function ($class) {
-	require_once $class . '.class.php';
-});
-	
 	class Horse extends \Resource {
-		public function __construct($id = NULL, HIS\Connection $conn = NULL) {
+		public function __construct($id = NULL, Connection $conn = NULL) {
 			$this->bindings['table']   = "horse";
 			$this->bindings['key_fld'] = "name";
 			$this->bindings['type']    = "s";
@@ -19,7 +14,7 @@ spl_autoload_register(function ($class) {
 		
 		public function getLastWinData() {
 			// get the horse parameter from URL
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$query = "SELECT trainer, jockey
               FROM tb17
               WHERE horse = ?

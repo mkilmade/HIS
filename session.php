@@ -1,9 +1,15 @@
 <?php
 ini_set('session.gc_maxlifetime',3600);
-spl_autoload_register(function ($class) {
-	require_once 'classes/' . $class . '.class.php';
-});
-	if (isset($_GET['reset_session']) && $_GET['reset_session'] == 1 ) {
+
+// include/require settings used to locate files
+set_include_path('classes/' . PATH_SEPARATOR . get_include_path());
+spl_autoload_extensions('.class.php,.inc,.php');
+spl_autoload_register();
+// environemnt set up
+require_once('includes/config.inc.php');
+
+// $_SESSION and session set up
+if (isset($_GET['reset_session']) && $_GET['reset_session'] == 1 ) {
 		session_start();
 		session_destroy();
 		header('Location: index.php');

@@ -4,13 +4,8 @@
  * @author mkilmade
  *        
  */
-require_once('Connection.class.php');
-spl_autoload_register(function ($class) {
-	require_once $class . '.class.php';
-});
-	
 	class TB17 extends \HisEntity {
-		public function __construct($id = NULL, HIS\Connection $conn = NULL) {
+		public function __construct($id = NULL, Connection $conn = NULL) {
 			$this->bindings['table']   = "tb17";
 			$this->bindings['key_fld'] = "tb17_id";
 			$this->bindings['type']    = "i";
@@ -18,7 +13,7 @@ spl_autoload_register(function ($class) {
 		}
 
 		public static function last_race_date(string $meet_filter = NULL) {
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$query = "SELECT MAX(race_date)
 		              FROM tb17" . ($meet_filter == NULL ? "" : " WHERE $meet_filter") . "
 		              LIMIT 1
@@ -40,7 +35,7 @@ spl_autoload_register(function ($class) {
 		// -- get last race # for a date for current meet (null) or for a specific date during meet
 		public static function last_race(string $race_date = null, string $meet_filter)
 		{
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			
 			// -- get default value if $race_date is null
 			if ($race_date === null) {
@@ -71,7 +66,7 @@ spl_autoload_register(function ($class) {
 		public static function getRaceInfo(string $previous_date,
 				                           string $previous_race,
 				                           string $previous_track_id) {
-		    $conn = new HIS\Connection();
+		    $conn = new Connection();
 			$qry = "SELECT tb17_id
                     FROM tb17
                     WHERE race_date = ? AND
@@ -129,7 +124,7 @@ spl_autoload_register(function ($class) {
 		public static function getPreviousNextOutWinnersCount($previous_date,
 					                                          $previous_track_id,
 					                                          $previous_race) {
-		   $conn = new HIS\Connection();
+		   $conn = new Connection();
 		   $query = "SELECT
                    		COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
                   	FROM tb17
@@ -154,7 +149,7 @@ spl_autoload_register(function ($class) {
 		public static function getNextOutWinners(string $previous_date,
 				                                 string $previous_race,
 				                                 string $previous_track_id) {
-		    $conn = new HIS\Connection();
+		    $conn = new Connection();
 		    $qry = "SELECT tb17_id
                 FROM tb17
                 WHERE previous_date      = ? AND
@@ -180,7 +175,7 @@ spl_autoload_register(function ($class) {
 		}
 		
 		public static function getIndividualMeetStats(string $table, string $name, string $meet_filter) {
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$query = "SELECT
 			             COUNT(*) as 'Wins',
 			             SUM(IF(turf='FALSE',1,0)) as 'Dirt',
@@ -211,7 +206,7 @@ spl_autoload_register(function ($class) {
 		}
 		
 		public static function getRaceSummaryInfo(int $tb17_id) {
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$query = "SELECT race as 'Race',
 				             track_condition as 'Condition',
 				             turf as 'Turf',
@@ -241,7 +236,7 @@ spl_autoload_register(function ($class) {
 		}
 		
 		public static function getResultArray(string $query) {
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$stmt = $conn->db->prepare($query);
 			if ($stmt->execute()) {
 				$result = $stmt->get_result();
@@ -255,8 +250,8 @@ spl_autoload_register(function ($class) {
 			}
 		}
 		
-		public static function getCategoryNames($name, $category) {
-			$conn = new HIS\Connection();
+		public static function getCategoryNames(string $name, string $category) {
+			$conn = new Connection();
 			$searchname=$name."%";
 			$query = "SELECT DISTINCT $category
               FROM tb17
@@ -284,6 +279,38 @@ spl_autoload_register(function ($class) {
 			return $cats;
 		}
 	
+		public static function getBrowseRequestResults(array $filters,
+				                                       string $meet_filter) {
+			$conn = new Connection();
+			$query = "SELECT tb17_id
+                      FROM tb17
+                      WHERE race_date LIKE ? AND
+                            trainer LIKE ? AND
+                            jockey LIKE ? AND
+                            horse LIKE ? AND
+                            $meet_filter
+                      ORDER BY race_date DESC,
+                               race DESC";
+            $stmt = $conn->db->prepare($query);
+            $stmt->bind_param('ssss', $filters['race_date'],
+            		                  $filters['trainer'],
+            		                  $filters['jockey'],
+            		                  $filters['horse']);                          
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($tb17_id);
+            
+            $races = [];
+            while ($stmt->fetch()) {
+            	$races[] = new TB17($tb17_id);
+            }
+            
+            $stmt->free_result();
+            $stmt->close();
+            $conn->close();
+            
+            return $races;
+		}
 	}
 	
 	

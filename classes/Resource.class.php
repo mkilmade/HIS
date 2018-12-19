@@ -1,13 +1,10 @@
 <?php
-spl_autoload_register(function ($class) {
-	require_once $class . '.class.php';
-});
 	abstract class Resource extends \HisEntity {
 		
 		public function checkExistence(string $resourceName) {
 			$tableName = $this->bindings['table'];
 			// query table for resource already exists in table
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$stmt = $conn->db->prepare("SELECT * FROM $tableName WHERE name = ?");
 			$stmt->bind_param('s', $resourceName);
 			$stmt->execute();
@@ -26,9 +23,9 @@ spl_autoload_register(function ($class) {
 			}
 		}
 		
-		public static function getResourceNames($name) {
+		public static function getResourceNames(string $name) {
 			$tablename = lcfirst(get_called_class()); 
-			$conn = new HIS\Connection();
+			$conn = new Connection();
 			$id = $tablename . "_id";
 			$searchname=$name."%";
 			// first list those matching 'shortcut' field

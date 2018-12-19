@@ -1,9 +1,8 @@
 <?php
-spl_autoload_register(function ($class) {
-	require_once 'classes/' . $class . '.class.php';
-});
 require_once('session.php');
-require_once('includes/config.inc.php');
+// var_dump(spl_autoload_extensions());
+// var_dump(get_include_path());
+// var_dump(spl_autoload_functions());
 ?>
 <!DOCTYPE html>
 <html>

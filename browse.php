@@ -3,9 +3,7 @@ session_start();
 spl_autoload_register(function ($class) {
 	require_once 'classes/' . $class . '.class.php';
 });
-	require_once('includes/config.inc.php');
-require_once('includes/connection.inc.php');;
-$conn = new Connection();
+require_once('includes/config.inc.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,6 +17,7 @@ $conn = new Connection();
 <script src="jquery/jquery.tablesorter.js"></script>
 <script src="jquery/jquery.tablesorter.pager.js"></script>
 <script src="jquery/jquery-ui.min.js"></script>
+<script src="js/common.js"></script>
 <title>Browse Meet Results</title>
 
 <style>
@@ -96,7 +95,7 @@ table#resultTable td {
 		</table>
 	</form>
   
-  <?php
+<?php
 
 // -- find last race date if no filters set
 $post = $_POST;
@@ -112,83 +111,59 @@ $filterjockey = (isset($post['filterjockey']) ? $post['filterjockey'] : '') . '%
 $filterhorse = (isset($post['filterhorse']) ? $post['filterhorse'] : '') . '%';
 
 // -- get results for filters
-$query = "SELECT tb17_id,
-                     track_id,
-                     race,
-                     race_date,
-                     distance,
-                     turf,
-                     race_class,
-                     sex,
-                     age,
-                     horse,
-                     jockey,
-                     trainer
-              FROM tb17
-              WHERE race_date LIKE ? and
-                    trainer LIKE ? and 
-                    jockey LIKE ? and
-                    horse LIKE ? and
-                    {$_SESSION['defaults']['meet_filter']}
-              ORDER BY race_date DESC,
-                       race DESC";
+$races = TB17::getBrowseRequestResults(['race_date' => $filterrace_date, 
+  										'trainer'   => $filtertrainer,
+  										'jockey'    => $filterjockey,
+  										'horse'     => $filterhorse],
+  										$_SESSION['defaults']['meet_filter']);
 
-$stmt = $conn->db->prepare($query);
-$stmt->bind_param('ssss', $filterrace_date, $filtertrainer, $filterjockey, $filterhorse);
-$stmt->execute();
-$stmt->store_result();
-$stmt->bind_result($tb17_id, $track_id, $race, $race_date, $distance, $turf, $race_class, $sex, $age, $horse, $jockey, $trainer);
+$caption = $_SESSION['defaults']['track_name'] . " Results (" . count($races) . " races)";
+?>
 
+<div style='overflow-x:auto;'>
+<table id='resultTable' class='tablesorter' style='width:950px; font-size:14px'>
+  <caption id='caption'></caption>
+  <thead>
+    <tr>
+     <th>id</th>
+     <th>Date</th>
+     <th>Day</th>
+     <th>Race</th>
+     <th>Distance</th>
+     <th>Turf</th>
+     <th>Class</th>
+     <th>Sex</th>
+     <th>Age</th>
+     <th>Horse</th>
+     <th>Jockey</th>
+     <th>Trainer</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+<?php
 // -- build html result table
-echo "
-      <div style='overflow-x:auto;'>
-      <table id='resultTable' class='tablesorter' style='width:950px; font-size:14px'>
-        <caption>{$_SESSION['defaults']['track_name']} Results ($stmt->num_rows races)</caption>
-        <thead>
-          <th>id</th>
-          <th>Date</th>
-          <th>Day</th>
-          <th>Race</th>
-          <th>Distance</th>
-          <th>Turf</th>
-          <th>Class</th>
-          <th>Sex</th>
-          <th>Age</th>
-          <th>Horse</th
-          ><th>Jockey</th>
-          <th>Trainer</th>
-        </thead>
-    <tbody>
-    ";
-while ($stmt->fetch()) {
-    $date = new DateTime($race_date, new DateTimeZone('America/New_York'));
-    $chart_file = "http://www.equibase.com/premium/chartEmb.cfm?track=$track_id&raceDate=" . $date->format("m/d/y") . "&cy=USA&rn=$race";
+foreach($races as $race) {
+    $date = new DateTime($race->race_date, new DateTimeZone('America/New_York'));
+    $chart_file = "http://www.equibase.com/premium/chartEmb.cfm?track={$race->track_id}&raceDate=" . $date->format("m/d/y") . "&cy=USA&rn={$race->race}";
     echo "<tr>";
-    echo "<td><a href='edit_winner.php?tb17_id=$tb17_id'>$tb17_id</a></td>";
-    echo "<td>$race_date</td>";
+    echo "<td><a href='edit_winner.php?tb17_id={$race->tb17_id}'>{$race->tb17_id}</a></td>";
+    echo "<td>{$race->race_date}</td>";
     echo "<td>" . $date->format('l') . "</td>";
-    echo "<td><a target='_blank' href='$chart_file'>$race</a></td>";
-    echo "<td>$distance</td>";
-    echo "<td class='" . ($turf == 'TRUE' ? 'turf\'>Turf' : '\'>Dirt') . "</td>";
-    echo "<td>$race_class</td>";
-    echo "<td>$sex</td>";
-    echo "<td>$age</td>";
-    echo "<td>$horse</td>";
-    echo "<td>$jockey</td>";
-    echo "<td>$trainer</td>";
+    echo "<td><a target='_blank' href='$chart_file'>{$race->race}</a></td>";
+    echo "<td>{$race->distance}</td>";
+    echo "<td class='" . ($race->turf == 'TRUE' ? 'turf\'>Turf' : '\'>Dirt') . "</td>";
+    echo "<td>{$race->race_class}</td>";
+    echo "<td>{$race->sex}</td>";
+    echo "<td>{$race->age}</td>";
+    echo "<td>{$race->horse}</td>";
+    echo "<td>{$race->jockey}</td>";
+    echo "<td>{$race->trainer}</td>";
     echo "</tr>";
 }
-
-echo "</tbody></table></div>";
-$stmt->free_result();
-$stmt->close();
-
-$horses = json_encode($conn->class_extent('horse'));
-$trainers = json_encode($conn->class_extent('trainer'));
-$jockeys = json_encode($conn->class_extent('jockey'));
-
-echo "
-    <script>
+?>
+</tbody></table></div>
+<script>
       $(document).ready(function() {
         $('input[type=text]').keypress(function(e){
            if(e.keyCode==13) {
@@ -197,10 +172,7 @@ echo "
         });
 
         $('#resultTable').tablesorter({widgets: ['zebra']});
-
-        $('#horse').autocomplete({source: JSON.parse($horses)});
-        $('#trainer').autocomplete({source: JSON.parse($trainers)});
-        $('#jockey').autocomplete({source: JSON.parse($jockeys)});
+        acDomainFields('#horse, #trainer, #jockey');
 
         $('#race_date').datepicker({
           currentText: 'Today',
@@ -208,17 +180,18 @@ echo "
           dateFormat: 'yy-mm-dd',
           showButtonPanel: true
         });
-
-        $('#race_date').datepicker('setDate','" . $rdate . "');
+<?php
+  echo "
+        $('#race_date').datepicker('setDate','$rdate');
         $('#trainer').val('" . addslashes(isset($post['filtertrainer']) ? $post['filtertrainer'] : '') . "');
         $('#jockey').val('" . addslashes(isset($post['filterjockey']) ? $post['filterjockey'] : '') . "');
         $('#horse').val('" . addslashes(isset($post['filterhorse']) ? $post['filterhorse'] : '') . "');
         document.title='{$_SESSION['defaults']['meet_name']} (Browse)';
         $('#body_title').text('{$_SESSION['defaults']['meet_name']}');
+        $('#caption').text('$caption');
       });
-    </script>
     ";
-$conn->close();
 ?>
+</script>
 </body>
 </html>

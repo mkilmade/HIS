@@ -1,6 +1,7 @@
 <?php
-$ini = parse_ini_file('config.ini', true);
+// securely set up db environment, make db connection and protect code
 
+// $ini is set in Connection.class.php constructor
 if (!defined('DB_HOST')) {
 	define('DB_HOST', $ini['database']['host']);
 	define('DB_USER', $ini['database']['user']);
@@ -19,6 +20,4 @@ if ($db->connect_errno) {
 } else {
     $db->set_charset("utf8");
 }
-$ini = '';
-
 ?>

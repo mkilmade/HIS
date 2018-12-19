@@ -1,5 +1,5 @@
 <?php
-namespace HIS;
+//namespace HIS;
 /** 
  * @author mkilmade
  * 
@@ -17,18 +17,18 @@ class Connection {
 	{
 		$ini = parse_ini_file('./secure/config.ini', true);
 		date_default_timezone_set($ini['system']['timezone']);
-		include ($ini['system']['mysql']);
+		
+		// securely set up db environment, make db connection and protect code
+		include $ini['system']['mysql'];
 		$this->db = $db;
 	}
 	
 	// close database connection.inc object
-	public function close()
-	{
+	public function close() {
 		$this->db->close();		// clog('Connection to database '.DB_NAME.' has been closed!');
 	}
 	
-	public function execute_query(string $query)
-	{
+	public function execute_query(string $query) {
 		$stmt = $this->db->stmt_init();
 		if ($stmt->prepare($query)) {
 			$status = $stmt->execute();
@@ -43,8 +43,7 @@ class Connection {
 	}
 	
 	// insert a new row into a table
-	public function insert_row(array &$data, string $table)
-	{
+	public function insert_row(array &$data, string $table){
 		$fields = "";
 		$values = "";
 		foreach ($data as $field => $value) {
@@ -61,8 +60,7 @@ class Connection {
 	}
 	
 	// update an entry in a table
-	public function update_row(array &$data, string $table, $id)
-	{
+	public function update_row(array &$data, string $table, $id){
 		$fldvals = "";
 		foreach ($data as $field => $value) {
 			$value = $this->db->escape_string(trim($value));
@@ -70,7 +68,5 @@ class Connection {
 		}
 		return $this->execute_query("UPDATE $table SET $fldvals WHERE " . $table . "_id='$id'");
 	}
-	
-	
 }
 

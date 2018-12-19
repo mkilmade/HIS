@@ -4,14 +4,11 @@
  * @author mkilmade
  * 
  */
-spl_autoload_register(function ($class) {
-	require_once $class . '.class.php';
-});
 class Defaults extends \HisEntity {
 
 	/**
 	 */
-	public function __construct($id = 1, HIS\Connection $conn = NULL) {
+	public function __construct($id = 1, Connection $conn = NULL) {
 		$this->bindings['table']   = "current_defaults";
 		$this->bindings['key_fld'] = "current_defaults_id";
 		$this->bindings['type']    = "i";
@@ -39,7 +36,7 @@ class Defaults extends \HisEntity {
               LIMIT 1
              ";
 		
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		$stmt = $conn->db->prepare($query);
 		$stmt->execute();
 		$defaults = $stmt->get_result()->fetch_assoc();

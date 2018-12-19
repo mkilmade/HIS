@@ -8,12 +8,7 @@
  * @version v0.0.1
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-    session_start();
-    spl_autoload_register(function ($class) {
-    	require_once "classes/". $class . '.class.php';
-    });
-    require_once('includes/config.inc.php');
-    
+	require_once('session.php');    
     switch($_GET['type']) {
         case('next_race'):
         	$response = array('next_race' => TB17::last_race($_GET['race_date'], 

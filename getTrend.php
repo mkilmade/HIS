@@ -10,8 +10,7 @@
  *
  * /* set up common environment needed to process all trend code
  */
-require_once ('session.php');
-require_once ('includes/config.inc.php');
+require_once('session.php');
 $trendName = $_GET['trend'];
 
 /* call trend function requested */

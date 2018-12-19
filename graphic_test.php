@@ -1,9 +1,5 @@
 <?php
-session_start();
-spl_autoload_register(function ($class) {
-	require_once 'classes/' . $class . '.class.php';
-});
-require_once('includes/config.inc.php');
+require_once('session.php');
 
 $type = $_GET['type'];
 $name = urldecode($_GET['name']);

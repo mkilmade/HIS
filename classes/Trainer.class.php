@@ -4,13 +4,8 @@
  * @author Mike Kilmade
  *
  */
-require_once('Connection.class.php');
-spl_autoload_register(function ($class) {
-	require_once $class . '.class.php';
-});
-	
 	class Trainer extends \Resource {
-		public function __construct($id = NULL, HIS\Connection $conn = NULL) {
+		public function __construct($id = NULL, Connection $conn = NULL) {
 		$this->bindings['table']   = "trainer";
 		$this->bindings['key_fld'] = "name";
 		$this->bindings['type']    = "s";

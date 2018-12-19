@@ -1,10 +1,4 @@
-<?php
-
-require_once('Connection.class.php');
-spl_autoload_register(function ($class) {
-	require_once $class . '.class.php';
-});
-	
+<?php	
 /**
  *
  * @author mkilmade
@@ -14,7 +8,7 @@ class Meet extends \HisEntity {
 
 	/**
 	 */
-	public function __construct($id = NULL, HIS\Connection $conn = NULL) {
+	public function __construct($id = NULL, Connection $conn = NULL) {
 		$this->bindings['table']   = "race_meet";
 		$this->bindings['key_fld'] = "race_meet_id";
 		$this->bindings['type']    = "i";
@@ -22,7 +16,7 @@ class Meet extends \HisEntity {
 	}
 	
 	public static function getTrackId(string $race_date) {
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		$query = "SELECT
                     race_meet_id
                   FROM race_meet
@@ -79,7 +73,7 @@ class Meet extends \HisEntity {
 	}
 
 	public function getFtsWins() {
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		$query = "SELECT COUNT(*)
 	              FROM tb17
 	              WHERE comment LIKE '%FTS%' AND " . $this->meet_filter('race_date') . "
@@ -156,7 +150,7 @@ class Meet extends \HisEntity {
 	}
 
 	public static function getMeets() {
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		$query = "SELECT race_meet_id
 		              FROM race_meet
 		              ORDER BY start_date DESC
@@ -176,7 +170,7 @@ class Meet extends \HisEntity {
 	}
 	
 	public function getSummaryStats(array $qryParams) {
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		// -- build basic stats query
 		$query="SELECT
                  COUNT(DISTINCT race_date) AS dates,
@@ -215,7 +209,7 @@ class Meet extends \HisEntity {
 	}
 	
 	public function getMultipleWinnerCount(array $qryParams) {
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		// get multiple winners count
 		$qry="SELECT
                COUNT(*) as count
@@ -244,7 +238,7 @@ class Meet extends \HisEntity {
 	}
 	
 	function getTopTen(string $type, string $as_of_date, int $days) {
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		// -- build basic stats query
 		if ($days>0) {
 			$date= new DateTime($as_of_date);
@@ -282,7 +276,7 @@ class Meet extends \HisEntity {
 	}
 	
 	public function getRacesForDate(string $race_date) {
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		// -- get results for last date run
 		$query = "SELECT
                     tb17_id
@@ -308,7 +302,7 @@ class Meet extends \HisEntity {
 
 	public function getRaceDates()
 	{
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		$race_dates = array();
 		$query = "SELECT DISTINCT race_date
               FROM tb17
@@ -335,7 +329,7 @@ class Meet extends \HisEntity {
 	
 	public function getWinCounts(string $type, string $name)
 	{
-		$conn = new HIS\Connection();
+		$conn = new Connection();
 		$win_counts = array();
 		$query = "SELECT DISTINCT race_date,
                      COUNT(*) as win_count
