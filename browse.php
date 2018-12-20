@@ -1,9 +1,5 @@
 <?php
-session_start();
-spl_autoload_register(function ($class) {
-	require_once 'classes/' . $class . '.class.php';
-});
-require_once('includes/config.inc.php');
+require_once ('includes/envInit.inc.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -11,8 +7,8 @@ require_once('includes/config.inc.php');
 <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 <link type="text/css" href="jquery/jquery-ui.min.css" rel="stylesheet">
 <link type="text/css"
-	href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
-	rel="stylesheet">
+	  href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
+	  rel="stylesheet">
 <script src="jquery/jquery.js"></script>
 <script src="jquery/jquery.tablesorter.js"></script>
 <script src="jquery/jquery.tablesorter.pager.js"></script>
@@ -99,71 +95,78 @@ table#resultTable td {
 
 // -- find last race date if no filters set
 $post = $_POST;
-if (! isset($post['filterrace_date']) && ! isset($post['filtertrainer']) && ! isset($post['filterjockey']) && ! isset($post['filterhorse'])) {
-	 $rdate = TB17::last_race_date();
-     $post['filterrace_date'] = $rdate;
+if (! isset ( $post ['filterrace_date'] ) && 
+	! isset ( $post ['filtertrainer'] ) &&
+	! isset ( $post ['filterjockey'] ) &&
+	! isset ( $post ['filterhorse'] )) {
+	$rdate = TB17::last_race_date ();
+	$post ['filterrace_date'] = $rdate;
 } else {
-    $rdate = $post['filterrace_date'];
+	$rdate = $post ['filterrace_date'];
 }
-$filterrace_date = (isset($post['filterrace_date']) ? $post['filterrace_date'] : '') . '%';
-$filtertrainer = (isset($post['filtertrainer']) ? $post['filtertrainer'] : '') . '%';
-$filterjockey = (isset($post['filterjockey']) ? $post['filterjockey'] : '') . '%';
-$filterhorse = (isset($post['filterhorse']) ? $post['filterhorse'] : '') . '%';
+$filterrace_date = (isset ( $post ['filterrace_date'] ) ? $post ['filterrace_date'] : '') . '%';
+$filtertrainer = (isset ( $post ['filtertrainer'] ) ? $post ['filtertrainer'] : '') . '%';
+$filterjockey = (isset ( $post ['filterjockey'] ) ? $post ['filterjockey'] : '') . '%';
+$filterhorse = (isset ( $post ['filterhorse'] ) ? $post ['filterhorse'] : '') . '%';
 
 // -- get results for filters
-$races = TB17::getBrowseRequestResults(['race_date' => $filterrace_date, 
-  										'trainer'   => $filtertrainer,
-  										'jockey'    => $filterjockey,
-  										'horse'     => $filterhorse],
-  										$_SESSION['defaults']['meet_filter']);
+$races = TB17::getBrowseRequestResults ( [ 
+		'race_date' => $filterrace_date,
+		'trainer' => $filtertrainer,
+		'jockey' => $filterjockey,
+		'horse' => $filterhorse
+], $_SESSION ['defaults'] ['meet_filter'] );
 
-$caption = $_SESSION['defaults']['track_name'] . " Results (" . count($races) . " races)";
+$caption = $_SESSION ['defaults'] ['track_name'] . " Results (" . count ( $races ) . " races)";
 ?>
 
-<div style='overflow-x:auto;'>
-<table id='resultTable' class='tablesorter' style='width:950px; font-size:14px'>
-  <caption id='caption'></caption>
-  <thead>
-    <tr>
-     <th>id</th>
-     <th>Date</th>
-     <th>Day</th>
-     <th>Race</th>
-     <th>Distance</th>
-     <th>Turf</th>
-     <th>Class</th>
-     <th>Sex</th>
-     <th>Age</th>
-     <th>Horse</th>
-     <th>Jockey</th>
-     <th>Trainer</th>
-    </tr>
-  </thead>
-  <tbody>
+<div style='overflow-x: auto;'>
+		<table id='resultTable' class='tablesorter'
+			style='width: 950px; font-size: 14px'>
+			<caption id='caption'></caption>
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>Date</th>
+					<th>Day</th>
+					<th>Race</th>
+					<th>Distance</th>
+					<th>Turf</th>
+					<th>Class</th>
+					<th>Sex</th>
+					<th>Age</th>
+					<th>Horse</th>
+					<th>Jockey</th>
+					<th>Trainer</th>
+				</tr>
+			</thead>
+			<tbody>
     
 <?php
 // -- build html result table
-foreach($races as $race) {
-    $date = new DateTime($race->race_date, new DateTimeZone('America/New_York'));
-    $chart_file = "http://www.equibase.com/premium/chartEmb.cfm?track={$race->track_id}&raceDate=" . $date->format("m/d/y") . "&cy=USA&rn={$race->race}";
-    echo "<tr>";
-    echo "<td><a href='edit_winner.php?tb17_id={$race->tb17_id}'>{$race->tb17_id}</a></td>";
-    echo "<td>{$race->race_date}</td>";
-    echo "<td>" . $date->format('l') . "</td>";
-    echo "<td><a target='_blank' href='$chart_file'>{$race->race}</a></td>";
-    echo "<td>{$race->distance}</td>";
-    echo "<td class='" . ($race->turf == 'TRUE' ? 'turf\'>Turf' : '\'>Dirt') . "</td>";
-    echo "<td>{$race->race_class}</td>";
-    echo "<td>{$race->sex}</td>";
-    echo "<td>{$race->age}</td>";
-    echo "<td>{$race->horse}</td>";
-    echo "<td>{$race->jockey}</td>";
-    echo "<td>{$race->trainer}</td>";
-    echo "</tr>";
+foreach ( $races as $race ) {
+	$date = new DateTime ( $race->race_date, new DateTimeZone ( 'America/New_York' ) );
+	$chart_file = "http://www.equibase.com/premium/chartEmb.cfm?track={$race->track_id}&raceDate=" . $date->format ( "m/d/y" ) . "&cy=USA&rn={$race->race}";
+	echo "<tr>";
+	echo "<td><a href='edit_winner.php?tb17_id={$race->tb17_id}'>{$race->tb17_id}</a></td>";
+	echo "<td>{$race->race_date}</td>";
+	echo "<td>" . $date->format ( 'l' ) . "</td>";
+	echo "<td><a target='_blank' href='$chart_file'>{$race->race}</a></td>";
+	echo "<td>{$race->distance}</td>";
+	echo "<td class='" . ($race->turf == 'TRUE' ? 'turf\'>Turf' : '\'>Dirt') . "</td>";
+	echo "<td>{$race->race_class}</td>";
+	echo "<td>{$race->sex}</td>";
+	echo "<td>{$race->age}</td>";
+	echo "<td>{$race->horse}</td>";
+	echo "<td>{$race->jockey}</td>";
+	echo "<td>{$race->trainer}</td>";
+	echo "</tr>";
 }
 ?>
-</tbody></table></div>
-<script>
+</tbody>
+		</table>
+	</div>
+	<script>
       $(document).ready(function() {
         $('input[type=text]').keypress(function(e){
            if(e.keyCode==13) {
@@ -181,11 +184,11 @@ foreach($races as $race) {
           showButtonPanel: true
         });
 <?php
-  echo "
+echo "
         $('#race_date').datepicker('setDate','$rdate');
-        $('#trainer').val('" . addslashes(isset($post['filtertrainer']) ? $post['filtertrainer'] : '') . "');
-        $('#jockey').val('" . addslashes(isset($post['filterjockey']) ? $post['filterjockey'] : '') . "');
-        $('#horse').val('" . addslashes(isset($post['filterhorse']) ? $post['filterhorse'] : '') . "');
+        $('#trainer').val('" . addslashes ( isset ( $post ['filtertrainer'] ) ? $post ['filtertrainer'] : '' ) . "');
+        $('#jockey').val('" . addslashes ( isset ( $post ['filterjockey'] ) ? $post ['filterjockey'] : '' ) . "');
+        $('#horse').val('" . addslashes ( isset ( $post ['filterhorse'] ) ? $post ['filterhorse'] : '' ) . "');
         document.title='{$_SESSION['defaults']['meet_name']} (Browse)';
         $('#body_title').text('{$_SESSION['defaults']['meet_name']}');
         $('#caption').text('$caption');

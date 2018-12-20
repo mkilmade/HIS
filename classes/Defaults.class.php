@@ -9,15 +9,14 @@ class Defaults extends \HisEntity {
 	/**
 	 */
 	public function __construct($id = 1, Connection $conn = NULL) {
-		$this->bindings['table']   = "current_defaults";
-		$this->bindings['key_fld'] = "current_defaults_id";
-		$this->bindings['type']    = "i";
+		$this->bindings ['table'] = "current_defaults";
+		$this->bindings ['key_fld'] = "current_defaults_id";
+		$this->bindings ['type'] = "i";
 		parent::__construct ( $id, $conn = NULL );
 	}
 
 	// -- get current meet default values
-	public static function get_his_defaults()
-	{
+	public static function get_his_defaults() {
 		$query = "SELECT cd.race_meet_id,
                      rm.track_id,
                      rm.start_date,
@@ -35,21 +34,20 @@ class Defaults extends \HisEntity {
                  USING (track_id)
               LIMIT 1
              ";
-		
-		$conn = new Connection();
-		$stmt = $conn->db->prepare($query);
-		$stmt->execute();
-		$defaults = $stmt->get_result()->fetch_assoc();
-		$defaults['meet_name'] = addslashes($defaults['meet_name']);
-		$defaults['track_name'] = addslashes($defaults['track_name']);
-		$defaults['meet_filter'] = "race_date >= '{$defaults['start_date']}' AND
+
+		$conn = new Connection ();
+		$stmt = $conn->db->prepare ( $query );
+		$stmt->execute ();
+		$defaults = $stmt->get_result ()->fetch_assoc ();
+		$defaults ['meet_name'] = addslashes ( $defaults ['meet_name'] );
+		$defaults ['track_name'] = addslashes ( $defaults ['track_name'] );
+		$defaults ['meet_filter'] = "race_date >= '{$defaults['start_date']}' AND
                                 race_date <= '{$defaults['end_date']}' AND
                                 track_id = '{$defaults['track_id']}'";
-		$stmt->free_result();
-		$stmt->close();
-		$conn->close();
+		$stmt->free_result ();
+		$stmt->close ();
+		$conn->close ();
 		return $defaults;
 	}
-	
 }
 

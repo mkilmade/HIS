@@ -8,7 +8,7 @@
  * @version v0.0.1
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-	require_once('session.php');    
+	require_once('includes/envInit.inc.php');    
     switch($_GET['type']) {
         case('next_race'):
         	$response = array('next_race' => TB17::last_race($_GET['race_date'], 

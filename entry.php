@@ -14,15 +14,15 @@
 	<br />
 	<table>	
 <?php
-	require_once('session.php');
-	$tb17Obj = new TB17($_GET['tb17_id']);
-    // format html table rows
-    $html="";
-    foreach ($tb17Obj as $field => $value) {
-        $html .= "<tr><td align='right'>$field:</td><td><b>$value</b></td></tr>";
-    }
-    // send html to browser
-    echo $html;
+require_once ('includes/envInit.inc.php');
+$tb17Obj = new TB17 ( $_GET ['tb17_id'] );
+// format html table rows
+$html = "";
+foreach ( $tb17Obj as $field => $value ) {
+	$html .= "<tr><td align='right'>$field:</td><td><b>$value</b></td></tr>";
+}
+// send html to browser
+echo $html;
 ?>
     </table>
 </body>

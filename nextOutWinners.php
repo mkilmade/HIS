@@ -4,8 +4,8 @@
 <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 <link type="text/css" href="jquery/jquery-ui.min.css" rel="stylesheet">
 <link type="text/css"
-	href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
-	rel="stylesheet">
+	  href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
+	  rel="stylesheet">
 <script src="jquery/jquery.js"></script>
 <script src="jquery/jquery.tablesorter.js"></script>
 <script src="jquery/jquery.tablesorter.pager.js"></script>
@@ -37,7 +37,7 @@ table#nowTable td {
 	padding: 0px;
 }
 </style>
-<script  type="text/javascript">
+<script type="text/javascript">
 function clearRace() {
     $('#race_date').datepicker('setDate', '');
     $('#race').val('');
@@ -61,7 +61,7 @@ function getNextOutWinners() {
 		</tr>
 	</table>
 	<br />
-		<form>
+	<form>
 		<table border=1 style="margin: auto;">
 			<thead>
 				<tr>
@@ -69,23 +69,30 @@ function getNextOutWinners() {
 					<th>Track</th>
 					<th>Race</th>
 				</tr>
+			
+			
 			<thead>
 				<tr>
-					<td><input type="date" id="race_date" name="race_date" ></td>
-                    <td><input id="track_id" name="track_id" style="width: 60px;"></td>			
+					<td><input type="date" id="race_date" name="race_date"></td>
+					<td><input id="track_id" name="track_id" style="width: 60px;"></td>
 					<td><input type="number" min="1" max="15" id="race" name="race"></td>
-	           </tr>
-		</table>
+				</tr>
 		
+		</table>
+
 		<table style="margin: auto;">
 			<tr>
-				<td><button id="find_btn"  type="button" onclick="getNextOutWinners()">Find</button></td>
-				<td><button id="clear_btn" type="button" onclick="clearRace()">Clear Race Info</button></td>
+				<td><button id="find_btn" type="button"
+						onclick="getNextOutWinners()">Find</button></td>
+				<td><button id="clear_btn" type="button" onclick="clearRace()">Clear
+						Race Info</button></td>
+			
+			
 			<tr>
 		
 		</table>
-		</form>
-  <div id='nextOutWinners' style='visibility:hidden;'></div>
+	</form>
+	<div id='nextOutWinners' style='visibility: hidden;'></div>
 </body>
 <script>
   $(document).ready(function() {
@@ -108,4 +115,3 @@ function getNextOutWinners() {
 </script>
 
 </html>
-

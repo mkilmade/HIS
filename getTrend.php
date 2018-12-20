@@ -10,10 +10,10 @@
  *
  * /* set up common environment needed to process all trend code
  */
-require_once('session.php');
-$trendName = $_GET['trend'];
+require_once ('includes/envInit.inc.php');
+$trendName = $_GET ['trend'];
 
 /* call trend function requested */
-require_once ("includes/trends/$trendName.inc.php");
-$trendName($_SESSION['defaults']);
+require_once ("trends/$trendName.inc.php");
+$trendName ( $_SESSION ['defaults'] );
 ?>

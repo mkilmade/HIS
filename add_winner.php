@@ -1,7 +1,7 @@
-<?php 
+<?php
 // add_winner.php script mjk 4/19/18
-    // form to log winning entry into the tbd.tb17 table
-require_once('session.php');
+// form to log winning entry into the tbd.tb17 table
+require_once ('includes/envInit.inc.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,8 +9,8 @@ require_once('session.php');
 <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 <link href="jquery/jquery-ui.min.css" rel="stylesheet">
 <link type="text/css"
-	href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
-	rel="stylesheet">
+	  href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
+	  rel="stylesheet">
 <script src="jquery/jquery.js"></script>
 <script src="jquery/jquery.tablesorter.js"></script>
 <script src="jquery/jquery.tablesorter.pager.js"></script>
@@ -58,7 +58,7 @@ table#nowTable td {
 		<fieldset style="width: 425px; background-color: Azure">
 			<legend style="text-align: center">Add Entry</legend>
 
-  <?php require_once('includes/entry_input.inc.html'); ?>
+  <?php require_once('entry_input.inc.html'); ?>
 
  </fieldset>
 
@@ -72,18 +72,17 @@ table#nowTable td {
 <script>
   $(document).ready(function() {
 <?php
-    // -- get last race date a& next race #
-$last_race_date = TB17::last_race_date($_SESSION['defaults']['meet_filter']);
-    $next_race = TB17::last_race($last_race_date, $_SESSION['defaults']['meet_filter']) + 1;
-    echo "
+// -- get last race date a& next race #
+$last_race_date = TB17::last_race_date ( $_SESSION ['defaults'] ['meet_filter'] );
+$next_race = TB17::last_race ( $last_race_date, $_SESSION ['defaults'] ['meet_filter'] ) + 1;
+echo "
     var last_race_date = '$last_race_date',
         next_race = '$next_race',
         current_track_id = '{$_SESSION['defaults']['track_id']}',
         dirt_track_condition = '{$_SESSION['dirt_track_condition']}',
         turf_track_condition = '{$_SESSION['turf_track_condition']}';
         
-    "
-?>
+    "?>
     setupCommonFields();
     // set race number to 1 if date is new or to appropriate race # if race date on file
     // (most helpful when adding a new race date)

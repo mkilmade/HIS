@@ -1,5 +1,5 @@
 <?php
-require_once('session.php');
+require_once('includes/envInit.inc.php');
 ?>
 <!DOCTYPE html>
 <html>

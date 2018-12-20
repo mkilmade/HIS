@@ -1,7 +1,7 @@
 <?php
 // edit_defaults.php # script mjk 4/28/18
 // form to updatte entry in the tbd.current_defaults table
-require_once('session.php');
+require_once ('includes/envInit.inc.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -62,17 +62,17 @@ require_once('session.php');
 	 acDomainFields('#previous_track_id');
 
 <?php
-$cdObj = new Defaults();
+$cdObj = new Defaults ();
 // iterate through properties and set corresponding form fields
-foreach ($cdObj as $field => $value) {
-    echo "
+foreach ( $cdObj as $field => $value ) {
+	echo "
         $(\"#$field\").val(\"$value\");
         ";
 }
 
-foreach (Meet::getMeets() as $rmObj) {
-    $selected = $rmObj->race_meet_id == $cdObj->race_meet_id ? 'selected' : '';
-    echo "$('#race_meet_id').append(\"<option value='{$rmObj->race_meet_id}' $selected>" . addslashes($rmObj->name) . "</option>\");";
+foreach ( Meet::getMeets () as $rmObj ) {
+	$selected = $rmObj->race_meet_id == $cdObj->race_meet_id ? 'selected' : '';
+	echo "$('#race_meet_id').append(\"<option value='{$rmObj->race_meet_id}' $selected>" . addslashes ( $rmObj->name ) . "</option>\");";
 }
 ?>
 
