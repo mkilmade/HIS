@@ -1,6 +1,6 @@
 <?php
 require_once ('includes/envInit.inc.php');
-header ( 'Location: session.inc.php?reset_session=1' );
+header ( 'Location: index.php?reset_session=1' );
 
 if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
 	$post = $_POST;
