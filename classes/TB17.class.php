@@ -128,7 +128,7 @@ class TB17 extends \HisEntity {
 		$stmt->fetch ();
 		$stmt->free_result ();
 		$stmt->close ();
-		$conn->close();
+		$conn->close ();
 
 		return array (
 				'wins' => $wins
@@ -176,15 +176,15 @@ class TB17 extends \HisEntity {
 			          GROUP BY $table";
 		$stmt = $conn->db->prepare ( $query );
 		$stmt->bind_param ( 's', $name );
-		$y = [];
+		$y = [ ];
 		if ($stmt->execute ()) {
 			$result = $stmt->get_result ();
 			if ($result->num_rows > 0) {
 				$y = $result->fetch_assoc ();
 			}
 		}
-		$stmt->close();
-		$conn->close();
+		$stmt->close ();
+		$conn->close ();
 		return $y;
 	}
 	public static function getRaceSummaryInfo(int $tb17_id) {
@@ -205,29 +205,29 @@ class TB17 extends \HisEntity {
 			          WHERE tb17_id = ?";
 		$stmt = $conn->db->prepare ( $query );
 		$stmt->bind_param ( 's', $tb17_id );
-		$y = [];
+		$y = [ ];
 		if ($stmt->execute ()) {
 			$result = $stmt->get_result ();
 			if ($result->num_rows > 0) {
 				$y = $result->fetch_assoc ();
 			}
 		}
-		$stmt->close();
-		$conn->close();
+		$stmt->close ();
+		$conn->close ();
 		return $y;
 	}
 	public static function getResultArray(string $query) {
 		$conn = new Connection ();
 		$stmt = $conn->db->prepare ( $query );
-		$y = [];
+		$y = [ ];
 		if ($stmt->execute ()) {
 			$result = $stmt->get_result ();
 			if ($result->num_rows > 0) {
 				$y = $result->fetch_all ( MYSQLI_ASSOC );
 			}
 		}
-		$stmt->close();
-		$conn->close();
+		$stmt->close ();
+		$conn->close ();
 		return $y;
 	}
 	public static function getCategoryNames(string $name, string $category) {

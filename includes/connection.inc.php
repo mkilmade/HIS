@@ -1,10 +1,11 @@
 <?php
+// not used but kept for now for refereance
 require_once ('lib.php');
 spl_autoload_register(function ($class) {
 	require_once 'classes/' . $class . '.class.php';
 });
 	
-class Connection
+class Connectionx
 {
 
     // datebase connection.inc object used for queries/inserts/etc
