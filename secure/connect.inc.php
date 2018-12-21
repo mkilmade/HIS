@@ -9,8 +9,9 @@ if (! defined ( 'DB_HOST' )) {
 	define ( 'DB_PORT', $ini ['database'] ['port'] );
 	define ( 'DB_PRODUCTION', $ini ['database'] ['production'] );
 }
-
-$db = @new mysqli ( "p:" . DB_HOST, DB_USER, $ini ['database'] ['password'], DB_NAME, DB_PORT );
+// persistent connection produced some errno 32 Broken Pipe errors
+//$db = @new mysqli ( "p:" . DB_HOST, DB_USER, $ini ['database'] ['password'], DB_NAME, DB_PORT );
+$db = @new mysqli ( DB_HOST, DB_USER, $ini ['database'] ['password'], DB_NAME, DB_PORT );
 
 if ($db->connect_errno) {
 	echo "Database connect error:<br>

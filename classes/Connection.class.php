@@ -25,7 +25,7 @@ class Connection {
 
 	// close database connection.inc object
 	public function close() {
-		$this->db->close (); // clog('Connection to database '.DB_NAME.' has been closed!');
+		$this->db->close ();
 	}
 	public function execute_query(string $query) {
 		$stmt = $this->db->stmt_init ();
