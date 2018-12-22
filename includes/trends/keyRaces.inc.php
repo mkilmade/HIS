@@ -11,7 +11,7 @@ function keyRaces($defaults) {
           <th>Key Race #</th>
           <th>Track</th>
           <th>Wins</th>
-          <th>Race Information (next out winners at NYRA only)</th>
+          <th>Race Information (next out winners at NYRA/Tampa only)</th>
         </thead>
     <tbody>
     ";
@@ -26,7 +26,7 @@ function keyRaces($defaults) {
 		// get key race data
 		$key_raceObj = TB17::getRaceInfo ( $previous_date, $previous_race, $previous_track_id );
 		if ($key_raceObj == NULL) {
-			$key_race_data = "Key Race Winner: Sorry, only NYRA races on file. Use race link for chart.";
+			$key_race_data = "Key Race Winner: Sorry, only NYRA/Tampa races on file. Use race link for chart.";
 		} else {
 			$key_race_data = "Key Race Winner: ";
 			$key_race_data .= "<b>";

@@ -26,14 +26,15 @@ function report_errors($num, $msg, $file, $line) {
 	$m .= "\n       Line: $line\n";
 	error_log ( $m, 3, ERROR_LOG_FILE );
 
-// 	$to      = 'mkilmade@nycap.rr.com';
-// 	$subject = 'HIS Error';
-// 	$message = "$m";
-// 	$headers = 'From: mkilmade@nycap.rr.com' . "\r\n" .
-// 			'Reply-To: mkilmade@nycap.rr.com' . "\r\n" .
-// 			'X-Mailer: PHP/' . phpversion();
+	//$to      = 'mkilmade@Kelso.local';
+	$to      = 'mkilmade@gmail.com';
+	$subject = 'HIS Error';
+	$message = $m;
+	$headers = 'From: mkilmade@Kelso.local' . "\r\n" .
+			'Reply-To: mkilmade@Kelso.local' . "\r\n" .
+			'X-Mailer: PHP/' . phpversion();
 	
-// 	mail($to, $subject, $message, $headers);
+	mail($to, $subject, $message, $headers);
 	
 	// send generic message to browser, if possible
 	// echo "<p>Error has occurred!<br>Check error log may contain more information. [Log Timestamp: ".$now."]</p>";
