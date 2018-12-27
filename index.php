@@ -181,7 +181,7 @@ table#topTenLists td, th {
 	<h1 id="title">H.I.S.</h1>
 	<table id='navigator'>
 		<tr>
-			<td><a href='add_winner.php'>Add Winner</a></td>
+			<td><a href='add_winner.php'>Add</a></td>
 			<td><a href='browse.php'>Browse</a></td>
 			<td><a id="scratches_url" target='_blank'>Scratches</a></td>
 			<td><a id="site_url" target='_blank'>Site</a></td>
@@ -193,15 +193,14 @@ table#topTenLists td, th {
 				href='https://www.brisnet.com/product/race-results'>Charts</a></td>
 			<td><a target='_blank'
 				href='http://www1.drf.com/formulator-web/#card-selector'>Formulator</a></td>
-			<td><a target='_blank' href='https://www.nyrabets.com/#wagering'>NYRA
-					Bets</a></td>
+			<td><a target='_blank' href='https://www.nyrabets.com/#wagering'>Bet</a></td>
 			<td><a target='_blank'
 				href='http://www.brisnet.com/cgi-bin/static.cgi?page=stablealert'>Stable</a></td>
 			<td><a target='_blank' href='https://play.drf.com/#/'>PPs</a></td>
-			<td><a href='trends.php'>Trends/Stats</a></td>
+			<td><a href='trends.php'>Trends</a></td>
 			<td><a href='nextOutWinners.php'>NOW</a></td>
 			<td><a href='edit_defaults.php'>Settings</a></td>
-			<td><a href='index.php?reset_session=1'>Session Reset</a></td>
+			<td><a href='index.php?reset_session=1'>Reset</a></td>
 		</tr>
 	</table>
 	<br>

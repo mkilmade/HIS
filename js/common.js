@@ -21,6 +21,10 @@ function horse_trigger() {
 		options.dataType = "json";
 		options.method = "GET";
 		options.success = function(response, status, xhr) {
+			$("#previous_track_id").val(response.track_id);
+			$("#previous_date").val(response.race_date);
+			$("#previous_race").val(response.race);
+			$("#previous_finish_position").val(response.finish_position);
 			$("#trainer").val(response.trainer);
 			$("#jockey").val(response.jockey);
 		}

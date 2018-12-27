@@ -1,5 +1,7 @@
 <?php
 abstract class Resource extends \HisEntity {
+	public $name;
+	public $shortcut;
 	public function checkExistence(string $resourceName) {
 		$tableName = $this->bindings ['table'];
 		// query table for resource already exists in table

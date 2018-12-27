@@ -19,11 +19,11 @@ date_default_timezone_set ( HIS_TIMEZONE );
 function report_errors($num, $msg, $file, $line) {
 	$date = new DateTime ( "now", new DateTimeZone ( HIS_TIMEZONE ) );
 	$now = $date->format ( "Y-m-d H:i:s" );
-	$m = "\n Logged: $now";
-	$m .= "\nError Level: $num";
-	$m .= "\n    Message: $msg";
-	$m .= "\n       File: $file";
-	$m .= "\n       Line: $line\n";
+	$m = "\r\n Logged: $now";
+	$m .= "\r\nError Level: $num";
+	$m .= "\r\n    Message: $msg";
+	$m .= "\r\n       File: $file";
+	$m .= "\r\n       Line: $line\r\n";
 	error_log ( $m, 3, ERROR_LOG_FILE );
 
 	//$to      = 'mkilmade@Kelso.local';
@@ -46,4 +46,9 @@ set_error_handler ( "report_errors", E_ALL );
 // report all errors possible
 error_reporting ( E_ALL );
 $ini = '';
+
+/* activate MySQL error reporting */
+$driver = new mysqli_driver();
+$driver->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
+$driver = NULL;
 ?>

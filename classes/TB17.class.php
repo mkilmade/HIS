@@ -102,7 +102,7 @@ class TB17 extends \HisEntity {
                           previous_track_id
               ) AS key_races
               
-              WHERE (wins > 2 AND previous_track_id <> '$track_id')
+              WHERE (wins > 1 AND previous_track_id <> '$track_id')
                     ||
                     (wins > 1 AND previous_track_id = '$track_id')
               ORDER BY wins DESC,
@@ -258,9 +258,11 @@ class TB17 extends \HisEntity {
 
 		return $cats;
 	}
-	public static function getBrowseRequestResults(array $filters, string $meet_filter) {
-		$conn = new Connection ();
-		$query = "SELECT tb17_id
+	public static function getBrowseRequestResults(array $filters, string $meet_filter) {		
+		$races = [ ];
+		try {
+			$conn = new Connection ();
+			$query = "SELECT tb17_id
                       FROM tb17
                       WHERE race_date LIKE ? AND
                             trainer LIKE ? AND
@@ -269,21 +271,29 @@ class TB17 extends \HisEntity {
                             $meet_filter
                       ORDER BY race_date DESC,
                                race DESC";
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->bind_param ( 'ssss', $filters ['race_date'], $filters ['trainer'], $filters ['jockey'], $filters ['horse'] );
-		$stmt->execute ();
-		$stmt->store_result ();
-		$stmt->bind_result ( $tb17_id );
-
-		$races = [ ];
-		while ( $stmt->fetch () ) {
-			$races [] = new TB17 ( $tb17_id );
+             $stmt = $conn->db->prepare ( $query );
+             $stmt->bind_param ( 'ssss', $filters ['race_date'], $filters ['trainer'], $filters ['jockey'], $filters ['horse'] );
+             $stmt->execute ();
+             $stmt->store_result ();
+             $stmt->bind_result ( $tb17_id );
+                            
+             while ( $stmt->fetch () ) {
+             	$races [] = new TB17 ( $tb17_id );
+            }
+                            
 		}
-
-		$stmt->free_result ();
-		$stmt->close ();
-		$conn->close ();
-
-		return $races;
+		catch (mysqli_sql_exception $e) {
+			echo 'error message: ' . $e->getMessage();
+			echo '<br>error code: ' . $e->getCode();
+		}
+		finally {
+			if ($stmt != NULL) {
+				$stmt->free_result ();
+				$stmt->close ();
+			}
+			if ($conn != NULL) $conn->close ();
+			
+			return $races;
+		}
 	}
 }
