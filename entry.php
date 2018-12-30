@@ -15,7 +15,7 @@
 	<table>	
 <?php
 require_once ('includes/envInit.inc.php');
-$tb17Obj = new TB17 ( $_GET ['tb17_id'] );
+$tb17Obj = TB17::IdFactory( $_GET ['tb17_id'] );
 // format html table rows
 $html = "";
 foreach ( $tb17Obj as $field => $value ) {

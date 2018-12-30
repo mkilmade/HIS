@@ -4,40 +4,27 @@
  * 
  */
 class Track extends \HisEntity {
-
-	/**
-	 */
-	public function __construct($id, Connection $conn = NULL) {
-		$this->bindings ['table'] = "track";
-		$this->bindings ['key_fld'] = "track_id";
-		$this->bindings ['type'] = "s";
-		parent::__construct ( $id, $conn );
-	}
+	const TABLE  = "track";
+	const ID_FLD =  "track_id";
+	
 	public static function getTracks(string $id) {
-		$conn = new Connection ();
 		$searchid = $id . "%";
 
 		$query = "SELECT track_id
                   FROM track
-                  WHERE track_id LIKE ?
+                  WHERE track_id LIKE :searchid
                   ORDER BY track_id";
 
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->bind_param ( 's', $searchid );
-		$stmt->execute ();
-		$stmt->store_result ();
-		$stmt->bind_result ( $track_id );
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue(':searchid', $searchid, PDO::PARAM_STR);
+		$stmt->execute ( );
+		$stmt->bindColumn('track_id', $track_id);
 
-		$trackObjs = array ();
-		if ($stmt->num_rows > 0) {
-			while ( $stmt->fetch () ) {
-				$trackObjs [] = new Track ( $track_id, $conn );
-			}
+		$trackObjs = [ ];
+		while ( $stmt->fetch( PDO::FETCH_BOUND ) ) {
+			$trackObjs [] = Track::IdFactory( $track_id );
 		}
-		$stmt->free_result ();
-		$stmt->close ();
-		$conn->close ();
-
 		return $trackObjs;
 	}
 }

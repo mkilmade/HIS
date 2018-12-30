@@ -77,7 +77,7 @@ table#nowTable td {
  $(document).ready(function() {
    setupCommonFields();
  <?php
-	$winnerObj = new TB17 ( $_GET ['tb17_id'] );
+	$winnerObj = TB17::IdFactory( $_GET ['tb17_id'] );
 	echo "
     // fill in form fields with winner object values";
 	foreach ( $winnerObj as $field => $value ) {

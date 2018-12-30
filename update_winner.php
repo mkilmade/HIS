@@ -59,7 +59,7 @@ if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
 		// clog("previous values has been unset!");
 	}
 	// get current values for comparisons via object
-	$current = new TB17 ( $_POST ['tb17_id'] );
+	$current = TB17::IdFactory( $_POST ['tb17_id'] );
 
 	foreach ( $post as $field => $value ) {
 		// no need to update field if same value

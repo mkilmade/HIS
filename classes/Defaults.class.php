@@ -5,16 +5,9 @@
  * 
  */
 class Defaults extends \HisEntity {
-
-	/**
-	 */
-	public function __construct($id = 1, Connection $conn = NULL) {
-		$this->bindings ['table'] = "current_defaults";
-		$this->bindings ['key_fld'] = "current_defaults_id";
-		$this->bindings ['type'] = "i";
-		parent::__construct ( $id, $conn = NULL );
-	}
-
+	const TABLE  = "current_defaults";
+	const ID_FLD =  "current_defaults_id";
+	
 	// -- get current meet default values
 	public static function get_his_defaults() {
 		$query = "SELECT cd.race_meet_id,
@@ -35,18 +28,17 @@ class Defaults extends \HisEntity {
               LIMIT 1
              ";
 
-		$conn = new Connection ();
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->execute ();
-		$defaults = $stmt->get_result ()->fetch_assoc ();
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->execute ( );
+		
+		$defaults = $stmt->fetch( PDO::FETCH_ASSOC );
 		$defaults ['meet_name'] = addslashes ( $defaults ['meet_name'] );
 		$defaults ['track_name'] = addslashes ( $defaults ['track_name'] );
+		
 		$defaults ['meet_filter'] = "race_date >= '{$defaults['start_date']}' AND
                                 race_date <= '{$defaults['end_date']}' AND
                                 track_id = '{$defaults['track_id']}'";
-		$stmt->free_result ();
-		$stmt->close ();
-		$conn->close ();
 		return $defaults;
 	}
 }

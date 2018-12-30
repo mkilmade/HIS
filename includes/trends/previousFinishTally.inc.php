@@ -1,7 +1,7 @@
 <?php
 require_once ('includes/envInit.inc.php'); // called by getTrend.php
 function previousFinishTally($defaults) {
-	$rm = new Meet ( $defaults ['race_meet_id'] );
+	$rm = Meet::IdFactory( $defaults ['race_meet_id'] );
 	$tallies = $rm->getPreviousFinishTally ();
 
 	echo "

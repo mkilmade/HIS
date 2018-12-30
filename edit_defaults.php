@@ -62,7 +62,7 @@ require_once ('includes/envInit.inc.php');
 	 acDomainFields('#previous_track_id');
 
 <?php
-$cdObj = new Defaults ();
+$cdObj = Defaults::IdFactory(1);
 // iterate through properties and set corresponding form fields
 foreach ( $cdObj as $field => $value ) {
 	echo "

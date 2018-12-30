@@ -12,7 +12,7 @@ define ( 'ERROR_LOG_FILE', $ini ['system'] ['error_log'] );
 // set time zone
 define ( 'HIS_TIMEZONE', $ini ['system'] ['timezone'] );
 date_default_timezone_set ( HIS_TIMEZONE );
-
+$ini = NULL;
 // ****** Error Handling ****** //
 
 // create custom error handler function
@@ -51,4 +51,27 @@ $ini = '';
 $driver = new mysqli_driver();
 $driver->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
 $driver = NULL;
+
+function exception_handler($e) {
+	$date = new DateTime ( "now", new DateTimeZone ( HIS_TIMEZONE ) );
+	$now = $date->format ( "Y-m-d H:i:s" );
+	$m = "\r\n Logged: $now";
+	$m .= "\r\nError Code: {$e->getCode()}";
+	$m .= "\r\n   Message: {$e->getMessage()}";
+	$m .= "\r\n      File: {$e->getFile()}";
+	$m .= "\r\n      Line: {$e->getLine()}\r\n";
+	error_log ( $m, 3, ERROR_LOG_FILE );
+	
+	$to      = 'mkilmade@gmail.com';
+	$subject = 'HIS Exception Logged';
+	$message = $e->getMessage();
+	$headers = 'From: mkilmade@Kelso.local' . "\r\n" .
+			'Reply-To: mkilmade@Kelso.local' . "\r\n" .
+			'X-Mailer: PHP/' . phpversion();
+	
+	mail($to, $subject, $message, $headers);
+}
+
+set_exception_handler('exception_handler');
+
 ?>

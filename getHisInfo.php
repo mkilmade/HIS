@@ -77,17 +77,17 @@ function getNextRaceNumber($race_date, $meet_filter) {
 	return array('next_race' => TB17::last_race($race_date, $meet_filter) + 1);
 }
 
-function getTracks($id) {
+function getTracks(string $id) {
 	$trackObjs = Track::getTracks($id);
-    $tracks = array();
-    if (count($trackObjs) > 0) {
-    	foreach ($trackObjs as $trackObj) {
-            $tracks[] = array(
-            		'label' => $trackObj->track_id,
-            		'value' => $trackObj->track_id
-            );
-        }
+    $tracks = [ ];
+
+    foreach ($trackObjs as $trackObj) {
+    	$tracks[] = array(
+           'label' => $trackObj->track_id,
+           'value' => $trackObj->track_id
+        );
     }
+
     return $tracks;
 }
 /**
@@ -98,8 +98,21 @@ function getTracks($id) {
  * 
  */
 function getLastWinData($horse) {
-	$horseObj = new Horse($horse);
-	return $horseObj->getLastWinData();
+	$horseObj = Horse::IdFactory( $horse );
+	//return $horseObj->getLastWinData();
+
+	$tb17Obj = $horseObj->getLastWinData();
+	if ($tb17Obj != NULL) {
+		$lastWinData = get_object_vars($tb17Obj);
+	} else {
+		$lastWinData ["track_id"] = "";
+		$lastWinData ["race_date"] = "";
+		$lastWinData ["race"] = "";
+		$lastWinData ["finish_position"] = "10";
+		$lastWinData ["trainer"] = "";
+		$lastWinData ["jockey"] = "";
+	}
+	return $lastWinData;
 }
 
 function nextOutWinners($previous_date,

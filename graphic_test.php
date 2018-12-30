@@ -5,7 +5,7 @@ $type = $_GET ['type'];
 $name = urldecode ( $_GET ['name'] );
 
 // -- get meet object
-$meetObj = new Meet ( $_SESSION ['defaults'] ['race_meet_id'] );
+$meetObj = Meet::IdFactory( $_SESSION ['defaults'] ['race_meet_id'] );
 // -- get array race dates for meet
 $race_dates = $meetObj->getRaceDates ();
 $days_in_meet = end ( $race_dates );

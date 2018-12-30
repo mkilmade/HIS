@@ -6,7 +6,7 @@ if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
 	$post = $_POST;
 	unset ( $post ['submit'] );
 	// get current values for comparisons via object
-	$current = new Defaults ();
+	$current = Defaults::IdFactory( 1 );
 	foreach ( $post as $field => $value ) {
 		if ($field == 'current_defaults_id') {
 			unset ( $post [$field] );

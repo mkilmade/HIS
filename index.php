@@ -254,7 +254,7 @@ function statLine($turf, $distance) {
 			break;
 	}
 
-	$meetObj = new Meet ( $_SESSION ['defaults'] ['race_meet_id'] );
+	$meetObj = Meet::IdFactory( $_SESSION ['defaults'] ['race_meet_id'] );
 	$stat_line = $meetObj->getSummaryStats ( [ 
 			'turf' => $turf,
 			'distance' => $distance
@@ -316,7 +316,7 @@ statLine ( 'TRUE', 'total' );
 	<br>
 
 <?php
-$meetObj = new Meet ( $_SESSION ['defaults'] ['race_meet_id'] );
+$meetObj = Meet::IdFactory( $_SESSION ['defaults'] ['race_meet_id'] );
 // -- get top ten list data and send
 $tj = $meetObj->getTopTen ( "jockey", $_SESSION ['defaults'] ['start_date'], 0 );
 $tt = $meetObj->getTopTen ( "trainer", $_SESSION ['defaults'] ['start_date'], 0 );

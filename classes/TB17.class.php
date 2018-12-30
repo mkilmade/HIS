@@ -5,32 +5,24 @@
  *        
  */
 class TB17 extends \HisEntity {
-	public function __construct($id = NULL, Connection $conn = NULL) {
-		$this->bindings ['table'] = "tb17";
-		$this->bindings ['key_fld'] = "tb17_id";
-		$this->bindings ['type'] = "i";
-		parent::__construct ( $id, $conn );
-	}
+	const TABLE  = "tb17";
+	const ID_FLD =  "tb17_id";
+	
 	public static function last_race_date(string $meet_filter = NULL) {
-		$conn = new Connection ();
-		$query = "SELECT MAX(race_date)
+		$query = "SELECT MAX(race_date) AS last_race_date
 		              FROM tb17" . ($meet_filter == NULL ? "" : " WHERE $meet_filter") . "
 		              LIMIT 1
 	                 ";
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->execute ();
-		$stmt->store_result ();
-		if ($stmt->num_rows == 0) {
-			return '';
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->execute ( );
+		$stmt->bindColumn('last_race_date', $last_race_date);
+		
+		if ( !$stmt->fetch( PDO::FETCH_BOUND )) {
+			$last_race_date = '';
 		}
-		$stmt->bind_result ( $last_race_date );
-		$stmt->fetch ();
-		$stmt->free_result ();
-		$stmt->close ();
-		$conn->close ();
 		return $last_race_date;
 	}
-
 	// -- get last race # for a date for current meet (null) or for a specific date during meet
 	public static function last_race(string $race_date = null, string $meet_filter) {
 		$conn = new Connection ();
@@ -78,7 +70,7 @@ class TB17 extends \HisEntity {
 			$winnerObj = NULL;
 		} else {
 			$stmt->fetch ();
-			$winnerObj = new TB17 ( $tb17_id, $conn );
+			$winnerObj = TB17::IdFactory( $tb17_id );
 		}
 		$stmt->close ();
 		$conn->close ();
@@ -151,7 +143,7 @@ class TB17 extends \HisEntity {
 		$stmt->bind_result ( $tb17_id );
 		$nows = array ();
 		while ( $stmt->fetch () ) {
-			$nows [] = new TB17 ( $tb17_id, $conn );
+			$nows [] = TB17::IdFactory( $tb17_id );
 		}
 		$stmt->close ();
 		$conn->close ();
@@ -217,18 +209,22 @@ class TB17 extends \HisEntity {
 		return $y;
 	}
 	public static function getResultArray(string $query) {
-		$conn = new Connection ();
-		$stmt = $conn->db->prepare ( $query );
-		$y = [ ];
-		if ($stmt->execute ()) {
-			$result = $stmt->get_result ();
-			if ($result->num_rows > 0) {
-				$y = $result->fetch_all ( MYSQLI_ASSOC );
-			}
-		}
-		$stmt->close ();
-		$conn->close ();
-		return $y;
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->execute ( );
+		return $stmt->fetchAll ( PDO::FETCH_ASSOC );
+// 		$conn = new Connection ();
+// 		$stmt = $conn->db->prepare ( $query );
+// 		$y = [ ];
+// 		if ($stmt->execute ()) {
+// 			$result = $stmt->get_result ();
+// 			if ($result->num_rows > 0) {
+// 				$y = $result->fetch_all ( MYSQLI_ASSOC );
+// 			}
+// 		}
+// 		$stmt->close ();
+// 		$conn->close ();
+// 		return $y;
 	}
 	public static function getCategoryNames(string $name, string $category) {
 		$conn = new Connection ();
@@ -278,7 +274,7 @@ class TB17 extends \HisEntity {
              $stmt->bind_result ( $tb17_id );
                             
              while ( $stmt->fetch () ) {
-             	$races [] = new TB17 ( $tb17_id );
+             	$races [] = TB17::IdFactory( $tb17_id );
             }
                             
 		}
