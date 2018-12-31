@@ -104,7 +104,8 @@ class TB17 extends \HisEntity {
                   	FROM tb17
                   	WHERE previous_date = :previous_date AND
                     	  previous_track_id = :previous_track_id AND
-                       	  previous_race = :previous_race";
+                       	  previous_race = :previous_race
+                    LIMIT 1";
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );

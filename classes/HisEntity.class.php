@@ -32,11 +32,13 @@ abstract class HisEntity {
 	function __destruct() {
 	}
 	public function insert_entry(array $data) {
-		$conn = new Connection ();
 		$callingClass = get_called_class();
 		$table = constant( $callingClass . '::TABLE' );
 		$id_fld = constant( $callingClass . '::ID_FLD' );
+		
+		$conn = new PDOConnection ();
 		$status = $conn->insert_row ( $data, $table );
+		
 		if ($status) {
 			$id_field = $id_fld;
 			// todo: remove when resources use id field as key
@@ -46,19 +48,18 @@ abstract class HisEntity {
 			$data [$id_field] = $status;
 			$this->setProperties ( $data );
 		}
-		$conn->close ();
 		return $status;
 	}
 	public function update_entry(array &$data) {
-		$conn = new Connection ();
 		$callingClass = get_called_class();
 		$table = constant( $callingClass . '::TABLE' );
 		$id_fld = constant( $callingClass . '::ID_FLD' );
+		
+		$conn = new PDOConnection ();
 		$status = $conn->update_row ( $data, $table, $this->$id_fld );
 		if ($status) {
 			$this->setProperties ( $data );
 		}
-		$conn->close ();
 		return $status;
 	}
 }

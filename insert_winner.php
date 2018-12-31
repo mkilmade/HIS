@@ -39,7 +39,8 @@ require_once('includes/envInit.inc.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $fields = "";
-    $values = "";
+    $params = "";
+    $paramValues = [ ];
     $post = $_POST;
     unset($post['submit']);
     unset($post['tb17_id']);
@@ -62,12 +63,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     foreach ($post as $field => $value) {
         $fields = $fields . ($fields == "" ? "" : ", ") . $field;
-        $values = $values . ($values == "" ? "" : ", ") . "'" . $value . "'";
-
+        $params = $params . ($params == "" ? "" : ", ") . "?";
+        
         // check for resource and insert new jockey or trainer or horse if does not exist
         if ($field == 'jockey' || $field == 'trainer' || $field == 'horse') {
         	$className = ucfirst($field);
         	$resObj = new $className();
+        	// + used when leading characters match (user override to force new resource)
+        	if (substr($value, 0, 1) == "+") {
+        		$value = substr($value, 1);
+        		$post[$field] = $value;
+        	}
         	$status = $resObj->addResource($value);
         	if ($status) {
         		$id_field = $field."_id";
@@ -80,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $status = "";
         }
+        $paramValues[] = $value;
         
         echo "<tr>
                 <td>$field</td>
@@ -93,12 +100,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               <td>$fields</td>
             </tr>";
     echo "<tr>
-              <td>Values</td>
-              <td>$values</td>
+              <td>Params</td>
+              <td>$params</td>
+            </tr>";
+    echo "<tr>
+              <td>Param Values</td>
+              <td>" . json_encode($paramValues) . "</td>
             </tr>";
     echo "<tr>
               <td>SQL</td>
-              <td>INSERT INTO 'tbd'.'tb17' ($fields) VALUES ($values)</td>
+              <td>INSERT INTO 'tbd'.'tb17' ($fields) VALUES ($params)</td>
             </tr>";
     $tb17Obj = new TB17();
     $status = $tb17Obj->insert_entry($post);

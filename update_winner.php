@@ -72,6 +72,11 @@ if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
 		if ($field == 'jockey' || $field == 'trainer' || $field == 'horse') {
 			$className = ucfirst ( $field );
 			$resObj = new $className ();
+			// + used when leading characters match (user override to force new resource)
+			if (substr($value, 0, 1) == "+") {
+				$value = substr($value, 1);
+				$post[$field] = $value;
+			}
 			$status = $resObj->addResource ( $value );
 			if ($status) {
 				$id_field = $field . "_id";
@@ -90,7 +95,7 @@ if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
                 <td>$value $status</td>
 				<td>{$current->$field}</td>
               </tr>";
-		$fldvals = $fldvals . ($fldvals == "" ? "" : ", ") . $field . "='" . addslashes ( $value ) . "'";
+		$fldvals = $fldvals . ($fldvals == "" ? "" : ", ") . $field . "= ?";
 	}
 
 	if ((count ( $post )) == 0) {
