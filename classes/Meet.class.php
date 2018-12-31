@@ -5,9 +5,8 @@
  *        
  */
 class Meet extends \HisEntity {
-	const TABLE  = "race_meet";
-	const ID_FLD =  "race_meet_id";
-	
+	const TABLE = "race_meet";
+	const ID_FLD = "race_meet_id";
 	public static function getTrackId(string $race_date) {
 		$query = "SELECT
                     race_meet_id
@@ -18,13 +17,13 @@ class Meet extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue(':start_date', $race_date, PDO::PARAM_STR);
-		$stmt->bindValue(':end_date', $race_date, PDO::PARAM_STR);
-		$stmt->execute ( );
-		$stmt->bindColumn('race_meet_id', $race_meet_id);
-		
-		if ( $stmt->fetch( PDO::FETCH_BOUND )) {
-			$rmObj = Meet::IdFactory( $race_meet_id );
+		$stmt->bindValue ( ':start_date', $race_date, PDO::PARAM_STR );
+		$stmt->bindValue ( ':end_date', $race_date, PDO::PARAM_STR );
+		$stmt->execute ();
+		$stmt->bindColumn ( 'race_meet_id', $race_meet_id );
+
+		if ($stmt->fetch ( PDO::FETCH_BOUND )) {
+			$rmObj = Meet::IdFactory ( $race_meet_id );
 			$track_id = $rmObj->track_id;
 		} else {
 			$track_id = "";
@@ -33,7 +32,6 @@ class Meet extends \HisEntity {
 				'track_id' => $track_id
 		);
 	}
-	
 	public function meet_filter(string $comparefield) {
 		$filter = "$comparefield >= '{$this->start_date}' AND ";
 		$filter .= "$comparefield <= '{$this->end_date}' AND ";
@@ -67,10 +65,10 @@ class Meet extends \HisEntity {
 	              LIMIT 1";
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->execute ( );
-		$stmt->bindColumn('wins', $wins);
-		
-		if ( !$stmt->fetch( PDO::FETCH_BOUND )) {
+		$stmt->execute ();
+		$stmt->bindColumn ( 'wins', $wins );
+
+		if (! $stmt->fetch ( PDO::FETCH_BOUND )) {
 			$wins = 0;
 		}
 		return $wins;
@@ -131,19 +129,18 @@ class Meet extends \HisEntity {
 		              FROM race_meet
 		              ORDER BY start_date DESC
 		             ";
-		
+
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->execute ( );
-		$stmt->bindColumn('race_meet_id', $race_meet_id);
-		
+		$stmt->execute ();
+		$stmt->bindColumn ( 'race_meet_id', $race_meet_id );
+
 		$meets = [ ];
-		while ( $stmt->fetch( PDO::FETCH_BOUND ) ) {
-			$meets [] = Meet::IdFactory( $race_meet_id );
+		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
+			$meets [] = Meet::IdFactory ( $race_meet_id );
 		}
 		return $meets;
 	}
-	
 	public function getSummaryStats(array $qryParams) {
 		// -- build basic stats query
 		$query = "SELECT
@@ -173,7 +170,7 @@ class Meet extends \HisEntity {
 		// -- run query
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->execute ( );
+		$stmt->execute ();
 		return $stmt->fetch ( PDO::FETCH_ASSOC );
 	}
 	public function getMultipleWinnerCount(array $qryParams) {
@@ -184,7 +181,7 @@ class Meet extends \HisEntity {
                          horse
                         FROM tb17
                         WHERE {$this->meet_filter('race_date')} AND horse <> ''"; // don't use if no horse enter yet
-		                                                                                                           // -- add to derived WHERE clause
+		                                                                                                               // -- add to derived WHERE clause
 		if ($qryParams ['turf'] != '') {
 			$query .= " AND turf='{$qryParams['turf']}'";
 		}
@@ -193,14 +190,13 @@ class Meet extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->execute ( );
-		$stmt->bindColumn('count', $multi_winners_count);
-		
-		if (! $stmt->fetch( PDO::FETCH_BOUND ) ) {
+		$stmt->execute ();
+		$stmt->bindColumn ( 'count', $multi_winners_count );
+
+		if (! $stmt->fetch ( PDO::FETCH_BOUND )) {
 			$multi_winners_count = 0;
 		}
 		return $multi_winners_count;
-		
 	}
 	function getTopTen(string $type, string $as_of_date, int $days) {
 		// -- build basic stats query
@@ -227,10 +223,10 @@ class Meet extends \HisEntity {
 	              ";
 
 		// -- run query
-	    $conn = new PDOConnection ();
-	    $stmt = $conn->pdo->prepare ( $query );
-	    $stmt->bindValue(':date_diff', $date_diff, PDO::PARAM_STR);
-	    $stmt->execute ( );
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue ( ':date_diff', $date_diff, PDO::PARAM_STR );
+		$stmt->execute ();
 		return $stmt->fetchAll ( PDO::FETCH_ASSOC );
 	}
 	public function getRacesForDate(string $race_date) {
@@ -244,12 +240,12 @@ class Meet extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue(':race_date', $race_date, PDO::PARAM_STR);
-		$stmt->execute ( );
-		$stmt->bindColumn('tb17_id', $tb17_id);
+		$stmt->bindValue ( ':race_date', $race_date, PDO::PARAM_STR );
+		$stmt->execute ();
+		$stmt->bindColumn ( 'tb17_id', $tb17_id );
 		$races = [ ];
-		while ( $stmt->fetch( PDO::FETCH_BOUND ) ) {
-			$races [] = TB17::IdFactory( $tb17_id );
+		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
+			$races [] = TB17::IdFactory ( $tb17_id );
 		}
 		return $races;
 	}
@@ -261,11 +257,11 @@ class Meet extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->execute ( );
-		$stmt->bindColumn( 'race_date', $race_date );
+		$stmt->execute ();
+		$stmt->bindColumn ( 'race_date', $race_date );
 		$day_of_meet = 0;
 		$race_dates = [ ];
-		while ( $stmt->fetch( PDO::FETCH_BOUND ) ) {
+		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
 			$day_of_meet = $day_of_meet + 1;
 			$race_dates [$race_date] = $day_of_meet;
 		}
@@ -281,13 +277,13 @@ class Meet extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue(':name', $name, PDO::PARAM_STR);
-		$stmt->execute ( );
-		$stmt->bindColumn('race_date', $race_date);
-		$stmt->bindColumn('win_count', $win_count);
-		
+		$stmt->bindValue ( ':name', $name, PDO::PARAM_STR );
+		$stmt->execute ();
+		$stmt->bindColumn ( 'race_date', $race_date );
+		$stmt->bindColumn ( 'win_count', $win_count );
+
 		$win_counts = [ ];
-		while ( $stmt->fetch( PDO::FETCH_BOUND ) ) {
+		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
 			$win_counts [$race_date] = $win_count;
 		}
 		return $win_counts;

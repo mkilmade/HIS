@@ -37,8 +37,8 @@ class Defaults extends \HisEntity {
 		$defaults ['track_name'] = addslashes ( $defaults ['track_name'] );
 		
 		$defaults ['meet_filter'] = "race_date >= '{$defaults['start_date']}' AND
-                                race_date <= '{$defaults['end_date']}' AND
-                                track_id = '{$defaults['track_id']}'";
+                                     race_date <= '{$defaults['end_date']}' AND
+                                     track_id = '{$defaults['track_id']}'";
 		return $defaults;
 	}
 }

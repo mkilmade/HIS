@@ -9,21 +9,25 @@ abstract class HisEntity {
 	 */
 	function __construct() {
 	}
-	
 	public static function IdFactory($id) {
-		if ($id == NULL) { return NULL; }
-		
-		$conn = new PDOConnection();
-		if ($conn == NULL) {return NULL;}
-		$callingClass = get_called_class();
-		$table = constant( $callingClass . '::TABLE' );
-		$id_fld = constant( $callingClass . '::ID_FLD' );
-		
-		$stmt = $conn->pdo->prepare("SELECT * FROM $table WHERE $id_fld  = ? LIMIT 1");
-		$stmt->execute([$id]);
-		return $stmt->fetchObject($callingClass);
+		if ($id == NULL) {
+			return NULL;
+		}
+
+		$conn = new PDOConnection ();
+		if ($conn == NULL) {
+			return NULL;
+		}
+		$callingClass = get_called_class ();
+		$table = constant ( $callingClass . '::TABLE' );
+		$id_fld = constant ( $callingClass . '::ID_FLD' );
+
+		$stmt = $conn->pdo->prepare ( "SELECT * FROM $table WHERE $id_fld  = ? LIMIT 1" );
+		$stmt->execute ( [ 
+				$id
+		] );
+		return $stmt->fetchObject ( $callingClass );
 	}
-	
 	private function setProperties(array $data) {
 		foreach ( $data as $property => $value ) {
 			$this->$property = $value;
@@ -32,13 +36,13 @@ abstract class HisEntity {
 	function __destruct() {
 	}
 	public function insert_entry(array $data) {
-		$callingClass = get_called_class();
-		$table = constant( $callingClass . '::TABLE' );
-		$id_fld = constant( $callingClass . '::ID_FLD' );
-		
+		$callingClass = get_called_class ();
+		$table = constant ( $callingClass . '::TABLE' );
+		$id_fld = constant ( $callingClass . '::ID_FLD' );
+
 		$conn = new PDOConnection ();
 		$status = $conn->insert_row ( $data, $table );
-		
+
 		if ($status) {
 			$id_field = $id_fld;
 			// todo: remove when resources use id field as key
@@ -51,10 +55,10 @@ abstract class HisEntity {
 		return $status;
 	}
 	public function update_entry(array &$data) {
-		$callingClass = get_called_class();
-		$table = constant( $callingClass . '::TABLE' );
-		$id_fld = constant( $callingClass . '::ID_FLD' );
-		
+		$callingClass = get_called_class ();
+		$table = constant ( $callingClass . '::TABLE' );
+		$id_fld = constant ( $callingClass . '::ID_FLD' );
+
 		$conn = new PDOConnection ();
 		$status = $conn->update_row ( $data, $table, $this->$id_fld );
 		if ($status) {
