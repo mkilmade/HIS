@@ -25,55 +25,48 @@ class TB17 extends \HisEntity {
 	}
 	// -- get last race # for a date for current meet (null) or for a specific date during meet
 	public static function last_race(string $race_date = null, string $meet_filter) {
-		$conn = new Connection ();
-
 		// -- get default value if $race_date is null
 		if ($race_date === null) {
 			$race_date = TB17::last_race_date ( $meet_filter );
 		}
 
-		$query = "SELECT MAX(race)
+		$query = "SELECT MAX(race) AS last_race
                   FROM tb17
-                  WHERE race_date = ? AND $meet_filter
+                  WHERE race_date = :race_date AND $meet_filter
                   LIMIT 1
                  ";
 
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->bind_param ( 's', $race_date );
-		$stmt->execute ();
-		$stmt->store_result ();
-		if ($stmt->num_rows == 0) {
-			return 0;
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue(':race_date', $race_date, PDO::PARAM_STR);
+		$stmt->execute ( );
+		$stmt->bindColumn('last_race', $last_race);
+		
+		if ( !$stmt->fetch( PDO::FETCH_BOUND )) {
+			$last_race = 0;
 		}
-		$stmt->bind_result ( $last_race );
-		$stmt->fetch ();
-		$stmt->free_result ();
-		$stmt->close ();
-		$conn->close ();
 		return $last_race;
 	}
 	public static function getRaceInfo(string $previous_date, string $previous_race, string $previous_track_id) {
-		$conn = new Connection ();
-		$qry = "SELECT tb17_id
+		$query = "SELECT tb17_id
                     FROM tb17
-                    WHERE race_date = ? AND
-                       race         = ? AND
-                       track_id     = ?
+                    WHERE race_date = :race_date AND
+                       race         = :race AND
+                       track_id     = :track_id
                     LIMIT 1";
-		$stmt = $conn->db->prepare ( $qry );
-		$stmt->bind_param ( 'sis', $previous_date, $previous_race, $previous_track_id );
-		$stmt->execute ();
-		$stmt->store_result ();
-		$stmt->bind_result ( $tb17_id );
+		
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue(':race_date', $previous_date, PDO::PARAM_STR);
+		$stmt->bindValue(':race', $previous_race, PDO::PARAM_STR);
+		$stmt->bindValue(':track_id', $previous_track_id, PDO::PARAM_STR);
+		$stmt->execute ( );
+		$stmt->bindColumn('tb17_id', $tb17_id);
 
-		if ($stmt->num_rows == 0) {
-			$winnerObj = NULL;
-		} else {
-			$stmt->fetch ();
+		$winnerObj = NULL;
+		if ( $stmt->fetch( PDO::FETCH_BOUND )) {
 			$winnerObj = TB17::IdFactory( $tb17_id );
 		}
-		$stmt->close ();
-		$conn->close ();
 		return $winnerObj;
 	}
 	public static function findKeyRaces(int $search_limit, string $track_id) {
@@ -103,54 +96,56 @@ class TB17 extends \HisEntity {
                        previous_race";
 		return TB17::getResultArray ( $query );
 	}
+	
+	// cuurently not used but could be usefull in future ; needs testing
 	public static function getPreviousNextOutWinnersCount($previous_date, $previous_track_id, $previous_race) {
-		$conn = new Connection ();
 		$query = "SELECT
                    		COUNT(CONCAT(previous_date, previous_race, previous_track_id)) as wins
                   	FROM tb17
-                  	WHERE previous_date = ? AND
-                    	  previous_track_id = ? AND
-                       	  previous_race = ?";
+                  	WHERE previous_date = :previous_date AND
+                    	  previous_track_id = :previous_track_id AND
+                       	  previous_race = :previous_race";
 
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->bind_param ( 'ssi', $previous_date, $previous_track_id, $previous_race );
-		$stmt->execute ();
-		$stmt->store_result ();
-		$stmt->bind_result ( $wins );
-		$stmt->fetch ();
-		$stmt->free_result ();
-		$stmt->close ();
-		$conn->close ();
-
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue(':previous_date', $previous_date, PDO::PARAM_STR);
+		$stmt->bindValue(':previous_track_id', $previous_track_id, PDO::PARAM_STR);
+		$stmt->bindValue(':previous_race', $previous_race, PDO::PARAM_INT);
+		$stmt->execute ( );
+		$stmt->bindColumn('wins', $wins);
+		
+		if ( ! $stmt->fetch( PDO::FETCH_BOUND ) ) {
+			$wins = 0;
+		}
 		return array (
 				'wins' => $wins
 		);
 	}
+	
 	public static function getNextOutWinners(string $previous_date, string $previous_race, string $previous_track_id) {
-		$conn = new Connection ();
-		$qry = "SELECT tb17_id
+		$query = "SELECT tb17_id
                 FROM tb17
-                WHERE previous_date      = ? AND
-                      previous_race      = ? AND
-                      previous_track_id  = ?
+                WHERE previous_date      = :previous_date AND
+                      previous_race      = :previous_race AND
+                      previous_track_id  = :previous_track_id
                 ORDER BY race_date DESC, race
                ";
 
-		$stmt = $conn->db->prepare ( $qry );
-		$stmt->bind_param ( 'sis', $previous_date, $previous_race, $previous_track_id );
-		$stmt->execute ();
-		$stmt->store_result ();
-		$stmt->bind_result ( $tb17_id );
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue(':previous_date', $previous_date, PDO::PARAM_STR);
+		$stmt->bindValue(':previous_race', $previous_race, PDO::PARAM_STR);
+		$stmt->bindValue(':previous_track_id', $previous_track_id, PDO::PARAM_STR);
+		$stmt->execute ( );
+		$stmt->bindColumn('tb17_id', $tb17_id);
+		
 		$nows = array ();
-		while ( $stmt->fetch () ) {
+		while ( $stmt->fetch( PDO::FETCH_BOUND ) ) {
 			$nows [] = TB17::IdFactory( $tb17_id );
 		}
-		$stmt->close ();
-		$conn->close ();
 		return $nows;
 	}
 	public static function getIndividualMeetStats(string $table, string $name, string $meet_filter) {
-		$conn = new Connection ();
 		$query = "SELECT
 			             COUNT(*) as 'Wins',
 			             SUM(IF(turf='FALSE',1,0)) as 'Dirt',
@@ -164,23 +159,18 @@ class TB17 extends \HisEntity {
 			             SUM(IF(distance>='8' and turf='FALSE',1,0)) as 'Dirt Routes',
 			             SUM(IF(distance>='8' and turf='TRUE',1,0)) as 'Turf Routes'
 			          FROM tb17
-			          WHERE $table = ? AND $meet_filter
-			          GROUP BY $table";
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->bind_param ( 's', $name );
-		$y = [ ];
-		if ($stmt->execute ()) {
-			$result = $stmt->get_result ();
-			if ($result->num_rows > 0) {
-				$y = $result->fetch_assoc ();
-			}
-		}
-		$stmt->close ();
-		$conn->close ();
-		return $y;
+			          WHERE $table = :name AND $meet_filter
+			          GROUP BY $table
+                      LIMIT 1";
+
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue(':name', $name, PDO::PARAM_STR);
+		$stmt->execute ( );
+		return $stmt->fetch( PDO::FETCH_ASSOC );
 	}
+	
 	public static function getRaceSummaryInfo(int $tb17_id) {
-		$conn = new Connection ();
 		$query = "SELECT race as 'Race',
 				             track_condition as 'Condition',
 				             turf as 'Turf',
@@ -194,102 +184,69 @@ class TB17 extends \HisEntity {
 				             trainer as 'Trainer',
 				             comment as 'Comment'
 			          FROM tb17
-			          WHERE tb17_id = ?";
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->bind_param ( 's', $tb17_id );
-		$y = [ ];
-		if ($stmt->execute ()) {
-			$result = $stmt->get_result ();
-			if ($result->num_rows > 0) {
-				$y = $result->fetch_assoc ();
-			}
-		}
-		$stmt->close ();
-		$conn->close ();
-		return $y;
+			          WHERE tb17_id = :tb17_id
+                      LIMIT 1";
+		
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue(':tb17_id', $tb17_id, PDO::PARAM_INT);
+		$stmt->execute ( );
+		return $stmt->fetch( PDO::FETCH_ASSOC );
 	}
+	
 	public static function getResultArray(string $query) {
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
 		$stmt->execute ( );
 		return $stmt->fetchAll ( PDO::FETCH_ASSOC );
-// 		$conn = new Connection ();
-// 		$stmt = $conn->db->prepare ( $query );
-// 		$y = [ ];
-// 		if ($stmt->execute ()) {
-// 			$result = $stmt->get_result ();
-// 			if ($result->num_rows > 0) {
-// 				$y = $result->fetch_all ( MYSQLI_ASSOC );
-// 			}
-// 		}
-// 		$stmt->close ();
-// 		$conn->close ();
-// 		return $y;
 	}
 	public static function getCategoryNames(string $name, string $category) {
-		$conn = new Connection ();
-		$searchname = $name . "%";
+		$searchName = $name . "%";
 		$query = "SELECT DISTINCT $category
               FROM tb17
-              WHERE $category LIKE ?
+              WHERE $category LIKE :searchName
               ORDER BY $category";
 
-		$stmt = $conn->db->prepare ( $query );
-		$stmt->bind_param ( 's', $searchname );
-		$stmt->execute ();
-		$stmt->store_result ();
-		$stmt->bind_result ( $cat );
-
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->bindValue(':searchName', $searchName, PDO::PARAM_STR);
+		$stmt->execute ( );
+		$stmt->bindColumn($category, $cat);
+		
 		$cats = array ();
-		while ( $stmt->fetch () ) {
+		while ( $stmt->fetch( PDO::FETCH_BOUND ) ) {
 			$cats [] = array (
 					'label' => htmlentities ( $cat, ENT_NOQUOTES ),
 					'value' => htmlentities ( $cat, ENT_NOQUOTES )
 			);
 		}
-
-		$stmt->free_result ();
-		$stmt->close ();
-		$conn->close ();
-
 		return $cats;
 	}
+	
 	public static function getBrowseRequestResults(array $filters, string $meet_filter) {		
-		$races = [ ];
-		try {
-			$conn = new Connection ();
-			$query = "SELECT tb17_id
-                      FROM tb17
-                      WHERE race_date LIKE ? AND
-                            trainer LIKE ? AND
-                            jockey LIKE ? AND
-                            horse LIKE ? AND
-                            $meet_filter
-                      ORDER BY race_date DESC,
-                               race DESC";
-             $stmt = $conn->db->prepare ( $query );
-             $stmt->bind_param ( 'ssss', $filters ['race_date'], $filters ['trainer'], $filters ['jockey'], $filters ['horse'] );
-             $stmt->execute ();
-             $stmt->store_result ();
-             $stmt->bind_result ( $tb17_id );
+		$query = "SELECT tb17_id
+                  FROM tb17
+                  WHERE race_date LIKE :race_date AND
+                        trainer   LIKE :trainer AND
+                        jockey    LIKE :jockey AND
+                        horse     LIKE :horse AND
+                        $meet_filter
+                  ORDER BY race_date DESC,
+                           race DESC";
+
+         $conn = new PDOConnection ();
+         $stmt = $conn->pdo->prepare ( $query );
+         $stmt->bindValue(':race_date', $filters ['race_date'], PDO::PARAM_STR);
+         $stmt->bindValue(':trainer', $filters ['trainer'], PDO::PARAM_STR);
+         $stmt->bindValue(':jockey', $filters ['jockey'], PDO::PARAM_STR);
+         $stmt->bindValue(':horse', $filters ['horse'], PDO::PARAM_STR);
+         $stmt->execute ( );
+         $stmt->bindColumn('tb17_id', $tb17_id);
                             
-             while ( $stmt->fetch () ) {
-             	$races [] = TB17::IdFactory( $tb17_id );
-            }
-                            
-		}
-		catch (mysqli_sql_exception $e) {
-			echo 'error message: ' . $e->getMessage();
-			echo '<br>error code: ' . $e->getCode();
-		}
-		finally {
-			if ($stmt != NULL) {
-				$stmt->free_result ();
-				$stmt->close ();
-			}
-			if ($conn != NULL) $conn->close ();
-			
-			return $races;
-		}
-	}
+         $races = [ ];
+         while ( $stmt->fetch( PDO::FETCH_BOUND ) ) {
+         	$races [] = TB17::IdFactory( $tb17_id );
+         }
+         return $races;
+ 	}
 }
