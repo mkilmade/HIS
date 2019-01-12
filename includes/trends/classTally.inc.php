@@ -20,10 +20,11 @@ function classTally($defaults) {
 	$total = 0;
 	foreach ( $tallies as $tally ) {
 		$total += $tally ['races'];
+		$avg_odds = money_format('%i', $tally['avg_odds']);
 		echo "<tr>";
 		echo "<td style='text-align:left;'>{$tally['race_class']}</td>";
 		echo "<td>{$tally['races']}</td>";
-		echo "<td>{$tally['avg_odds']}</td>";
+		echo "<td>$avg_odds</td>";
 		echo "</tr>";
 	}
 
