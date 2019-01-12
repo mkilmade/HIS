@@ -2,7 +2,9 @@
 abstract class Resource extends \HisEntity {
 	public $name;
 	public $shortcut;
+
 	public function checkExistence(string $resourceName) {
+
 		$tableName = lcfirst ( get_called_class () );
 		// query table for resource already exists in table
 		$query = "SELECT Count(*) AS hit 
@@ -10,8 +12,9 @@ abstract class Resource extends \HisEntity {
                   WHERE name = :resourceName";
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':resourceName', $resourceName, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':resourceName' => $resourceName
+		] );
 		$stmt->bindColumn ( 'hit', $hit );
 
 		$status = 0;
@@ -19,8 +22,11 @@ abstract class Resource extends \HisEntity {
 			$status = ($hit > 0 ? 1 : 0);
 		}
 		return $status;
+
 	}
+
 	public function addResource(string $resourceName) {
+
 		if (! $this->checkExistence ( $resourceName )) {
 			return $this->insert_entry ( [ 
 					"name" => $resourceName
@@ -28,8 +34,11 @@ abstract class Resource extends \HisEntity {
 		} else {
 			return "";
 		}
+
 	}
+
 	public static function getResourceNames(string $name) {
+
 		$tableName = lcfirst ( get_called_class () );
 		$id = $tableName . "_id";
 		$searchName = $name . "%";
@@ -41,8 +50,9 @@ abstract class Resource extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':searchName', $searchName, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':searchName' => $searchName
+		] );
 		$stmt->bindColumn ( $id, $id );
 		$stmt->bindColumn ( 'name', $name );
 		$stmt->bindColumn ( 'shortcut', $shortcut );
@@ -64,8 +74,9 @@ abstract class Resource extends \HisEntity {
               ORDER BY name";
 
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':searchName', $searchName, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':searchName' => $searchName
+		] );
 		$stmt->bindColumn ( $id, $id );
 		$stmt->bindColumn ( 'name', $name );
 
@@ -76,5 +87,6 @@ abstract class Resource extends \HisEntity {
 			);
 		}
 		return $names;
+
 	}
 }

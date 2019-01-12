@@ -5,8 +5,8 @@
  * 
  */
 class Defaults extends \HisEntity {
-	const TABLE  = "current_defaults";
-	const ID_FLD =  "current_defaults_id";
+	public static $table = "current_defaults";
+	public static $id_fld = "current_defaults_id";
 	
 	// -- get current meet default values
 	public static function get_his_defaults() {
@@ -17,6 +17,7 @@ class Defaults extends \HisEntity {
                      rm.name AS meet_name,
                      cd.past_days,
                      cd.previous_track_id,
+					 cd.age,
                      trk.site_url,
                      trk.scratches_url,
                      trk.name AS track_name

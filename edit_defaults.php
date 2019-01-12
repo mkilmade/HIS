@@ -48,6 +48,17 @@ require_once ('includes/envInit.inc.php');
 				<label>Previous Track Default: <input id="previous_track_id"
 					name="previous_track_id" style="width: 60px;"></label>
 			</p>
+			
+			<p>
+	             <label>Age: <select id="age" name="age">
+			         <option value="2">2</option>
+			         <option value="3">3</option>
+			         <option value="3+">3+</option>
+			         <option value="4">4</option>
+			         <option value="4+">4+</option>
+	             </select>
+	             </label>
+	        </p>
 
 		</fieldset>
 

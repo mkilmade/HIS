@@ -9,9 +9,7 @@ if (isset ( $_GET ['reset_session'] ) && $_GET ['reset_session'] == 1) {
 } else {
 	require_once ('includes/envInit.inc.php');
 }
-// var_dump(spl_autoload_extensions());
-// var_dump(get_include_path());
-// var_dump(spl_autoload_functions());
+
 ?>
 <!DOCTYPE html>
 <html>

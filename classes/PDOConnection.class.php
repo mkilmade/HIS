@@ -1,21 +1,29 @@
 <?php
-require_once ('includes/config.inc.php');
+require_once ('config.inc.php');
 class PDOConnection {
 	public $pdo = NULL;
+
 	public function __construct() {
+
 		try {
 			$this->pdo = $this->getConnection ();
 		} catch ( PDOException $e ) {
 			$this->pdo = NULL;
 			throw ($e);
 		}
+
 	}
+
 	public function __destruct() {
+
 		$this->pdo = NULL;
+
 	}
+
 	private function getConnection() {
+
 		// set DB_* constants
-		$db_conf = parse_ini_file ( './secure/config.ini', true ) ['database'];
+		$db_conf = parse_ini_file ( 'config.ini', true ) ['database'];
 		if (! defined ( 'DB_HOST' )) {
 			define ( 'DB_HOST', $db_conf ['host'] );
 			define ( 'DB_USER', $db_conf ['user'] );
@@ -27,10 +35,12 @@ class PDOConnection {
 				PDO::ATTR_PERSISTENT => true,
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 		] );
+
 	}
 
 	// insert a new row into a table
 	public function insert_row(array &$data, string $table) {
+
 		$fields = "";
 		$params = "";
 		$paramValues = [ ];
@@ -46,10 +56,12 @@ class PDOConnection {
 			$status = $this->pdo->lastInsertId ();
 		}
 		return $status;
+
 	}
 
 	// update an entry in a table
 	public function update_row(array &$data, string $table, $id) {
+
 		$fldvals = "";
 		$paramValues = [ ];
 
@@ -58,12 +70,15 @@ class PDOConnection {
 			$paramValues [] = $value;
 		}
 		return $this->execute_query ( "UPDATE $table SET $fldvals WHERE " . $table . "_id = '$id'", $paramValues );
+
 	}
-	public function execute_query(string $query, array $parmValues) {
+
+	public function execute_query(string $query, array $paramValues) {
+
 		try {
 			$status = false;
 			$stmt = $this->pdo->prepare ( $query );
-			$status = $stmt->execute ( $parmValues );
+			$status = $stmt->execute ( $paramValues );
 
 			if (! $status) {
 				$status = "{$stmt->errorInfo[2]} ({$stmt->errorInfo[0]})";
@@ -73,6 +88,7 @@ class PDOConnection {
 		} finally {
 			return $status;
 		}
+
 	}
 }
 

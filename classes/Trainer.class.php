@@ -5,8 +5,9 @@
  *
  */
 class Trainer extends \Resource {
-	const TABLE = "trainer";
-	const ID_FLD = "name";
+	public static $table = "trainer";
+	public static $id_fld = "name";
+
 	public function getIndividualMeetStats(string $meet_filter) {
 		return TB17::getIndividualMeetStats ( "trainer", $this->name, $meet_filter );
 	}

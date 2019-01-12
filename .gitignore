@@ -3,3 +3,6 @@ jquery/**
 .settings/**
 secure/config.ini
 dummy.php
+composer.phar
+vendor/**
+

@@ -4,9 +4,11 @@
  * 
  */
 class Track extends \HisEntity {
-	const TABLE = "track";
-	const ID_FLD = "track_id";
+	public static $table = "track";
+	public static $id_fld = "track_id";
+
 	public static function getTracks(string $id) {
+
 		$searchid = $id . "%";
 
 		$query = "SELECT track_id
@@ -16,8 +18,9 @@ class Track extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':searchid', $searchid, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':searchid' => $searchid
+		] );
 		$stmt->bindColumn ( 'track_id', $track_id );
 
 		$trackObjs = [ ];
@@ -25,5 +28,6 @@ class Track extends \HisEntity {
 			$trackObjs [] = Track::IdFactory ( $track_id );
 		}
 		return $trackObjs;
+
 	}
 }

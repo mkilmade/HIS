@@ -5,9 +5,11 @@
  *
  */
 class Horse extends \Resource {
-	const TABLE = "horse";
-	const ID_FLD = "name";
+	public static $table = "horse";
+	public static $id_fld = "name";
+
 	public function getLastWinData() {
+
 		// get the horse parameter from URL
 		$query = "SELECT tb17_id
 	              FROM tb17
@@ -17,8 +19,9 @@ class Horse extends \Resource {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':horse', $this->name, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':horse' => $this->name
+		] );
 		$stmt->bindColumn ( 'tb17_id', $tb17_id );
 
 		// return tb17 object
@@ -27,5 +30,6 @@ class Horse extends \Resource {
 		} else {
 			return NULL;
 		}
+
 	}
 }

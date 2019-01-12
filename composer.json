@@ -1,0 +1,17 @@
+{
+	"require" : {
+		"phpunit/phpunit" : "~7.5"
+	},
+	"name" : "HIS",
+	"description" : "Horse information system",
+	"minimum-stability" : "alpha",
+	"support" : {
+		"email" : "mkilmade@nycap.rr.com"
+	},
+	"authors" : [{
+			"name" : "Mike K",
+			"email" : "mkilmade@nycap.rr.com",
+			"role" : "Lead Developer"
+		}
+	]
+}

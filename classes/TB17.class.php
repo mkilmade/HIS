@@ -5,8 +5,8 @@
  *        
  */
 class TB17 extends \HisEntity {
-	const TABLE = "tb17";
-	const ID_FLD = "tb17_id";
+	public static $table = "tb17";
+	public static $id_fld = "tb17_id";
 
 	public static function last_race_date(string $meet_filter = NULL) {
 
@@ -42,8 +42,9 @@ class TB17 extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':race_date', $race_date, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':race_date' => $race_date
+		] );
 		$stmt->bindColumn ( 'last_race', $last_race );
 
 		if (! $stmt->fetch ( PDO::FETCH_BOUND )) {
@@ -65,7 +66,7 @@ class TB17 extends \HisEntity {
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
 		$stmt->bindValue ( ':race_date', $previous_date, PDO::PARAM_STR );
-		$stmt->bindValue ( ':race', $previous_race, PDO::PARAM_STR );
+		$stmt->bindValue ( ':race', $previous_race, PDO::PARAM_INT );
 		$stmt->bindValue ( ':track_id', $previous_track_id, PDO::PARAM_STR );
 		$stmt->execute ();
 		$stmt->bindColumn ( 'tb17_id', $tb17_id );
@@ -149,7 +150,7 @@ class TB17 extends \HisEntity {
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
 		$stmt->bindValue ( ':previous_date', $previous_date, PDO::PARAM_STR );
-		$stmt->bindValue ( ':previous_race', $previous_race, PDO::PARAM_STR );
+		$stmt->bindValue ( ':previous_race', $previous_race, PDO::PARAM_INT );
 		$stmt->bindValue ( ':previous_track_id', $previous_track_id, PDO::PARAM_STR );
 		$stmt->execute ();
 		$stmt->bindColumn ( 'tb17_id', $tb17_id );
@@ -183,8 +184,9 @@ class TB17 extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':name', $name, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':name' => $name
+		] );
 		return $stmt->fetch ( PDO::FETCH_ASSOC );
 
 	}
@@ -234,8 +236,9 @@ class TB17 extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':searchName', $searchName, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':searchName' => $searchName
+		] );
 		$stmt->bindColumn ( $category, $cat );
 
 		$cats = array ();
@@ -263,11 +266,12 @@ class TB17 extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':race_date', $filters ['race_date'], PDO::PARAM_STR );
-		$stmt->bindValue ( ':trainer', $filters ['trainer'], PDO::PARAM_STR );
-		$stmt->bindValue ( ':jockey', $filters ['jockey'], PDO::PARAM_STR );
-		$stmt->bindValue ( ':horse', $filters ['horse'], PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':race_date' => $filters ['race_date'],
+				':trainer' => $filters ['trainer'],
+				':jockey' => $filters ['jockey'],
+				':horse' => $filters ['horse']
+		] );
 		$stmt->bindColumn ( 'tb17_id', $tb17_id );
 
 		$races = [ ];

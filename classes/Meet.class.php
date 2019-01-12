@@ -5,9 +5,11 @@
  *        
  */
 class Meet extends \HisEntity {
-	const TABLE = "race_meet";
-	const ID_FLD = "race_meet_id";
+	public static $table = "race_meet";
+	public static $id_fld = "race_meet_id";
+
 	public static function getTrackId(string $race_date) {
+
 		$query = "SELECT
                     race_meet_id
                   FROM race_meet
@@ -17,9 +19,10 @@ class Meet extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':start_date', $race_date, PDO::PARAM_STR );
-		$stmt->bindValue ( ':end_date', $race_date, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':start_date' => $race_date,
+				':end_date' => $race_date
+		] );
 		$stmt->bindColumn ( 'race_meet_id', $race_meet_id );
 
 		if ($stmt->fetch ( PDO::FETCH_BOUND )) {
@@ -31,25 +34,35 @@ class Meet extends \HisEntity {
 		return array (
 				'track_id' => $track_id
 		);
+
 	}
+
 	public function meet_filter(string $comparefield) {
+
 		$filter = "$comparefield >= '{$this->start_date}' AND ";
 		$filter .= "$comparefield <= '{$this->end_date}' AND ";
 		$filter .= "track_id = '{$this->track_id}'";
 
 		return $filter;
+
 	}
+
 	public function getClassTally() {
+
 		$query = "SELECT
 	                 count(DISTINCT race_date,race) AS races,
+					 avg(odds) AS avg_odds,
 	                 race_class
 	              FROM tb17
 	              WHERE " . $this->meet_filter ( 'race_date' ) . "
 	              GROUP By race_class
 	              ORDER BY races DESC, race_class";
 		return TB17::getResultArray ( $query );
+
 	}
+
 	public function getPreviousTrackWins() {
+
 		$query = "SELECT previous_track_id,
 		                     COUNT(*) as wins
 	              FROM tb17
@@ -57,8 +70,11 @@ class Meet extends \HisEntity {
 	              GROUP By previous_track_id
 	              ORDER BY wins DESC, previous_track_id";
 		return TB17::getResultArray ( $query );
+
 	}
+
 	public function getFtsWins() {
+
 		$query = "SELECT COUNT(*) as wins
 	              FROM tb17
 	              WHERE comment LIKE '%FTS%' AND " . $this->meet_filter ( 'race_date' ) . "
@@ -72,8 +88,11 @@ class Meet extends \HisEntity {
 			$wins = 0;
 		}
 		return $wins;
+
 	}
+
 	public function getPreviouslyRanAtMeet() {
+
 		$query = "SELECT
                    horse,
                    race_date
@@ -84,8 +103,12 @@ class Meet extends \HisEntity {
 	                    previous_date <= '{$this->end_date}'
 	              ORDER BY horse, race_date DESC";
 		return TB17::getResultArray ( $query );
-	} // function
+
+	}
+
+	// function
 	public function getPreviousRaceAtMeetPerCard() {
+
 		$query = "SELECT
                  COUNT(*) AS races,
                  SUM(IF(previous_track_id  = '{$this->track_id}'  AND
@@ -98,8 +121,11 @@ class Meet extends \HisEntity {
               GROUP BY race_date
               ORDER BY race_date DESC";
 		return TB17::getResultArray ( $query );
+
 	}
+
 	public function getMultipleWins() {
+
 		$query = "SELECT
                 wins, horse
               FROM (
@@ -111,8 +137,11 @@ class Meet extends \HisEntity {
               WHERE wins > '1'
               ORDER BY wins, horse";
 		return TB17::getResultArray ( $query );
+
 	}
+
 	public function getPreviousFinishTally() {
+
 		$query = "SELECT
 	                 COUNT(DISTINCT race_date,race) AS count,
 	                 previous_finish_position
@@ -123,8 +152,11 @@ class Meet extends \HisEntity {
 	                    previous_date <= '{$this->end_date}'
 	              GROUP BY previous_finish_position";
 		return TB17::getResultArray ( $query );
+
 	}
+
 	public static function getMeets() {
+
 		$query = "SELECT race_meet_id
 		              FROM race_meet
 		              ORDER BY start_date DESC
@@ -140,8 +172,11 @@ class Meet extends \HisEntity {
 			$meets [] = Meet::IdFactory ( $race_meet_id );
 		}
 		return $meets;
+
 	}
+
 	public function getSummaryStats(array $qryParams) {
+
 		// -- build basic stats query
 		$query = "SELECT
                  COUNT(DISTINCT race_date) AS dates,
@@ -172,8 +207,11 @@ class Meet extends \HisEntity {
 		$stmt = $conn->pdo->prepare ( $query );
 		$stmt->execute ();
 		return $stmt->fetch ( PDO::FETCH_ASSOC );
+
 	}
+
 	public function getMultipleWinnerCount(array $qryParams) {
+
 		// get multiple winners count
 		$query = "SELECT
                     COUNT(*) as count
@@ -197,8 +235,11 @@ class Meet extends \HisEntity {
 			$multi_winners_count = 0;
 		}
 		return $multi_winners_count;
+
 	}
+
 	function getTopTen(string $type, string $as_of_date, int $days) {
+
 		// -- build basic stats query
 		if ($days > 0) {
 			$date = new DateTime ( $as_of_date );
@@ -225,11 +266,15 @@ class Meet extends \HisEntity {
 		// -- run query
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':date_diff', $date_diff, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':date_diff' => $date_diff
+		] );
 		return $stmt->fetchAll ( PDO::FETCH_ASSOC );
+
 	}
+
 	public function getRacesForDate(string $race_date) {
+
 		// -- get results for last date run
 		$query = "SELECT
                     tb17_id
@@ -240,16 +285,20 @@ class Meet extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':race_date', $race_date, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':race_date' => $race_date
+		] );
 		$stmt->bindColumn ( 'tb17_id', $tb17_id );
 		$races = [ ];
 		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
 			$races [] = TB17::IdFactory ( $tb17_id );
 		}
 		return $races;
+
 	}
+
 	public function getRaceDates() {
+
 		$query = "SELECT DISTINCT race_date
               FROM tb17
               WHERE {$this->meet_filter('race_date')}
@@ -266,8 +315,11 @@ class Meet extends \HisEntity {
 			$race_dates [$race_date] = $day_of_meet;
 		}
 		return $race_dates;
+
 	}
+
 	public function getWinCounts(string $type, string $name) {
+
 		$query = "SELECT DISTINCT race_date,
                      COUNT(*) as win_count
               FROM tb17
@@ -277,8 +329,9 @@ class Meet extends \HisEntity {
 
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
-		$stmt->bindValue ( ':name', $name, PDO::PARAM_STR );
-		$stmt->execute ();
+		$stmt->execute ( [ 
+				':name' => $name
+		] );
 		$stmt->bindColumn ( 'race_date', $race_date );
 		$stmt->bindColumn ( 'win_count', $win_count );
 
@@ -287,6 +340,7 @@ class Meet extends \HisEntity {
 			$win_counts [$race_date] = $win_count;
 		}
 		return $win_counts;
+
 	}
 }
 

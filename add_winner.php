@@ -80,7 +80,8 @@ echo "
         next_race = '$next_race',
         current_track_id = '{$_SESSION['defaults']['track_id']}',
         dirt_track_condition = '{$_SESSION['dirt_track_condition']}',
-        turf_track_condition = '{$_SESSION['turf_track_condition']}';
+        turf_track_condition = '{$_SESSION['turf_track_condition']}',
+        age = '{$_SESSION['defaults']['age']}';
         
     "?>
     setupCommonFields();
@@ -96,6 +97,7 @@ echo "
         $('input:radio[name="favorite"][value="TRUE"]').prop('checked',true);
       }
     });
+    $('#age').val(age);
     $('#race_date').datepicker('setDate', last_race_date);
     $('#race').val(next_race);
     $("#distance").focus();

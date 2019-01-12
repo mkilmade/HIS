@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap='autoload.php'>
+         
+  <testsuites>
+    <testsuite name="HIS Main Tester">
+      <file>TB17Test.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

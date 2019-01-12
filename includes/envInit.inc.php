@@ -3,11 +3,15 @@
 
 // set max session timeout
 ini_set ( 'session.gc_maxlifetime', 3600 );
+ini_set ( 'session.dispaly_error', 1 );
 
 // include/require settings used to locate files
-set_include_path ( 'classes/' . PATH_SEPARATOR . 'includes/' . PATH_SEPARATOR . get_include_path () );
+$root = dirname(__DIR__);
+set_include_path ( $root . '/classes' . PATH_SEPARATOR . $root . '/includes' . PATH_SEPARATOR . $root . '/secure' . PATH_SEPARATOR . get_include_path () );
+//set_include_path ( 'classes/' . PATH_SEPARATOR . 'includes/' . PATH_SEPARATOR . 'secure/' . PATH_SEPARATOR . get_include_path () );
 spl_autoload_extensions ( '.class.php,.inc.php,.php' );
 spl_autoload_register ();
+unset($root);
 
 // environemnt set up
 require_once ('config.inc.php');

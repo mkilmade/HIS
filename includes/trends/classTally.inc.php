@@ -7,11 +7,12 @@ function classTally($defaults) {
 	$tallies = $rm->getClassTally ();
 
 	echo "
-      <table id='classTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
+      <table id='classTable' class='tablesorter' style='width:300px; margin: auto; font-size:14px'>
         <caption>Class Breakdown for Meet (" . count ( $tallies ) . ")</caption>
         <thead>
           <th>Class</th>
           <th>Races</th>
+          <th>Avg Odds</th>
         </thead>
     <tbody>
     ";
@@ -22,11 +23,12 @@ function classTally($defaults) {
 		echo "<tr>";
 		echo "<td style='text-align:left;'>{$tally['race_class']}</td>";
 		echo "<td>{$tally['races']}</td>";
+		echo "<td>{$tally['avg_odds']}</td>";
 		echo "</tr>";
 	}
 
 	echo "
-        <tr><td>Total</td><td>$total</td></tr>
+        <tr><td>Total</td><td>$total</td><td/></tr>
         </tbody></table>
 
         <script>
