@@ -99,7 +99,15 @@ function getTracks(string $id) {
  */
 function getLastWinData($horse) {
 	$horseObj = Horse::IdFactory( $horse );
-	//return $horseObj->getLastWinData();
+	if ($horseObj == FALSE) {
+		$lastWinData ["track_id"] = "";
+		$lastWinData ["race_date"] = "";
+		$lastWinData ["race"] = "";
+		$lastWinData ["finish_position"] = "";
+		$lastWinData ["trainer"] = "";
+		$lastWinData ["jockey"] = "";
+		return $lastWinData;
+	}
 
 	$tb17Obj = $horseObj->getLastWinData();
 	if ($tb17Obj != NULL) {
@@ -108,7 +116,7 @@ function getLastWinData($horse) {
 		$lastWinData ["track_id"] = "";
 		$lastWinData ["race_date"] = "";
 		$lastWinData ["race"] = "";
-		$lastWinData ["finish_position"] = "10";
+		$lastWinData ["finish_position"] = "";
 		$lastWinData ["trainer"] = "";
 		$lastWinData ["jockey"] = "";
 	}

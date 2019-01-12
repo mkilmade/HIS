@@ -29,6 +29,11 @@ abstract class HisEntity {
 		$stmt->execute ( [ 
 				$id
 		] );
+		
+		// entry not found
+		if ($stmt->columnCount() == 0) {
+			return FALSE;
+		}
 		return $stmt->fetchObject ( $md ['callingClass'] );
 
 	}

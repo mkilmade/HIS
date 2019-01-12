@@ -24,6 +24,10 @@
 				<exclude name=".DS_Store" />
 				<exclude name="dummy.php" />
 				<exclude name="README" />
+				<exclude name="composer.json" />
+		        <exclude name="composer.lock" />
+		        <exclude name="composer.phar" />
+				<exclude name="vendor/" />
 			</fileset>
 		</copy>
 	</target>
