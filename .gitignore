@@ -7,4 +7,6 @@ composer.phar
 vendor/**
 build.properties
 build.xml
+.buildpath
+.project
 

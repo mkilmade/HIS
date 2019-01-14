@@ -316,15 +316,15 @@ statLine ( 'TRUE', 'total' );
 <?php
 $meetObj = Meet::IdFactory( $_SESSION ['defaults'] ['race_meet_id'] );
 // -- get top ten list data and send
-$tj = $meetObj->getTopTen ( "jockey", $_SESSION ['defaults'] ['start_date'], 0 );
-$tt = $meetObj->getTopTen ( "trainer", $_SESSION ['defaults'] ['start_date'], 0 );
-$tjr = $meetObj->getTopTen ( "jockey", $lrdate, $_SESSION ['defaults'] ['past_days'] );
-$ttr = $meetObj->getTopTen ( "trainer", $lrdate, $_SESSION ['defaults'] ['past_days'] );
+$tj = $meetObj->getTopTen ( "jockey", 0, $_SESSION ['defaults'] ['start_date']);
+$tt = $meetObj->getTopTen ( "trainer", 0, $_SESSION ['defaults'] ['start_date']);
+$tjr = $meetObj->getTopTen ( "jockey", $_SESSION ['defaults'] ['past_days'] );
+$ttr = $meetObj->getTopTen ( "trainer", $_SESSION ['defaults'] ['past_days'] );
 echo "
     <div class='center'>
     <div style='float: left;' onmouseout=\"clearInfo()\">
     <table id='topTenLists'>
-      <caption>Top 10 Wins Lists for {$_SESSION['defaults']['start_date']} thru $lrdate & Last {$_SESSION['defaults']['past_days']} Days</caption>
+      <caption>Top 10 Wins Lists for {$_SESSION['defaults']['start_date']} thru $lrdate & Last {$_SESSION['defaults']['past_days']} Racing Days</caption>
       <thead>
         <th>Trainer</th>
         <th>Meet</th>

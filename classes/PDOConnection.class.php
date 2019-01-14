@@ -32,7 +32,8 @@ class PDOConnection {
 		}
 		// mysql PDO args used (dsn, user, password, params)
 		return new PDO ( "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, $db_conf ['password'], [ 
-				PDO::ATTR_PERSISTENT => true,
+				PDO::ATTR_PERSISTENT => false,
+				PDO::ATTR_EMULATE_PREPARES => false,
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 		] );
 

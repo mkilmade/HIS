@@ -35,7 +35,7 @@ require_once ('includes/envInit.inc.php');
 			</p>
 
 			<p>
-				<label>Past Days: <input type="number" min="1" max="28"
+				<label>Past Days: <input type="number" min="1" max="70"
 					id="past_days" name="past_days"></label>
 			</p>
 

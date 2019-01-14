@@ -238,16 +238,35 @@ class Meet extends \HisEntity {
 
 	}
 
-	function getTopTen(string $type, string $as_of_date, int $days) {
-
-		// -- build basic stats query
-		if ($days > 0) {
-			$date = new DateTime ( $as_of_date );
-			$date->sub ( new DateInterval ( 'P' . $days . 'D' ) );
-		} else {
-			$date = new DateTime ( $as_of_date );
-			$date->sub ( new DateInterval ( 'P1D' ) );
+	function getTopTen(string $type, int $days, string $as_of_date = NULL) {
+		
+		// find race_date that is '$days' racing days ago 
+		if ($days > 0 && $as_of_date == NULL) {
+			$race_dates = $this->getRaceDates ();
+			if (! end ( $race_dates )) {
+				return [ ];
+			}
+			$as_of_date = key ( $race_dates );
+			$cnt = 1;
+			while ($cnt > 0) {
+				$last_as_of_date = $as_of_date;
+				// get out if at first element in array
+				if (! prev ( $race_dates )) {
+					$as_of_date = $last_as_of_date;
+					$cnt = 0;
+					continue;
+				}
+				$as_of_date = key ( $race_dates );
+				$cnt += 1;
+				// done, get out
+				if ($cnt == $days) {
+					$cnt = 0;
+				}
+			}
 		}
+		
+		$date = new DateTime ( $as_of_date );
+		$date->sub ( new DateInterval ( 'P1D' ) );
 		$date_diff = $date->format ( 'Y-m-d' );
 
 		$query = "SELECT
@@ -311,7 +330,7 @@ class Meet extends \HisEntity {
 		$day_of_meet = 0;
 		$race_dates = [ ];
 		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
-			$day_of_meet = $day_of_meet + 1;
+			$day_of_meet += 1;
 			$race_dates [$race_date] = $day_of_meet;
 		}
 		return $race_dates;

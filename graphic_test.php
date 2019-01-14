@@ -15,13 +15,13 @@ $graphValues = array (
 );
 // -- get win count for resource (trn/jock)
 $win_counts = $meetObj->getWinCounts ( $type, $name );
-foreach ( $race_dates as $race_date => $win_count ) {
+foreach ( $race_dates as $race_date => $day_of_meet ) {
 	if (isset ( $win_counts [$race_date] )) {
-		$win_tally = $win_tally + $win_counts [$race_date];
+		$win_tally += $win_counts [$race_date];
 	}
 	$graphValues [] = $win_tally;
 }
-unset ( $$win_count );
+unset ( $day_of_meet );
 // Add values to the graph
 // $graphValuesx=array(0,80,23,11,190,245,50,80,111,240,55);
 // $string = $_GET['type'].": ".$name." wins: ".$win_tally;

@@ -15,7 +15,7 @@ class TB17Test extends TestCase {
 	public function testLastRaceDateCheck() {
 
 		$lrd = TB17::last_race_date ();
-		$this->assertSame ( '2018-12-19', $lrd, $lrd );
+		$this->assertSame ( '2019-01-11', $lrd, $lrd );
 
 	}
 }
