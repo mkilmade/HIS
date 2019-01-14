@@ -324,7 +324,7 @@ echo "
     <div class='center'>
     <div style='float: left;' onmouseout=\"clearInfo()\">
     <table id='topTenLists'>
-      <caption>Top 10 Wins Lists for {$_SESSION['defaults']['start_date']} thru $lrdate & Last {$_SESSION['defaults']['past_days']} Racing Days</caption>
+      <caption>Top 10 Wins Lists for {$_SESSION['defaults']['start_date']} thru $lrdate & Last {$_SESSION['defaults']['past_days']} Racing Daysx</caption>
       <thead>
         <th>Trainer</th>
         <th>Meet</th>
