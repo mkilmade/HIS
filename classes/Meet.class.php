@@ -50,8 +50,9 @@ class Meet extends \HisEntity {
 	public function getClassTally() {
 
 		$query = "SELECT
-	                 count(DISTINCT race_date,race) AS races,
-					 avg(odds) AS avg_odds,
+	                 COUNT(DISTINCT race_date,race) AS races,
+					 AVG(odds) AS avg_odds,
+					 STDDEV(odds) AS std_dev,
 	                 race_class
 	              FROM tb17
 	              WHERE " . $this->meet_filter ( 'race_date' ) . "
@@ -243,26 +244,8 @@ class Meet extends \HisEntity {
 		// find race_date that is '$days' racing days ago 
 		if ($days > 0 && $as_of_date == NULL) {
 			$race_dates = $this->getRaceDates ();
-			if (! end ( $race_dates )) {
-				return [ ];
-			}
-			$as_of_date = key ( $race_dates );
-			$cnt = 1;
-			while ($cnt > 0) {
-				$last_as_of_date = $as_of_date;
-				// get out if at first element in array
-				if (! prev ( $race_dates )) {
-					$as_of_date = $last_as_of_date;
-					$cnt = 0;
-					continue;
-				}
-				$as_of_date = key ( $race_dates );
-				$cnt += 1;
-				// done, get out
-				if ($cnt == $days) {
-					$cnt = 0;
-				}
-			}
+			$count = count($race_dates);
+			$as_of_date = array_keys($race_dates)[($days > $count) ? 0 : $count-$days];
 		}
 		
 		$date = new DateTime ( $as_of_date );

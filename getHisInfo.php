@@ -146,18 +146,19 @@ function nextOutWinners($previous_date,
         }
             
         $html="";
-        $html .= "<table id='nowTable' class='tablesorter' style='margin: auto; width:800px; font-size:14px'>
+        $html .= "<table id='nowTable' class='tablesorter' style='margin: auto; width:900px; font-size:14px'>
                     <caption>$caption</caption>
                     <thead>
                         <th>Horse</th>
                         <th>Date</th>
                         <th>Race</th>
                         <th>Track</th>
-                        <th>Prev Finish</th>
+                        <th>Prev</th>
                         <th>Class</th>
-                        <th>Distance</th>
+                        <th>Dist</th>
                         <th>Surface</th>
                         <th>Time</td>
+						<th>Comment</td>
                     </thead>
                     <tbody>
         ";
@@ -178,6 +179,7 @@ function nextOutWinners($previous_date,
                 $html .= "<td>$winnerObj->distance</td>";
                 $html .= "<td>". ($winnerObj->turf == "TRUE" ? 'Turf' : 'Dirt') ."</td>";
                 $html .= "<td>$winnerObj->time_of_race</td>";
+                $html .= "<td>$winnerObj->comment</td>";
                 $html .= "</tr>";
             }
         }

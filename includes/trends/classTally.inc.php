@@ -7,12 +7,13 @@ function classTally($defaults) {
 	$tallies = $rm->getClassTally ();
 
 	echo "
-      <table id='classTable' class='tablesorter' style='width:300px; margin: auto; font-size:14px'>
+      <table id='classTable' class='tablesorter' style='width:400px; margin: auto; font-size:14px'>
         <caption>Class Breakdown for Meet (" . count ( $tallies ) . ")</caption>
         <thead>
           <th>Class</th>
           <th>Races</th>
           <th>Avg Odds</th>
+          <th>SD Odds</th>
         </thead>
     <tbody>
     ";
@@ -20,11 +21,11 @@ function classTally($defaults) {
 	$total = 0;
 	foreach ( $tallies as $tally ) {
 		$total += $tally ['races'];
-		$avg_odds = money_format('%i', $tally['avg_odds']);
 		echo "<tr>";
 		echo "<td style='text-align:left;'>{$tally['race_class']}</td>";
 		echo "<td>{$tally['races']}</td>";
-		echo "<td>$avg_odds</td>";
+		echo "<td>" .  money_format('%i', $tally['avg_odds']) . "</td>";
+		echo "<td>" .  money_format('%i', $tally['std_dev']) . "</td>";
 		echo "</tr>";
 	}
 
