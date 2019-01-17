@@ -172,7 +172,7 @@ function nextOutWinners($previous_date,
                 $html .= "<tr>";
                 $html .= "<td>$winnerObj->horse</td>";
                 $html .= "<td>$winnerObj->race_date</td>";
-                $html .= "<td>$winnerObj->race</td>";
+                $html .= "<td><a target='_blank' href='" . $winnerObj->getChartUrl() ."'>$winnerObj->race</td>";
                 $html .= "<td>$winnerObj->track_id</td>";
                 $html .= "<td>$winnerObj->previous_finish_position</td>";
                 $html .= "<td>$winnerObj->race_class</td>";

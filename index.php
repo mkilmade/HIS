@@ -404,12 +404,12 @@ $url = "edit_winner.php?tb17_id";
 $races = $meetObj->getRacesForDate ( $lrdate );
 // -- build html result table
 $date = new DateTime ( $lrdate, new DateTimeZone ( 'America/New_York' ) );
-$chart_file = "http://www.equibase.com/premium/chartEmb.cfm?track={$_SESSION['defaults']['track_id']}&raceDate=" . $date->format ( "m/d/y" ) . "&cy=USA&rn=1";
+$chart_url = TB17::getEquibaseUrl($lrdate, $_SESSION['defaults']['track_id']);
 echo "
       <div class='center'>
       <div style='clear: left; float: left;' onmouseout=\"clearInfo()\">
       <table id='resultTable' class='tablesorter'>
-        <caption>Latest Racing Day Results (Date: $lrdate - " . $date->format ( 'l' ) . "  " . count ( $races ) . " races)  <a target='_blank' href='$chart_file'>Charts</a></caption>
+        <caption>Latest Racing Day Results (Date: $lrdate - " . $date->format ( 'l' ) . "  " . count ( $races ) . " races)  <a target='_blank' href='$chart_url'>Charts</a></caption>
       <thead>
         <tr>
           <th>Race</th>

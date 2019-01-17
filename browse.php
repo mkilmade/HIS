@@ -146,12 +146,11 @@ $caption = $_SESSION ['defaults'] ['track_name'] . " Results (" . count ( $races
 // -- build html result table
 foreach ( $races as $race ) {
 	$date = new DateTime ( $race->race_date, new DateTimeZone ( 'America/New_York' ) );
-	$chart_file = "http://www.equibase.com/premium/chartEmb.cfm?track={$race->track_id}&raceDate=" . $date->format ( "m/d/y" ) . "&cy=USA&rn={$race->race}";
 	echo "<tr>";
 	echo "<td><a href='edit_winner.php?tb17_id={$race->tb17_id}'>{$race->tb17_id}</a></td>";
 	echo "<td>{$race->race_date}</td>";
 	echo "<td>" . $date->format ( 'l' ) . "</td>";
-	echo "<td><a target='_blank' href='$chart_file'>{$race->race}</a></td>";
+	echo "<td><a target='_blank' href='" . $race->getChartUrl() . "'>{$race->race}</a></td>";
 	echo "<td>{$race->distance}</td>";
 	echo "<td class='" . ($race->turf == 'TRUE' ? 'turf\'>Turf' : '\'>Dirt') . "</td>";
 	echo "<td>{$race->race_class}</td>";

@@ -281,4 +281,24 @@ class TB17 extends \HisEntity {
 		return $races;
 
 	}
+
+	// get Equibase chart url for race
+	public function getChartUrl() {
+
+		return $this->getEquibaseUrl ( $this->race_date, $this->track_id, $this->race );
+
+	}
+
+	// get Equibase chart url for race
+	public static function getEquibaseUrl(string $race_date, string $track_id, int $race = 1) {
+
+		$date = new DateTime ( $race_date, new DateTimeZone ( 'America/New_York' ) );
+		$url = "http://www.equibase.com/premium/chartEmb.cfm?";
+		$url .= "track=$track_id";
+		$url .= "&raceDate=" . $date->format ( "m/d/y" );
+		$url .= "&cy=USA";
+		$url .= "&rn=$race";
+		return $url;
+
+	}
 }

@@ -48,20 +48,36 @@ class Meet extends \HisEntity {
 	}
 
 	public function getClassTally() {
-
+		
 		$query = "SELECT
-	                 COUNT(DISTINCT race_date,race) AS races,
-					 AVG(odds) AS avg_odds,
-					 STDDEV(odds) AS std_dev,
+	                 COUNT(DISTINCT race_date,race, horse) AS races,
+					 ROUND(AVG(odds),1) AS avg_odds,
+					 ROUND(STDDEV(odds),1) AS std_dev,
 	                 race_class
 	              FROM tb17
 	              WHERE " . $this->meet_filter ( 'race_date' ) . "
 	              GROUP By race_class
 	              ORDER BY races DESC, race_class";
 		return TB17::getResultArray ( $query );
-
+		
 	}
-
+	
+	public function getDayTally() {
+		
+		$query = "SELECT
+	                 COUNT(DISTINCT race_date,race, horse) AS races,
+					 ROUND(AVG(odds),1) AS avg_odds,
+					 ROUND(STDDEV(odds),1) AS std_dev,
+	                 DAYOFWEEK(race_date) AS dow,
+                     DAYNAME(race_date) AS day
+	              FROM tb17
+	              WHERE " . $this->meet_filter ( 'race_date' ) . "
+                  GROUP By DAYOFWEEK(race_date), DAYNAME(race_date)
+                  ORDER BY DAYOFWEEK(race_date)";
+		return TB17::getResultArray ( $query );
+		
+	}
+	
 	public function getPreviousTrackWins() {
 
 		$query = "SELECT previous_track_id,
