@@ -51,6 +51,7 @@ class Meet extends \HisEntity {
 		
 		$query = "SELECT
 	                 COUNT(DISTINCT race_date,race, horse) AS races,
+					 SUM(IF(favorite='TRUE', 1, 0)) AS favs, 
 					 ROUND(AVG(odds),1) AS avg_odds,
 					 ROUND(STDDEV(odds),1) AS std_dev,
 	                 race_class
@@ -66,6 +67,7 @@ class Meet extends \HisEntity {
 		
 		$query = "SELECT
 	                 COUNT(DISTINCT race_date,race, horse) AS races,
+                     SUM(IF(favorite='TRUE', 1, 0)) AS favs, 
 					 ROUND(AVG(odds),1) AS avg_odds,
 					 ROUND(STDDEV(odds),1) AS std_dev,
 	                 DAYOFWEEK(race_date) AS dow,
