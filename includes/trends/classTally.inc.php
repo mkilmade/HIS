@@ -5,7 +5,6 @@ require_once ('includes/envInit.inc.php');
 function classTally($defaults) {
 	$rm = Meet::IdFactory( $defaults ['race_meet_id'] );
 	$tallies = $rm->getClassTally ();
-	$dayTallies = $rm->getDayTally ();
 	
 	echo "
       <table id='classTable' class='tablesorter' style='width:600px; margin: auto; font-size:14px'>
@@ -22,35 +21,29 @@ function classTally($defaults) {
     <tbody>
     ";
 
-	$total = 0;
+	buildTallyHtml($tallies);
+	
+    echo "<tr><td colspan='7'><b>Day Stats</b></td></tr>";
+    $tallies = $rm->getDayTally ();
+    buildTallyHtml($tallies);
+    
+    echo "</tbody></table>
+        <script>
+            $('#classTable').tablesorter({
+                widgets: ['zebra']
+            });
+        </script>
+        ";
+} // function
+
+function buildTallyHtml(array $tallies) {
+	$total=0;
 	$favTotal = 0;
 	foreach ( $tallies as $tally ) {
 		$total += $tally ['races'];
 		$favTotal += $tally ['favs'];
 		$pctFavs = round(($tally ['favs']/$tally ['races'])*100,1);
 		$cv = calcCV($tally['avg_odds'], $tally['std_dev']);
-		echo "<tr>";
-		echo "<td style='text-align:left;'>{$tally['race_class']}</td>";
-		echo "<td>{$tally['races']}</td>";
-		echo "<td>{$tally['favs']}</td>";
-		echo "<td>$pctFavs %</td>";
-		echo "<td>{$tally['avg_odds']}</td>";
-		echo "<td>{$tally['std_dev']}</td>";
-		echo "<td {$cv['style']} >{$cv['stat']}</td>";
-		echo "</tr>";
-	}
-	$pctFavs = round(($total/$favTotal)*100,1);
-	echo "
-        <tr><td>Totals</td><td>$favTotal</td><td>$total</td><td>$pctFavs %</td><td colspan='3'>includes both horses in deadheats</td></tr>
-        <tr><td colspan='7'><b>Day Stats</b></td></tr>";
-    
-	$total=0;
-	$favTotal = 0;
-	foreach ( $dayTallies as $tally ) {
-        $total += $tally ['races'];
-        $favTotal += $tally ['favs'];
-        $pctFavs = round(($tally ['favs']/$tally ['races'])*100,1);
-        $cv = calcCV($tally['avg_odds'], $tally['std_dev']);
 		echo "<tr>";
 		echo "<td style='text-align:left;'>{$tally['day']}</td>";
 		echo "<td>{$tally['races']}</td>";
@@ -62,17 +55,10 @@ function classTally($defaults) {
 		echo "</tr>";
 	}
 	$pctFavs = round(($favTotal/$total)*100,1);
-    echo "
-        <tr><td>Total</td><td>$favTotal</td><td>$total</td><td>$pctFavs %</td><td colspan='3'>includes both horses in deadheats</td></tr>
-              </tbody></table>
-
-        <script>
-            $('#classTable').tablesorter({
-                widgets: ['zebra']
-            });
-        </script>
-        ";
-} // function
+	echo "
+        <tr><td>Total</td><td>$favTotal</td><td>$total</td><td>$pctFavs %</td><td colspan='3'>includes both horses in deadheats</td></tr>";
+	
+}
 
 function calcCV($avg, $stddev) {
 	$cv = [];
