@@ -166,7 +166,7 @@ function nextOutWinners($previous_date,
         		                        $previous_race,
         		                        $previous_track_id);
         if (count($nows) == 0) {
-            $html .= "<tr><td colspan=9>No next out winners found for this race</tr>";
+            $html .= "<tr><td colspan=10>No next out winners found for this race</tr>";
         } else {
         	foreach ($nows as $winnerObj) {
                 $html .= "<tr>";

@@ -56,7 +56,7 @@ class TB17 extends \HisEntity {
 
 	public static function getRaceInfo(string $previous_date, string $previous_race, string $previous_track_id) {
 
-		$query = "SELECT tb17_id
+		$query = "SELECT *
                     FROM tb17
                     WHERE race_date = :race_date AND
                        race         = :race AND
@@ -69,13 +69,8 @@ class TB17 extends \HisEntity {
 		$stmt->bindValue ( ':race', $previous_race, PDO::PARAM_INT );
 		$stmt->bindValue ( ':track_id', $previous_track_id, PDO::PARAM_STR );
 		$stmt->execute ();
-		$stmt->bindColumn ( 'tb17_id', $tb17_id );
 
-		$winnerObj = NULL;
-		if ($stmt->fetch ( PDO::FETCH_BOUND )) {
-			$winnerObj = TB17::IdFactory ( $tb17_id );
-		}
-		return $winnerObj;
+		return (($wo = $stmt->fetchObject ( __CLASS__ )) ? $wo : NULL);
 
 	}
 
@@ -139,7 +134,7 @@ class TB17 extends \HisEntity {
 
 	public static function getNextOutWinners(string $previous_date, string $previous_race, string $previous_track_id) {
 
-		$query = "SELECT tb17_id
+		$query = "SELECT *
                 FROM tb17
                 WHERE previous_date      = :previous_date AND
                       previous_race      = :previous_race AND
@@ -155,9 +150,9 @@ class TB17 extends \HisEntity {
 		$stmt->execute ();
 		$stmt->bindColumn ( 'tb17_id', $tb17_id );
 
-		$nows = array ();
-		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
-			$nows [] = TB17::IdFactory ( $tb17_id );
+		$nows = [ ];
+		while ( $tbdObj = $stmt->fetchObject ( __CLASS__ ) ) {
+			$nows [] = $tbdObj;
 		}
 		return $nows;
 
@@ -254,7 +249,7 @@ class TB17 extends \HisEntity {
 
 	public static function getBrowseRequestResults(array $filters, string $meet_filter) {
 
-		$query = "SELECT tb17_id
+		$query = "SELECT *
                   FROM tb17
                   WHERE race_date LIKE :race_date AND
                         trainer   LIKE :trainer AND
@@ -275,8 +270,8 @@ class TB17 extends \HisEntity {
 		$stmt->bindColumn ( 'tb17_id', $tb17_id );
 
 		$races = [ ];
-		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
-			$races [] = TB17::IdFactory ( $tb17_id );
+		while ( $ro = $stmt->fetchObject ( __CLASS__ ) ) {
+			$races [] = $ro;
 		}
 		return $races;
 

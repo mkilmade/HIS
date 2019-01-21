@@ -11,7 +11,7 @@ class Track extends \HisEntity {
 
 		$searchid = $id . "%";
 
-		$query = "SELECT track_id
+		$query = "SELECT *
                   FROM track
                   WHERE track_id LIKE :searchid
                   ORDER BY track_id";
@@ -21,11 +21,10 @@ class Track extends \HisEntity {
 		$stmt->execute ( [ 
 				':searchid' => $searchid
 		] );
-		$stmt->bindColumn ( 'track_id', $track_id );
 
 		$trackObjs = [ ];
-		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
-			$trackObjs [] = Track::IdFactory ( $track_id );
+		while ( $to = $stmt->fetchObject ( __CLASS__ ) ) {
+			$trackObjs [] = $to;
 		}
 		return $trackObjs;
 

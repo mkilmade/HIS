@@ -11,7 +11,7 @@ class Meet extends \HisEntity {
 	public static function getTrackId(string $race_date) {
 
 		$query = "SELECT
-                    race_meet_id
+                    track_id
                   FROM race_meet
                   WHERE start_date <= :start_date AND
                         end_date   >= :end_date
@@ -23,17 +23,10 @@ class Meet extends \HisEntity {
 				':start_date' => $race_date,
 				':end_date' => $race_date
 		] );
-		$stmt->bindColumn ( 'race_meet_id', $race_meet_id );
-
-		if ($stmt->fetch ( PDO::FETCH_BOUND )) {
-			$rmObj = Meet::IdFactory ( $race_meet_id );
-			$track_id = $rmObj->track_id;
-		} else {
-			$track_id = "";
-		}
-		return array (
-				'track_id' => $track_id
-		);
+		$stmt->bindColumn ( 'track_id', $track_id );
+		return [ 
+				'track_id' => ($stmt->fetch ( PDO::FETCH_BOUND )) ? $track_id : ""
+		];
 
 	}
 
@@ -48,38 +41,38 @@ class Meet extends \HisEntity {
 	}
 
 	public function getClassTally() {
-		
+
 		$query = "SELECT
 	                 COUNT(DISTINCT race_date,race, horse) AS races,
 					 SUM(IF(favorite='TRUE', 1, 0)) AS favs, 
 					 ROUND(AVG(odds),1) AS avg_odds,
 					 ROUND(STDDEV(odds),1) AS std_dev,
-	                 race_class
+	                 race_class AS item
 	              FROM tb17
 	              WHERE " . $this->meet_filter ( 'race_date' ) . "
 	              GROUP By race_class
-	              ORDER BY races DESC, race_class";
+	              ORDER BY race_class";
 		return TB17::getResultArray ( $query );
-		
+
 	}
-	
+
 	public function getDayTally() {
-		
+
 		$query = "SELECT
 	                 COUNT(DISTINCT race_date,race, horse) AS races,
                      SUM(IF(favorite='TRUE', 1, 0)) AS favs, 
 					 ROUND(AVG(odds),1) AS avg_odds,
 					 ROUND(STDDEV(odds),1) AS std_dev,
 	                 DAYOFWEEK(race_date) AS dow,
-                     DAYNAME(race_date) AS day
+                     DAYNAME(race_date) AS item
 	              FROM tb17
 	              WHERE " . $this->meet_filter ( 'race_date' ) . "
                   GROUP By DAYOFWEEK(race_date), DAYNAME(race_date)
                   ORDER BY DAYOFWEEK(race_date)";
 		return TB17::getResultArray ( $query );
-		
+
 	}
-	
+
 	public function getPreviousTrackWins() {
 
 		$query = "SELECT previous_track_id,
@@ -176,7 +169,7 @@ class Meet extends \HisEntity {
 
 	public static function getMeets() {
 
-		$query = "SELECT race_meet_id
+		$query = "SELECT *
 		              FROM race_meet
 		              ORDER BY start_date DESC
 		             ";
@@ -184,11 +177,10 @@ class Meet extends \HisEntity {
 		$conn = new PDOConnection ();
 		$stmt = $conn->pdo->prepare ( $query );
 		$stmt->execute ();
-		$stmt->bindColumn ( 'race_meet_id', $race_meet_id );
 
 		$meets = [ ];
-		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
-			$meets [] = Meet::IdFactory ( $race_meet_id );
+		while ( $mo = $stmt->fetchObject ( __CLASS__ ) ) {
+			$meets [] = $mo;
 		}
 		return $meets;
 
@@ -258,14 +250,14 @@ class Meet extends \HisEntity {
 	}
 
 	function getTopTen(string $type, int $days, string $as_of_date = NULL) {
-		
-		// find race_date that is '$days' racing days ago 
+
+		// find race_date that is '$days' racing days ago
 		if ($days > 0 && $as_of_date == NULL) {
 			$race_dates = $this->getRaceDates ();
-			$count = count($race_dates);
-			$as_of_date = array_keys($race_dates)[($days > $count) ? 0 : $count-$days];
+			$count = count ( $race_dates );
+			$as_of_date = array_keys ( $race_dates ) [($days > $count) ? 0 : $count - $days];
 		}
-		
+
 		$date = new DateTime ( $as_of_date );
 		$date->sub ( new DateInterval ( 'P1D' ) );
 		$date_diff = $date->format ( 'Y-m-d' );
