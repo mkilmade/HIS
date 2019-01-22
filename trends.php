@@ -42,7 +42,7 @@ h2 {
 }
 
 table#keyTable, table#trackTable, table#multiWinsTable, table#previousMeetDateCountTable,
-	table#previousFinishTable, table#classTable {
+	table#previousFinishTable, table#classTable, table#dayTable, table#classDetailTable {
 	border: 1px;
 	border-collapse: separate;
 	border-spacing: 2px;
@@ -55,22 +55,41 @@ table#keyTable, table#trackTable td {
 }
 </style>
 <script>
-  	function getTrend(trend) {
-      //console.log("in func");
-      if (trend.length == 0) { 
-          return;
+	function getTrend(trend) {
+	      //console.log("in func");
+	      if (trend.length == 0) { 
+	          return;
+	      }
+	      $("#trendDetail").css('visibility', 'hidden');
+	      var xmlhttp = new XMLHttpRequest();
+	      xmlhttp.onreadystatechange = function() {
+	          if (this.readyState == 4 && this.status == 200) {
+	              $("#trendDiv").html(this.responseText);
+	              $("#trendDiv").css('visibility', 'visible');
+	          }
+	      };
+	      uri="getTrend.php?trend=" + trend;
+	      xmlhttp.open("GET", encodeURI(uri), true);
+	      xmlhttp.send();
+	    }
+    
+  	function getTrendDetail(trend, param) {
+        //console.log("in func");
+        if (trend.length == 0) { 
+            return;
+        }
+        $("#trendDetail").css('visibility', 'hidden');
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                $("#trendDetail").html(this.responseText);
+                $("#trendDetail").css('visibility', 'visible');
+            }
+        };
+        uri="getTrendDetail.php?trend=" + trend + "&param=" + param;
+        xmlhttp.open("GET", encodeURI(uri), true);
+        xmlhttp.send();
       }
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-              $("#trendDiv").html(this.responseText);
-              $("#trendDiv").css('visibility', 'visible');
-          }
-      };
-      uri="getTrend.php?trend=" + trend;
-      xmlhttp.open("GET", encodeURI(uri), true);
-      xmlhttp.send();
-    }
   </script>
 
 </head>
@@ -94,7 +113,8 @@ table#keyTable, table#trackTable td {
 	</table>
 	<br>
 	<div id='trendDiv'
-		style='margin-right: auto; margin-left: auto; width: 1000px; visibility: hidden;'></div>
+		style='float: left; visibility: hidden;'></div>
+	<div id='trendDetail' style='float: left; visibility:hidden;'></div>
 </body>
 <script>
     $(document).ready(function() {

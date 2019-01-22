@@ -56,6 +56,46 @@ class Meet extends \HisEntity {
 
 	}
 
+	public function getClassTallyDetail(string $race_class) {
+
+		$query = "SELECT odds
+	              FROM tb17
+	              WHERE " . $this->meet_filter ( 'race_date' ) . " AND race_class = :race_class
+	              ORDER BY odds";
+		$conn = new PDOConnection ();
+		$stmt = $conn->pdo->prepare ( $query );
+		$stmt->execute ( [ 
+				':race_class' => $race_class
+		] );
+		$stmt->bindColumn ( 'odds', $odds );
+
+		$ranges = [ ];
+		$total = 0;
+		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
+			$total += 1;
+			switch ($odds) {
+				case ($odds < 2.01) :
+					$ranges ['0 - 2'] += 1;
+					break;
+				case ($odds < 5.01) :
+					$ranges ['2.01 - 5'] += 1;
+					break;
+				case ($odds < 10.01) :
+					$ranges ['5.01 - 10'] += 1;
+					break;
+				case ($odds < 20.01) :
+					$ranges ['10.01 - 20'] += 1;
+					break;
+				case ($odds > 20) :
+					$ranges ['   <20'] += 1;
+					break;
+			}
+		}
+		$ranges ['Total'] = $total;
+		return $ranges;
+
+	}
+
 	public function getDayTally() {
 
 		$query = "SELECT

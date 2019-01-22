@@ -8,7 +8,7 @@ function classTally(array $defaults) {
 	
 	echo "
       <table id='classTable' class='tablesorter' style='width:600px; margin: auto; font-size:14px'>
-        <caption>Class Breakdown for Meet (" . count ( $tallies ) . ")</caption>
+        <caption>Class Breakdown for Meet (only if class has 5 or more races; total include all classes)</caption>
         <thead>
           <th>Class</th>
           <th>Races</th>
@@ -21,12 +21,8 @@ function classTally(array $defaults) {
     <tbody>
     ";
 
-	buildTallyHtml($tallies);
+	buildTallyHtml($tallies, true);
 	
-    echo "<tr><td colspan='7'><b>Day Stats</b></td></tr>";
-    $tallies = $rm->getDayTally ();
-    buildTallyHtml($tallies);
-    
     echo "</tbody></table>
         <script>
             $('#classTable').tablesorter({
@@ -34,20 +30,51 @@ function classTally(array $defaults) {
             });
         </script>
         ";
+    
+    echo "
+      <table id='dayTable' class='tablesorter' style='width:600px; margin: auto; font-size:14px'>
+        <caption>Day of Week Breakdown for Meet</caption>
+        <thead>
+          <th>Class</th>
+          <th>Races</th>
+          <th>Favs</th>
+          <th>Pct Favs</th>
+          <th>Avg Odds</th>
+          <th>Std Dev</th>
+          <th>CoV</th>
+        </thead>
+    <tbody>
+    ";
+    $tallies = $rm->getDayTally ();
+    buildTallyHtml($tallies, false);
+    echo "</tbody></table>
+        <script>
+            $('#dayTable').tablesorter({
+                widgets: ['zebra']
+            });
+        </script>
+        ";
+    
+    
+    
 } // function
 
-function buildTallyHtml(array $tallies) {
+function buildTallyHtml(array $tallies, bool $mouseover) {
 	$total=0;
 	$favTotal = 0;
 	foreach ( $tallies as $tally ) {
 		$total    += $tally ['races'];
 		$favTotal += $tally ['favs'];
+		if ($tally['races'] < 6) {
+			continue;
+		}
 		$pctFavs = round(($tally ['favs']/$tally ['races'])*100,1);
 		
 		// Coefficient Of Variation
 		$cov = calcCOV($tally['avg_odds'], $tally['std_dev']);
 		
-		echo "<tr>";
+		$mouseover =  ($mouseover ? "onmouseover=\"getTrendDetail('classTally','{$tally['item']}')\"" : "");
+		echo "<tr $mouseover >";
 		echo "<td style='text-align:left;'>{$tally['item']}</td>";
 		echo "<td>{$tally['races']}</td>";
 		echo "<td>{$tally['favs']}</td>";
