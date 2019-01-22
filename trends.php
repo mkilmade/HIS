@@ -60,7 +60,10 @@ table#keyTable, table#trackTable td {
 	      if (trend.length == 0) { 
 	          return;
 	      }
-	      $("#trendDetail").css('visibility', 'hidden');
+	      // make sure detail is not visibile and empty
+	      $("#trendDetailDiv").css('visibility', 'hidden');
+	      $("#trendDiv").html('');
+	      
 	      var xmlhttp = new XMLHttpRequest();
 	      xmlhttp.onreadystatechange = function() {
 	          if (this.readyState == 4 && this.status == 200) {
@@ -78,12 +81,12 @@ table#keyTable, table#trackTable td {
         if (trend.length == 0) { 
             return;
         }
-        $("#trendDetail").css('visibility', 'hidden');
+        $("#trendDetailDiv").css('visibility', 'hidden');
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                $("#trendDetail").html(this.responseText);
-                $("#trendDetail").css('visibility', 'visible');
+                $("#trendDetailDiv").html(this.responseText);
+                $("#trendDetailDiv").css('visibility', 'visible');
             }
         };
         uri="getTrendDetail.php?trend=" + trend + "&param=" + param;
@@ -99,21 +102,21 @@ table#keyTable, table#trackTable td {
 		<caption>(hover trend to see trending info)</caption>
 		<tr>
 			<td><a href='index.php'>Home</a></td>
+			<td onmouseover="getTrend('classTally')">Class Tally</td>
 			<td onmouseover="getTrend('keyRaces')">Key Racess</td>
 			<td onmouseover="getTrend('multipleWins')">Multiple Wins</td>
 			<td onmouseover="getTrend('previouslyRanAtMeet')">Previously Ran At
 				Meet Before Win</td>
 			<td onmouseover="getTrend('previousRaceAtMeetPerCard')">Previous Race
 				At Meet Per Card</td>
-			<td onmouseover="getTrend('classTally')">Class Tally</td>
 			<td onmouseover="getTrend('previousTrackWins')">Previous Track Wins</td>
 			<td onmouseover="getTrend('previousFinishTally')">Previous Finish
 				Tally</td>
 		</tr>
 	</table>
 	<br>
-	<div id='trendDiv' style='margin-right: auto; margin-left: auto;width: 1000px; visibility:hidden;'></div>
-	<div id='trendDetail' style='float: left; visibility:hidden;'></div>
+	<div id='trendDiv'></div>
+	<div id='trendDetailDiv' style='float: left; visibility:hidden;'></div>
 </body>
 <script>
     $(document).ready(function() {

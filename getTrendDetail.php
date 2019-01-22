@@ -19,7 +19,7 @@ $html = "";
 if ($trendName == 'classTally') {
 	$race_class = $param;
 	
-	$html = "<table id='classDetailTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>";
+	$html = "<table id='classDetailTable' class='tablesorter' style='width:150px; margin: auto; font-size:14px'>";
 	$html .= "<caption>Class:<b>$race_class</b></caption>";
 	$html .= "<thead><th>Odds Range</th><th>Count</th></thead>";
 	
@@ -31,8 +31,17 @@ if ($trendName == 'classTally') {
 	$html .= "</tbody></table>
         <script>
             $('#classDetailTable').tablesorter({
-                widgets: ['zebra']
+                widgets: ['zebra'],
+                headers: {
+                  0: {
+                  sorter: false
+                  },
+                  1: {
+                   sorter: false
+                  }
+                }
             });
+            $('#trendDetailDiv').attr('style', 'float: left; visibility: hidden;');
         </script>";
 }
 echo $html;
