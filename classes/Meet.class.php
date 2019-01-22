@@ -68,36 +68,50 @@ class Meet extends \HisEntity {
 				':race_class' => $race_class
 		] );
 		$stmt->bindColumn ( 'odds', $odds );
+		
+		// set up ranges metadata
+		$ranges = [ 
+				[ 
+						'check' => 2,
+						'label' => '0 - 2'
+				],
+				[ 
+						'check' => 5,
+						'label' =>'2.01 - 5'
+				],
+				[ 
+						'check' => 10,
+						'label' =>'5.01 - 10'
+				],
+				[ 
+						'check' => 20,
+						'label' =>'10.01 - 20'
+				],
+				[ 
+						'check' => 999,
+						'label' =>'   > 20'
+				]
+		];
 
-		$ranges = [ ];
-		$ranges ['0 - 2'] = 0;
-		$ranges ['2.01 - 5'] = 0;
-		$ranges ['5.01 - 10'] = 0;
-		$ranges ['10.01 - 20'] = 0;
-		$ranges ['   <20'] = 0;
+		// initialize range counts
+		$counts = [ ];
+		foreach ( $ranges as $range ) {
+			$counts [$range ['label']] = 0;
+		}
+		
+		// scan data and count in approriate buckets
 		$total = 0;
 		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
 			$total += 1;
-			switch ($odds) {
-				case ($odds < 2.01) :
-					$ranges ['0 - 2'] += 1;
+			foreach ( $ranges as $range ) {
+				if ($odds <= $range ['check']) {
+					$counts [$range ['label']] += 1;
 					break;
-				case ($odds < 5.01) :
-					$ranges ['2.01 - 5'] += 1;
-					break;
-				case ($odds < 10.01) :
-					$ranges ['5.01 - 10'] += 1;
-					break;
-				case ($odds < 20.01) :
-					$ranges ['10.01 - 20'] += 1;
-					break;
-				case ($odds > 20) :
-					$ranges ['   <20'] += 1;
-					break;
+				}
 			}
 		}
-		$ranges ['Total'] = $total;
-		return $ranges;
+		$counts ['Total'] = $total;
+		return $counts;
 
 	}
 
