@@ -56,7 +56,7 @@ class Meet extends \HisEntity {
 
 	}
 
-	public function getClassTallyDetail(string $race_class) {
+	public function getClassTallyDetail($race_class) {
 
 		$query = "SELECT odds
 	              FROM tb17
@@ -70,6 +70,11 @@ class Meet extends \HisEntity {
 		$stmt->bindColumn ( 'odds', $odds );
 
 		$ranges = [ ];
+		$ranges ['0 - 2'] = 0;
+		$ranges ['2.01 - 5'] = 0;
+		$ranges ['5.01 - 10'] = 0;
+		$ranges ['10.01 - 20'] = 0;
+		$ranges ['   <20'] = 0;
 		$total = 0;
 		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
 			$total += 1;

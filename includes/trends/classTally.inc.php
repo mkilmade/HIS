@@ -28,6 +28,7 @@ function classTally(array $defaults) {
             $('#classTable').tablesorter({
                 widgets: ['zebra']
             });
+            $('#trendDiv').attr('style', 'float: left; visibility: hidden;');
         </script>
         ";
     
@@ -86,7 +87,7 @@ function buildTallyHtml(array $tallies, bool $mouseover) {
 	}
 	$pctFavs = round(($favTotal/$total)*100,1);
 	echo "
-        <tr><td>Total</td><td>$favTotal</td><td>$total</td><td>$pctFavs %</td><td colspan='3'>includes both horses in deadheats</td></tr>";
+        <tr><td>Total</td><td>$favTotal</td><td>$total</td><td>$pctFavs %</td><td colspan='3'>includes all horses in deadheats</td></tr>";
 	
 }
 

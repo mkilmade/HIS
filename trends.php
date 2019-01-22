@@ -112,8 +112,7 @@ table#keyTable, table#trackTable td {
 		</tr>
 	</table>
 	<br>
-	<div id='trendDiv'
-		style='float: left; visibility: hidden;'></div>
+	<div id='trendDiv' style='margin-right: auto; margin-left: auto;width: 1000px; visibility:hidden;'></div>
 	<div id='trendDetail' style='float: left; visibility:hidden;'></div>
 </body>
 <script>
