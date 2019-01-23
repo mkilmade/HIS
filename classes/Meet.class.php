@@ -58,7 +58,7 @@ class Meet extends \HisEntity {
 
 	public function getClassTallyDetail($race_class) {
 
-		$query = "SELECT odds
+		$query = "SELECT odds, favorite
 	              FROM tb17
 	              WHERE " . $this->meet_filter ( 'race_date' ) . " AND race_class = :race_class
 	              ORDER BY odds";
@@ -68,6 +68,7 @@ class Meet extends \HisEntity {
 				':race_class' => $race_class
 		] );
 		$stmt->bindColumn ( 'odds', $odds );
+		$stmt->bindColumn ( 'favorite', $fav );
 		
 		// set up ranges metadata
 		$ranges = [ 
@@ -76,8 +77,12 @@ class Meet extends \HisEntity {
 						'label' => '0 - 1'
 				],
 				[
+						'check' => 2,
+						'label' => '1.01 - 2'
+				],
+				[
 						'check' => 3,
-						'label' => '1.01 - 3'
+						'label' => '2.01 - 3'
 				],
 				[ 
 						'check' => 5,
@@ -96,25 +101,31 @@ class Meet extends \HisEntity {
 						'label' =>'   > 20'
 				]
 		];
-
 		// initialize range counts
 		$counts = [ ];
 		foreach ( $ranges as $range ) {
-			$counts [$range ['label']] = 0;
+			$counts [$range ['label']] = [];
+			$counts [$range ['label']]['count'] = 0;
+			$counts [$range ['label']]['favs'] = 0;
 		}
 		
 		// scan data and count in approriate buckets
 		$total = 0;
+		$favs = 0;
 		while ( $stmt->fetch ( PDO::FETCH_BOUND ) ) {
 			$total += 1;
 			foreach ( $ranges as $range ) {
 				if ($odds <= $range ['check']) {
-					$counts [$range ['label']] += 1;
+					$counts [$range ['label']]['count'] += 1;
+					If ($fav == 'TRUE') {
+						$counts [$range ['label']]['favs'] += 1;
+						$favs += 1;
+					}
 					break;
 				}
 			}
 		}
-		$counts ['Total'] = $total;
+		$counts ['Total'] = ['count' => $total, 'favs' => $favs];
 		return $counts;
 
 	}

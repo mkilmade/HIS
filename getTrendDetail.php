@@ -19,14 +19,14 @@ $html = "";
 if ($trendName == 'classTally') {
 	$race_class = $param;
 	
-	$html = "<table id='classDetailTable' class='tablesorter' style='width:150px; margin: auto; font-size:14px'>";
+	$html = "<table id='classDetailTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>";
 	$html .= "<caption>Class: <b>$race_class</b></caption>";
-	$html .= "<thead><th>Odds Range</th><th>Count</th></thead>";
+	$html .= "<thead><th>Odds Range</th><th>Count / Favs</th></thead>";
 	
 	$rmObj = Meet::IdFactory ( $_SESSION ['defaults'] ['race_meet_id'] );
 	$ranges = $rmObj->getClassTallyDetail ( $race_class );
-	foreach ( $ranges as $range => $count ) {
-		$html .= "<tr><td>$range</td><td>$count</td></tr>";
+	foreach ( $ranges as $range => $counts ) {
+		$html .= "<tr><td>$range</td><td>{$counts['count']} / {$counts['favs']}</td></tr>";
 	}
 	$html .= "</tbody></table>
         <script>
@@ -42,7 +42,8 @@ if ($trendName == 'classTally') {
                 }
             });
             $('#trendDetailDiv').css({ 'visibility': 'hidden',
-                                       'float': 'left'
+                                       'float': 'left',
+                                       'width': '225px'
                                      });
         </script>";
 }
