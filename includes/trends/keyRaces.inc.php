@@ -46,19 +46,19 @@ function keyRaces($defaults) {
 		foreach ( $nows as $winnerObj ) {
 			$key_race_data .= "<br> - ";
 			$key_race_data .= "<b>{$winnerObj->horse}</b> <sup>{$winnerObj->previous_finish_position}</sup> : ";
+			$key_race_data .= "<a target='_blank' href='{$winnerObj->getChartUrl()}'>";
 			$key_race_data .= "{$winnerObj->race_date} ";
 			$key_race_data .= "{$winnerObj->track_id} <sup> R{$winnerObj->race} </sup> : ";
+			$key_race_data .= "</a>";
 			$key_race_data .= "{$winnerObj->race_class} : ";
 			$key_race_data .= "{$winnerObj->distance}" . ($winnerObj->turf == "TRUE" ? ' t' : '') . " : ";
 			$key_race_data .= "{$winnerObj->time_of_race}";
 		}
 
-		// $date = new DateTime($previous_date, new DateTimeZone('America/New_York'));
-		$date = new DateTime ( $previous_date, new DateTimeZone ( HIS_TIMEZONE ) );
-		$chart_file = "http://www.equibase.com/premium/chartEmb.cfm?track=$previous_track_id&racedate=" . $date->format ( "m/d/y" ) . "&cy=USA&rn=$previous_race";
+		$chart_url = TB17::getEquibaseUrl($previous_date, $previous_track_id, $previous_race);
 		echo "<tr>";
 		echo "<td>$previous_date</td>";
-		echo "<td><a target='_blank' href='$chart_file'>$previous_race</a></td>";
+		echo "<td><a target='_blank' href='$chart_url'>$previous_race</a></td>";
 		echo "<td>$previous_track_id</td>";
 		echo "<td>$wins</td>";
 		echo "<td style='text-align: left'>$key_race_data</td>";
@@ -83,7 +83,7 @@ function keyRaces($defaults) {
              }
            }
         });
-       $('#trendDiv').attr('style', \"<div id='trendDiv' style='margin-right: auto; margin-left: auto;width: 1000px; visibility:hidden;\");
+       setTrendDivStyle('center');
       </script>
     ";
 } // function

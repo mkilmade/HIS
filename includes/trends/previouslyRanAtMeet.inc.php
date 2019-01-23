@@ -27,7 +27,7 @@ function previouslyRanAtMeet($defaults) {
             $('#previouslyRanAtMeetWinTable').tablesorter({
               widgets: ['zebra']
             });
-            $('#trendDiv').attr('style', \"<div id='trendDiv' style='margin-right: auto; margin-left: auto;width: 1000px; visibility:hidden;\");
+            setTrendDivStyle('center');
         </script>
     ";
 } // function

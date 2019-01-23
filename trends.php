@@ -56,12 +56,13 @@ table#keyTable, table#trackTable td {
 </style>
 <script>
 	function getTrend(trend) {
-	      //console.log("in func");
 	      if (trend.length == 0) { 
 	          return;
 	      }
-	      // make sure detail is not visibile and empty
-	      $("#trendDetailDiv").css('visibility', 'hidden');
+	      // make sure trend and detail is not visibile and empty
+	      $("#trendDetailDiv").css({'visibility': 'hidden', 'float': ''});
+	      $("#trendDetailDiv").html('');
+          $("#trendDiv").css('visibility', 'hidden');
 	      $("#trendDiv").html('');
 	      
 	      var xmlhttp = new XMLHttpRequest();
@@ -76,8 +77,30 @@ table#keyTable, table#trackTable td {
 	      xmlhttp.send();
 	    }
     
+    function setTrendDivStyle(type) {
+        if (type == 'center') {
+            //$('#trendDiv').attr('style', 'margin-right: auto; margin-left: auto;width: 1000px; visibility:hidden;');
+            $('#trendDiv').css({
+                'visibility': 'hidden',
+                'float': '',
+                'margin-right': 'auto',
+                'margin-left': 'auto',
+                'width': '1000px'
+              });
+        } else {
+            // float type
+        	//$('#trendDiv').attr('style', 'float: left; visibility: hidden;');
+            $('#trendDiv').css({
+                'visibility': 'hidden',
+                'float': 'left',
+                'margin-right': '',
+                'margin-left': '',
+                'width': ''
+              });
+        }
+    }
+    
   	function getTrendDetail(trend, param) {
-        //console.log("in func");
         if (trend.length == 0) { 
             return;
         }
@@ -115,8 +138,8 @@ table#keyTable, table#trackTable td {
 		</tr>
 	</table>
 	<br>
+	<div id='trendDetailDiv'></div>
 	<div id='trendDiv'></div>
-	<div id='trendDetailDiv' style='float: left; visibility:hidden;'></div>
 </body>
 <script>
     $(document).ready(function() {

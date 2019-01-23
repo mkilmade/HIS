@@ -71,13 +71,17 @@ class Meet extends \HisEntity {
 		
 		// set up ranges metadata
 		$ranges = [ 
-				[ 
-						'check' => 2,
-						'label' => '0 - 2'
+				[
+						'check' => 1,
+						'label' => '0 - 1'
+				],
+				[
+						'check' => 3,
+						'label' => '1.01 - 3'
 				],
 				[ 
 						'check' => 5,
-						'label' =>'2.01 - 5'
+						'label' =>'3.01 - 5'
 				],
 				[ 
 						'check' => 10,

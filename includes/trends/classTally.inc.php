@@ -28,7 +28,7 @@ function classTally(array $defaults) {
             $('#classTable').tablesorter({
                 widgets: ['zebra']
             });
-            $('#trendDiv').attr('style', 'float: left; visibility: hidden;');
+            setTrendDivStyle('float');
         </script>
         ";
     
