@@ -41,10 +41,7 @@ if ($trendName == 'classTally') {
                   }
                 }
             });
-            $('#trendDetailDiv').css({ 'visibility': 'hidden',
-                                       'float': 'left',
-                                       'width': '225px'
-                                     });
+            setTrendDetailStyle();
         </script>";
 }
 echo $html;

@@ -4,8 +4,8 @@
 <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 <link type="text/css" href="jquery/jquery-ui.min.css" rel="stylesheet">
 <link type="text/css"
-	  href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
-	  rel="stylesheet">
+	href="themes/green/style.css?v=<?php echo filemtime('themes/green/style.css'); ?>"
+	rel="stylesheet">
 <script src="jquery/jquery.js"></script>
 <script src="jquery/jquery.tablesorter.js"></script>
 <script src="jquery/jquery.tablesorter.pager.js"></script>
@@ -42,7 +42,8 @@ h2 {
 }
 
 table#keyTable, table#trackTable, table#multiWinsTable, table#previousMeetDateCountTable,
-	table#previousFinishTable, table#classTable, table#dayTable, table#classDetailTable {
+	table#previousFinishTable, table#classTable, table#dayTable, table#classDetailTable
+	{
 	border: 1px;
 	border-collapse: separate;
 	border-spacing: 2px;
@@ -60,10 +61,8 @@ table#keyTable, table#trackTable td {
 	          return;
 	      }
 	      // make sure trend and detail is not visibile and empty
-	      $("#trendDetailDiv").css({'visibility': 'hidden', 'float': ''});
-	      $("#trendDetailDiv").html('');
-          $("#trendDiv").css('visibility', 'hidden');
-	      $("#trendDiv").html('');
+          clearTrendDetail();
+          clearTrend();
 	      
 	      var xmlhttp = new XMLHttpRequest();
 	      xmlhttp.onreadystatechange = function() {
@@ -100,6 +99,11 @@ table#keyTable, table#trackTable td {
         }
     }
     
+    function clearTrend() {
+	      $("#trendDiv").css('visibility', 'hidden');
+	      $("#trendDiv").html('');
+    }
+    
   	function getTrendDetail(trend, param) {
         if (trend.length == 0) { 
             return;
@@ -116,6 +120,18 @@ table#keyTable, table#trackTable td {
         xmlhttp.open("GET", encodeURI(uri), true);
         xmlhttp.send();
       }
+
+    function setTrendDetailStyle() {
+        $('#trendDetailDiv').css({ 'visibility': 'hidden',
+                                   'float': 'left',
+                                   'width': '225px'
+                                 });
+    }
+    
+    function clearTrendDetail() {
+	      $("#trendDetailDiv").css({'visibility': 'hidden', 'float': ''});
+	      $("#trendDetailDiv").html('');
+     }
   </script>
 
 </head>

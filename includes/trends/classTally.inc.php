@@ -7,7 +7,9 @@ function classTally(array $defaults) {
 	$tallies = $rm->getClassTally ();
 	
 	echo "
-      <table id='classTable' class='tablesorter' style='width:600px; margin: auto; font-size:14px'>
+      <table id='classTable' 
+             class='tablesorter'
+             style='width:600px; margin: auto; font-size:14px;'>
         <caption>Class Breakdown for Meet (only if class has 5 or more races; total include all classes)</caption>
         <thead>
           <th>Class</th>
@@ -33,7 +35,9 @@ function classTally(array $defaults) {
         ";
     
     echo "
-      <table id='dayTable' class='tablesorter' style='width:600px; margin: auto; font-size:14px'>
+      <table id='dayTable' 
+             class='tablesorter'
+             style='width:600px; margin: auto; font-size:14px;'>
         <caption>Day of Week Breakdown for Meet</caption>
         <thead>
           <th>Class</th>
@@ -60,7 +64,7 @@ function classTally(array $defaults) {
     
 } // function
 
-function buildTallyHtml(array $tallies, bool $mouseover) {
+function buildTallyHtml(array $tallies, bool $click) {
 	$total=0;
 	$favTotal = 0;
 	foreach ( $tallies as $tally ) {
@@ -74,8 +78,8 @@ function buildTallyHtml(array $tallies, bool $mouseover) {
 		// Coefficient Of Variation
 		$cov = calcCOV($tally['avg_odds'], $tally['std_dev']);
 		
-		$mouseover =  ($mouseover ? "onmouseover=\"getTrendDetail('classTally','{$tally['item']}')\"" : "");
-		echo "<tr $mouseover >";
+	    $click =  ($click ? "onclick=\"getTrendDetail('classTally','{$tally['item']}')\"" : "");
+		echo "<tr $click>";
 		echo "<td style='text-align:left;'>{$tally['item']}</td>";
 		echo "<td>{$tally['races']}</td>";
 		echo "<td>{$tally['favs']}</td>";
