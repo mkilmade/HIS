@@ -4,10 +4,20 @@
 // trainer fielss for selected horse
 
 //invoked as the 'onblur' event handler of respective forms
+function class_trigger() {
+	var x = $("#race_class").val().substr(0,1);
+	    
+	if ( x == "M" && $("#horse").val() == "" ) {
+		$("#horse").val("+");
+	}
+}
+
+
 function horse_trigger() {
 	var horse = $("#horse").val();
 
-	// make ajax call if horse is set but both trainer & jockey are not yet set in form
+	// make ajax call if horse is set but both trainer & jockey are not yet set
+	// in form
 	if (horse != "" && $("#trainer").val() == "" && $("#jockey").val() == "") {
 
 		// build query info for GET
@@ -135,7 +145,7 @@ function getDomainNames(request, response) {
 			domain : domain
 		},
 		success : function(data) {
-			//console.log(data);
+			// console.log(data);
 			response(data);
 		}
 	});
