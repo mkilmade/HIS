@@ -15,15 +15,16 @@ function classTally(array $defaults) {
 	buildTallyHtml($tallies, true);
 	echo "</table>
 
+      <div style='width: 650px; float: left'>
       <table id='dayTable' 
              class='tablesorter'
-             style='width:600px; margin: auto; font-size:14px;'>
+             style='width:625px; font-size:14px;' >
         <caption>Day of Week Breakdown for Meet</caption>
     ";
     
     $tallies = $rm->getDayTally ();
     buildTallyHtml($tallies, false);
-    echo "</table>
+    echo "</table></div>
 
         <script>
             $('#dayTable, #classTable').tablesorter({

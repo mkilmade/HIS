@@ -98,7 +98,8 @@ table#keyTable, table#trackTable td {
 <script>
     $(document).ready(function() {
     	$( "#tabs" ).tabs({
-    		  event: "mouseover"
+    		  event: "mouseover",
+    		  heightStyle: "content"
     	});
     });
 </script>
