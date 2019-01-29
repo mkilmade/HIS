@@ -43,8 +43,7 @@ function previousTrackWins($defaults) {
             $('#trackTable').tablesorter({
               widgets: ['zebra']
             });
-            setTrendDivStyle('center');
-        </script>
+         </script>
         ";
 } // function
 

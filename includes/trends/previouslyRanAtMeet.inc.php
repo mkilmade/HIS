@@ -27,7 +27,6 @@ function previouslyRanAtMeet($defaults) {
             $('#previouslyRanAtMeetWinTable').tablesorter({
               widgets: ['zebra']
             });
-            setTrendDivStyle('center');
         </script>
     ";
 } // function

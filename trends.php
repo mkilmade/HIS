@@ -56,110 +56,48 @@ table#keyTable, table#trackTable td {
 }
 </style>
 <script>
-	function getTrend(trend) {
-	      if (trend.length == 0) { 
-	          return;
-	      }
-	      // make sure trend and detail is not visibile and empty
-          clearTrendDetail();
-          clearTrend();
-	      
-	      var xmlhttp = new XMLHttpRequest();
-	      xmlhttp.onreadystatechange = function() {
-	          if (this.readyState == 4 && this.status == 200) {
-	              $("#trendDiv").html(this.responseText);
-	              $("#trendDiv").css('visibility', 'visible');
-	          }
-	      };
-	      uri="getTrend.php?trend=" + trend;
-	      xmlhttp.open("GET", encodeURI(uri), true);
-	      xmlhttp.send();
-	    }
-    
-    function setTrendDivStyle(type) {
-        if (type == 'center') {
-            //$('#trendDiv').attr('style', 'margin-right: auto; margin-left: auto;width: 1000px; visibility:hidden;');
-            $('#trendDiv').css({
-                'visibility': 'hidden',
-                'float': '',
-                'margin-right': 'auto',
-                'margin-left': 'auto',
-                'width': '1000px'
-              });
-        } else {
-            // float type
-        	//$('#trendDiv').attr('style', 'float: left; visibility: hidden;');
-            $('#trendDiv').css({
-                'visibility': 'hidden',
-                'float': 'left',
-                'margin-right': '',
-                'margin-left': '',
-                'width': ''
-              });
-        }
-    }
-    
-    function clearTrend() {
-	      $("#trendDiv").css('visibility', 'hidden');
-	      $("#trendDiv").html('');
-    }
-    
-  	function getTrendDetail(trend, param) {
+  	function getClassTrendDetail(trend, param) {
         if (trend.length == 0) { 
             return;
         }
-        $("#trendDetailDiv").css('visibility', 'hidden');
+        $("#classTrendDetailDiv").css('visibility', 'hidden');
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                $("#trendDetailDiv").html(this.responseText);
-                $("#trendDetailDiv").css('visibility', 'visible');
+                $("#classTrendDetailDiv").html(this.responseText);
+                $("#classTrendDetailDiv").css('visibility', 'visible');
             }
         };
         uri="getTrendDetail.php?trend=" + trend + "&param=" + param;
         xmlhttp.open("GET", encodeURI(uri), true);
         xmlhttp.send();
       }
-
-    function setTrendDetailStyle() {
-        $('#trendDetailDiv').css({ 'visibility': 'hidden',
-                                   'float': 'left',
-                                   'width': '225px'
-                                 });
-    }
-    
-    function clearTrendDetail() {
-	      $("#trendDetailDiv").css({'visibility': 'hidden', 'float': ''});
-	      $("#trendDetailDiv").html('');
-     }
   </script>
 
 </head>
 <body>
 	<h2 id="body_title" style="text-align: center;">Browse Trends And Stats</h2>
-	<table id="navigator">
-		<caption>(hover trend to see trending info)</caption>
+	<table style="margin: auto;">
 		<tr>
 			<td><a href='index.php'>Home</a></td>
-			<td onmouseover="getTrend('classTally')">Class Tally</td>
-			<td onmouseover="getTrend('keyRaces')">Key Racess</td>
-			<td onmouseover="getTrend('multipleWins')">Multiple Wins</td>
-			<td onmouseover="getTrend('previouslyRanAtMeet')">Previously Ran At
-				Meet Before Win</td>
-			<td onmouseover="getTrend('previousRaceAtMeetPerCard')">Previous Race
-				At Meet Per Card</td>
-			<td onmouseover="getTrend('previousTrackWins')">Previous Track Wins</td>
-			<td onmouseover="getTrend('previousFinishTally')">Previous Finish
-				Tally</td>
 		</tr>
 	</table>
-	<br>
-	<div id='trendDetailDiv'></div>
-	<div id='trendDiv'></div>
+	<br />
+	<div id="tabs">
+	  <ul>
+	    <li><a href="getTrend.php?trend=keyRaces">Keys</a></li>
+	    <li><a href="getTrend.php?trend=classTally">Class</a></li>
+	    <li><a href="getTrend.php?trend=multipleWins">Multi-Wins</a></li>
+	    <li><a href="getTrend.php?trend=previousTrackWins">Tracks</a></li>
+	    <li><a href="getTrend.php?trend=previouslyRanAtMeet">Ran At Meet</a></li>
+	    <li><a href="getTrend.php?trend=previousRaceAtMeetPerCard">Per Card</a></li>
+	    <li><a href="getTrend.php?trend=previousFinishTally">Prev Finish</a></li>
+	  </ul>
+	</div>
 </body>
 <script>
     $(document).ready(function() {
-    	getTrend('keyRaces');
+    	$( "#tabs" ).tabs();
     });
 </script>
 

@@ -27,8 +27,7 @@ function multipleWins($defaults) {
             $('#multiWinsTable').tablesorter({
               widgets: ['zebra']
             });
-            setTrendDivStyle('center');
-        </script>
+         </script>
         ";
 } // function
 

@@ -27,6 +27,7 @@ function previousRaceAtMeetPerCard($defaults) {
 
 	echo "
         </tbody></table>
+
         <script>
             $('#previousMeetDateCountTable').tablesorter({
                 widgets: ['zebra'],
@@ -36,7 +37,6 @@ function previousRaceAtMeetPerCard($defaults) {
                   }
                 }
            });
-           setTrendDivStyle('center');
         </script>
         ";
 } // function

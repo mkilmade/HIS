@@ -7,9 +7,11 @@ function classTally(array $defaults) {
 	$tallies = $rm->getClassTally ();
 	
 	echo "
+	  <div id='classTrendDetailDiv'></div>
+      <div id='classTrendDiv'>
       <table id='classTable' 
              class='tablesorter'
-             style='width:600px; margin: auto; font-size:14px;'>
+             style='width:600px;font-size:14px;'>
         <caption>Class Breakdown for Meet (only if class has 5 or more races; total include all classes)</caption>
         <thead>
           <th>Class</th>
@@ -30,7 +32,12 @@ function classTally(array $defaults) {
             $('#classTable').tablesorter({
                 widgets: ['zebra']
             });
-            setTrendDivStyle('float');
+            $('#classTrendDiv').css({
+                'float': 'left',
+                'margin-right': '',
+                'margin-left': '',
+                'width': ''
+              });
         </script>
         ";
     
@@ -52,7 +59,7 @@ function classTally(array $defaults) {
     ";
     $tallies = $rm->getDayTally ();
     buildTallyHtml($tallies, false);
-    echo "</tbody></table>
+    echo "</tbody></table></div>
         <script>
             $('#dayTable').tablesorter({
                 widgets: ['zebra']
@@ -78,7 +85,7 @@ function buildTallyHtml(array $tallies, bool $click) {
 		// Coefficient Of Variation
 		$cov = calcCOV($tally['avg_odds'], $tally['std_dev']);
 		
-	    $click =  ($click ? "onclick=\"getTrendDetail('classTally','{$tally['item']}')\"" : "");
+	    $click =  ($click ? "onclick=\"getClassTrendDetail('classTally','{$tally['item']}')\"" : "");
 		echo "<tr $click>";
 		echo "<td style='text-align:left;'>{$tally['item']}</td>";
 		echo "<td>{$tally['races']}</td>";

@@ -37,7 +37,6 @@ function previousFinishTally($defaults) {
                     }
                 }
             });
-            setTrendDivStyle('center');
           ";
 } // function
 

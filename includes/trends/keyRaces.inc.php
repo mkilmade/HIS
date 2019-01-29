@@ -4,7 +4,7 @@ function keyRaces($defaults) {
 	$key_races = TB17::findKeyRaces ( 90, $defaults ['track_id'] );
 	// -- build html key race table
 	echo "
-      <table id='keyTable' class='tablesorter' style='width:900px; margin: auto; font-size:16px'>
+      <table id='keyTable' class='tablesorter' style='width:900px; font-size:14px'>
         <caption>Key Race Information for last 90 days (" . count ( $key_races ) . ")</caption>
         <thead>
           <th>Date</th>
@@ -69,7 +69,7 @@ function keyRaces($defaults) {
 	}
 
 	echo "
-      </tbody></table></div>
+      </tbody></table>
     
       <script>
         $('#keyTable').tablesorter({
@@ -83,8 +83,7 @@ function keyRaces($defaults) {
              }
            }
         });
-       setTrendDivStyle('center');
-      </script>
+       </script>
     ";
 } // function
 

@@ -5,9 +5,7 @@
 
 //invoked as the 'onblur' event handler of respective forms
 function class_trigger() {
-	var x = $("#race_class").val().substr(0,1);
-	    
-	if ( x == "M" && $("#horse").val() == "" ) {
+	if ( $("#race_class").val().substr(0,1) == "M" && $("#horse").val() == "" ) {
 		$("#horse").val("+");
 	}
 }
