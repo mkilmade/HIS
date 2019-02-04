@@ -341,7 +341,7 @@ echo "
 for($row = 0; $row < count ( $tj ); ++ $row) {
 	echo "
         <tr>
-          <td onmouseover=\"showIndividualStats('trainer', '" . $tt [$row] ['name'] . "')\">{$tt[$row]['name']}</td>
+          <td onmouseover=\"showIndividualStats('trainer', '" . addslashes ( $tt [$row] ['name'] ) . "')\">{$tt[$row]['name']}</td>
           <td onmouseover=\"showGraphic('trainer', '" . addslashes ( $tt [$row] ['name'] ) . "')\"
               class='nums'>
               <div class='tooltip2'>{$tt[$row]['wins']}
