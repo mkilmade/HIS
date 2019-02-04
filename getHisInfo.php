@@ -125,7 +125,7 @@ function getLastWinData($horse) {
 
 function nextOutWinners($previous_date,
                         $previous_race,
-                        $previous_track_id) {
+		                $previous_track_id) {
         $winnerObj = TB17::getRaceInfo($previous_date,
                         			   $previous_race,
                         			   $previous_track_id);
@@ -144,7 +144,11 @@ function nextOutWinners($previous_date,
             $caption .= $winnerObj->time_of_race;
             $caption .= "</b>";
         }
-            
+        $linkTxt = "Chart: ". $previous_date . " : " . $previous_track_id . " : R" . $previous_race;
+        $chartLink = "&nbsp;&nbsp;&nbsp;<a target='_blank' href='";
+        $chartLink .= TB17::getEquibaseUrl($previous_date, $previous_track_id, $previous_race) . "'>$linkTxt</a>";  
+        $caption .= $chartLink; 
+        
         $html="";
         $html .= "<table id='nowTable' class='tablesorter' style='margin: auto; width:900px; font-size:14px'>
                     <caption>$caption</caption>
@@ -172,7 +176,7 @@ function nextOutWinners($previous_date,
                 $html .= "<tr>";
                 $html .= "<td>$winnerObj->horse</td>";
                 $html .= "<td>$winnerObj->race_date</td>";
-                $html .= "<td><a target='_blank' href='" . $winnerObj->getChartUrl() ."'>$winnerObj->race</td>";
+                $html .= "<td><a target='_blank' href='" . $winnerObj->getChartUrl() ."'>$winnerObj->race</a></td>";
                 $html .= "<td>$winnerObj->track_id</td>";
                 $html .= "<td>$winnerObj->previous_finish_position</td>";
                 $html .= "<td>$winnerObj->race_class</td>";
