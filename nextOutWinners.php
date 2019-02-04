@@ -98,7 +98,7 @@ function getNextOutWinners() {
   $(document).ready(function() {
     $('#race_date').datepicker({
       currentText: 'Today',
-      defaultDate: 0,
+      defaultDate: '2019-01-01',
       dateFormat: 'yy-mm-dd',
       showButtonPanel: true,
       onSelect: function(race_date) {
