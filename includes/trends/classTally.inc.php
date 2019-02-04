@@ -30,6 +30,11 @@ function classTally(array $defaults) {
             $('#dayTable, #classTable').tablesorter({
                 widgets: ['zebra']
             });
+           $('#classTrendDetailDiv').css({ 'visibility': 'hidden',
+                                           'float': 'left',
+                                           'width': '225px'
+                                         });
+
         </script>
         ";
 } // function

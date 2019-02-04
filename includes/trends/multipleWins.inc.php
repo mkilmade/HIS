@@ -5,7 +5,7 @@ function multipleWins($defaults) {
 	$tallies = $rm->getMultipleWins ();
 
 	echo "
-          <table id='multiWinsTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
+          <table id='multiWinsTable' class='tablesorter' style='width:250px; margin: auto; font-size:14px'>
             <caption>Multiple Wins at Meet (" . count ( $tallies ) . ")</caption>
             <thead>
               <th>Horse</th>

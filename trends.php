@@ -13,21 +13,6 @@
 <title>Trends</title>
 
 <style>
-table#navigator {
-	text-align: center;
-	margin-left: auto;
-	margin-right: auto;
-	border-spacing: 0px;
-	border: 2px solid black;
-	border-collapse: separate;
-}
-
-table#navigator td {
-	border-right: 1px solid black;
-	border-top: 1px solid black;
-	border-collapse: separate;
-	padding: 3px;
-}
 
 .turf {
 	background-color: #32CD32;
@@ -51,7 +36,7 @@ table#keyTable, table#trackTable, table#multiWinsTable, table#previousMeetDateCo
 	margin: auto;
 }
 
-table#keyTable, table#trackTable td {
+table#keyTable td {
 	padding: 0px;
 }
 </style>
@@ -76,14 +61,14 @@ table#keyTable, table#trackTable td {
 
 </head>
 <body>
-	<h2 id="body_title" style="text-align: center;">Browse Trends And Stats</h2>
+	<h2 style="text-align: center;">Browse Trends And Stats</h2>
 	<table style="margin: auto;">
 		<tr>
 			<td><a href='index.php'>Home</a></td>
 		</tr>
 	</table>
 	<br />
-	<div id="tabs">
+	<div id="trends">
 	  <ul>
 	    <li><a href="getTrend.php?trend=keyRaces">Keys</a></li>
 	    <li><a href="getTrend.php?trend=classTally">Class</a></li>
@@ -97,9 +82,10 @@ table#keyTable, table#trackTable td {
 </body>
 <script>
     $(document).ready(function() {
-    	$( "#tabs" ).tabs({
-    		  event: "mouseover",
-    		  heightStyle: "content"
+    	$( "#trends" ).tabs({
+    		  event: "click",
+    		  heightStyle: "content",
+    		  show: {effect: "clip" , duration: 0, easing: 'linear'}
     	});
     });
 </script>
