@@ -7,10 +7,10 @@ function previousTrackWins($defaults) {
 	echo "
       <table id='trackTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
         <caption>Previous Track Stats (" . count ( $tallies ) . ")</caption>
-        <thead>
+        <thead><tr>
           <th>Track</th>
           <th>Wins</th>
-        </thead>
+        </tr></thead>
     <tbody>
     ";
 
