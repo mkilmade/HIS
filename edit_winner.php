@@ -74,8 +74,11 @@ table#nowTable td {
 	</form>
 </body>
 <script>
+ <?php
+   echo "var default_previous_date = '{$_SESSION['defaults']['default_previous_date']}';";
+ ?>
  $(document).ready(function() {
-   setupCommonFields();
+   setupCommonFields(default_previous_date);
  <?php
 	$winnerObj = TB17::IdFactory( $_GET ['tb17_id'] );
 	echo "

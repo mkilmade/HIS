@@ -79,12 +79,13 @@ echo "
     var last_race_date = '$last_race_date',
         next_race = '$next_race',
         current_track_id = '{$_SESSION['defaults']['track_id']}',
+        default_previous_date = '{$_SESSION['defaults']['default_previous_date']}',
         dirt_track_condition = '{$_SESSION['dirt_track_condition']}',
         turf_track_condition = '{$_SESSION['turf_track_condition']}',
         age = '{$_SESSION['defaults']['age']}';
         
     "?>
-    setupCommonFields();
+    setupCommonFields(default_previous_date);
     // set race number to 1 if date is new or to appropriate race # if race date on file
     // (most helpful when adding a new race date)
     $('#race_date').on('change',function(e) {

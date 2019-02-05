@@ -49,6 +49,10 @@ require_once ('includes/envInit.inc.php');
 					name="previous_track_id" style="width: 60px;"></label>
 			</p>
 			
+	        <p>
+	            <label>Default Previous Date: <input size="10" type="date"
+		          id="default_previous_date" name="default_previous_date"></label>
+		    </p>
 			<p>
 	             <label>Age: <select id="age" name="age">
 			         <option value="2">2</option>
@@ -74,6 +78,7 @@ require_once ('includes/envInit.inc.php');
 
 <?php
 $cdObj = Defaults::IdFactory(1);
+echo "var default_previous_date = '{$cdObj->default_previous_date}';";
 // iterate through properties and set corresponding form fields
 foreach ( $cdObj as $field => $value ) {
 	echo "
@@ -86,6 +91,12 @@ foreach ( Meet::getMeets () as $rmObj ) {
 	echo "$('#race_meet_id').append(\"<option value='{$rmObj->race_meet_id}' $selected>" . addslashes ( $rmObj->name ) . "</option>\");";
 }
 ?>
+$('#default_previous_date').datepicker({
+	currentText : 'Today',
+	defaultDate : default_previous_date,
+	dateFormat : 'yy-mm-dd',
+	showButtonPanel : true,
+});
 
 }); // finish .ready function
 </script>

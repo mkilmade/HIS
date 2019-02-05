@@ -171,7 +171,7 @@ function acDomainFields(selector) {
 			});
 }
 
-function setupCommonFields() {
+function setupCommonFields(default_previous_date) {
 	// populate autocomplete fields
 	acDomainFields('#horse, #trainer, #jockey, #race_class, #race_flow, #previous_track_id');
 
@@ -184,7 +184,7 @@ function setupCommonFields() {
 
 	$('#previous_date').datepicker({
 		currentText : 'Today',
-		defaultDate : '2019-01-01',
+		defaultDate : default_previous_date,
 		dateFormat : 'yy-mm-dd',
 		showButtonPanel : true,
 		onSelect : function(race_date) {

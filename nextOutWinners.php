@@ -1,3 +1,6 @@
+<?php 
+require_once ('includes/envInit.inc.php');
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -95,10 +98,13 @@ function getNextOutWinners() {
 	<div id='nextOutWinners' style='visibility: hidden;'></div>
 </body>
 <script>
+<?php
+  echo "var default_previous_date = '{$_SESSION['defaults']['default_previous_date']}';";
+?>
   $(document).ready(function() {
     $('#race_date').datepicker({
       currentText: 'Today',
-      defaultDate: '2019-01-01',
+      defaultDate: default_previous_date,
       dateFormat: 'yy-mm-dd',
       showButtonPanel: true,
       onSelect: function(race_date) {

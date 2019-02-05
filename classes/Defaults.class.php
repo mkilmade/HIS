@@ -17,6 +17,7 @@ class Defaults extends \HisEntity {
                      rm.name AS meet_name,
                      cd.past_days,
                      cd.previous_track_id,
+                     cd.default_previous_date,
 					 cd.age,
                      trk.site_url,
                      trk.scratches_url,
