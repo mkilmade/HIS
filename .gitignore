@@ -6,6 +6,8 @@ dummy.php
 composer.phar
 vendor/**
 build.properties
+trackStats.html
+trackStats.php
 build.xml
 .buildpath
 .project
