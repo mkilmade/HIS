@@ -71,6 +71,7 @@ table#keyTable td {
 	<div id="trends">
 	  <ul>
 	    <li><a href="getTrend.php?trend=keyRaces">Keys</a></li>
+	    <li><a href="nextOutWinners.php">NOW</a></li>
 	    <li><a href="getTrend.php?trend=classTally">Class</a></li>
 	    <li><a href="getTrend.php?trend=multipleWins">Multi-Wins</a></li>
 	    <li><a href="getTrend.php?trend=previousTrackWins">Tracks</a></li>

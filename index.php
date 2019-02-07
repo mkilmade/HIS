@@ -181,6 +181,8 @@ table#topTenLists td, th {
 		<tr>
 			<td><a href='add_winner.php'>Add</a></td>
 			<td><a href='browse.php'>Browse</a></td>
+			<td><a href='trends.php'>Trends</a></td>
+			<td><a href='nextOutWinners.php'>NOW</a></td>
 			<td><a id="scratches_url" target='_blank'>Scratches</a></td>
 			<td><a id="site_url" target='_blank'>Site</a></td>
 			<td><a target='_blank' href='http://www.drf.com'>DRF</a></td>
@@ -195,8 +197,6 @@ table#topTenLists td, th {
 			<td><a target='_blank'
 				href='http://www.brisnet.com/cgi-bin/static.cgi?page=stablealert'>Stable</a></td>
 			<td><a target='_blank' href='https://play.drf.com/#/'>PPs</a></td>
-			<td><a href='trends.php'>Trends</a></td>
-			<td><a href='nextOutWinners.php'>NOW</a></td>
 			<td><a href='edit_defaults.php'>Settings</a></td>
 			<td><a href='index.php?reset_session=1'>Reset</a></td>
 		</tr>
