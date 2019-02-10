@@ -58,12 +58,13 @@ function getNextOutWinners() {
 
 <body>
 	<h2 id="body_title">Find Next Out Winners</h2>
-	<table style="margin: auto;">
-		<tr>
-			<td><a href='index.php'>Home</a></td>
-		</tr>
-	</table>
-	<br />
+	<div id=nav_menu>
+		<table style="margin: auto;">
+			<tr>
+				<td><a href='index.php'>Home</a></td>
+			</tr>
+		</table>
+	</div>
 	<form>
 		<table border=1 style="margin: auto;">
 			<thead>
@@ -99,7 +100,8 @@ function getNextOutWinners() {
 </body>
 <script>
 <?php
-  echo "var default_previous_date = '{$_SESSION['defaults']['default_previous_date']}';";
+  echo "var default_previous_date = '{$_SESSION['defaults']['default_previous_date']}',
+            navMenuCss = '{$_GET['navMenu']}';";
 ?>
   $(document).ready(function() {
     $('#race_date').datepicker({
@@ -115,7 +117,7 @@ function getNextOutWinners() {
     $('#track_id, #race_date, #race').on('change', function() {
     	getNextOutWinners();
     });
-    
+    $('#nav_menu').css({ 'visibility': navMenuCss});
     acDomainFields('#track_id');
   });  // ready
 </script>

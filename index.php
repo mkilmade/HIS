@@ -182,7 +182,7 @@ table#topTenLists td, th {
 			<td><a href='add_winner.php'>Add</a></td>
 			<td><a href='browse.php'>Browse</a></td>
 			<td><a href='trends.php'>Trends</a></td>
-			<td><a href='nextOutWinners.php'>NOW</a></td>
+			<td><a href='nextOutWinners.php?navMenu=visible'>NOW</a></td>
 			<td><a id="scratches_url" target='_blank'>Scratches</a></td>
 			<td><a id="site_url" target='_blank'>Site</a></td>
 			<td><a target='_blank' href='http://www.drf.com'>DRF</a></td>
