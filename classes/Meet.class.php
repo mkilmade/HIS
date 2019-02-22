@@ -221,7 +221,7 @@ class Meet extends \HisEntity {
                     GROUP BY horse
                    ) AS multi_winners
               WHERE wins > '1'
-              ORDER BY wins, horse";
+              ORDER BY wins DESC, horse";
 		return TB17::getResultArray ( $query );
 
 	}
