@@ -199,6 +199,7 @@ table#topTenLists td, th {
 			<td><a target='_blank' href='https://play.drf.com/#/'>PPs</a></td>
 			<td><a href='edit_defaults.php'>Settings</a></td>
 			<td><a href='index.php?reset_session=1'>Reset</a></td>
+			<td><a target='_blank' href='http://www.equibase.com/stats/View.cfm?tf=meet&tb=jockey&rbt=TB'>Equibase</a></td>
 		</tr>
 	</table>
 	<br>
