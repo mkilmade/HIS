@@ -1,6 +1,3 @@
-<?php 
-require_once ('includes/envInit.inc.php');
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -100,7 +97,8 @@ function getNextOutWinners() {
 </body>
 <script>
 <?php
-  echo "var default_previous_date = '{$_SESSION['defaults']['default_previous_date']}',
+require_once ('includes/envInit.inc.php');
+echo "var default_previous_date = '{$_SESSION['defaults']['default_previous_date']}',
             navMenuCss = '{$_GET['navMenu']}';";
 ?>
   $(document).ready(function() {
@@ -111,6 +109,7 @@ function getNextOutWinners() {
       showButtonPanel: true,
       onSelect: function(race_date) {
           getTrackId(race_date, '#track_id', '#race');
+          getNextOutWinners();
       }
     });  // datepicker
     
