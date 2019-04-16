@@ -33,6 +33,7 @@ function horse_trigger() {
 			$("#previous_date").val(response.race_date);
 			$("#previous_race").val(response.race);
 			$("#previous_finish_position").val(response.finish_position);
+			previous_trigger();
 			$("#trainer").val(response.trainer);
 			$("#jockey").val(response.jockey);
 		}
