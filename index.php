@@ -158,7 +158,13 @@ table#topTenLists td, th {
 }
 </style>
 <script>
-
+  function siteLinks(scratches_url, site_url, meet_title) {
+    $('#scratches_url').attr('href',scratches_url);
+    $('#site_url').attr('href',site_url);
+    $('#title').text(meet_title);
+    
+  }
+  
   function showGraphic(type, id) {
     $("#individual_info").css('visibility', 'visible');
     uri=encodeURI("graphic_test.php?type=" + type + "&name=" + id);
@@ -289,11 +295,17 @@ function statLine($turf, $distance) {
 }
 // -- get last racing date and defaults
 $lrdate = TB17::last_race_date ( $_SESSION ['defaults'] ['meet_filter'] );
+$meet_title = $_SESSION['defaults']['meet_name'] . (DB_PRODUCTION == 1 ? '' : ' [' . DB_NAME . ']');
 
 // if meet has not started or no winners entered yet for meet, return/abort
 if ($lrdate == '') {
 	echo "
       </tbody>
+      <script>
+        $(document).ready(function() {
+		  siteLinks('{$_SESSION['defaults']['scratches_url']}','{$_SESSION['defaults']['site_url']}','{$meet_title}');
+        });
+      </script>
     </body>
     </html>
       ";
@@ -448,15 +460,10 @@ echo "
       </div>
       <script>
         $(document).ready(function() {
-          $('#scratches_url').attr('href','{$_SESSION['defaults']['scratches_url']}');
-          $('#site_url').attr('href','{$_SESSION['defaults']['site_url']}');
-          $('#title').text('{$_SESSION['defaults']['meet_name']}" . (DB_PRODUCTION == 1 ? '' : ' [' . DB_NAME . ']') . "');
+          siteLinks('{$_SESSION['defaults']['scratches_url']}','{$_SESSION['defaults']['site_url']}','{$meet_title}');
           $('#resultTable').tablesorter({widgets: ['zebra']});
           $('#deadheats').text('" . ($deadheat_cnt / 2) . " races were deadheats');
           $('#multiwinners').text('" . (($horse_cnts ['Turf'] + $horse_cnts ['Dirt']) - $horse_cnts ['Total']) . " horses won on dirt & turf');
-          $('#scratches_url').attr('href','{$_SESSION['defaults']['scratches_url']}');
-          $('#site_url').attr('href','{$_SESSION['defaults']['site_url']}');
-          $('#title').text('{$_SESSION['defaults']['meet_name']}" . (DB_PRODUCTION == 1 ? '' : ' [' . DB_NAME . ']') . "');
           // clear/hide dynamic eleemnts
           clearInfo();
         });
