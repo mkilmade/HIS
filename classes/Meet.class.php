@@ -150,7 +150,9 @@ class Meet extends \HisEntity {
 	public function getPreviousTrackWins() {
 
 		$query = "SELECT previous_track_id,
-		                     COUNT(*) as wins
+		                 COUNT(*) as wins,
+                         SUM(IF(turf='FALSE',1,0)) as dirt,
+                         SUM(IF(turf='TRUE',1,0)) as turf
 	              FROM tb17
 	              WHERE previous_track_id IS NOT NULL AND " . $this->meet_filter ( 'race_date' ) . "
 	              GROUP By previous_track_id
@@ -161,7 +163,9 @@ class Meet extends \HisEntity {
 
 	public function getFtsWins() {
 
-		$query = "SELECT COUNT(*) as wins
+		$query = "SELECT COUNT(*) as wins,
+                         SUM(IF(turf='FALSE',1,0)) as dirt,
+                         SUM(IF(turf='TRUE',1,0)) as turf
 	              FROM tb17
 	              WHERE comment LIKE '%FTS%' AND " . $this->meet_filter ( 'race_date' ) . "
 	              LIMIT 1";
@@ -169,11 +173,20 @@ class Meet extends \HisEntity {
 		$stmt = $conn->pdo->prepare ( $query );
 		$stmt->execute ();
 		$stmt->bindColumn ( 'wins', $wins );
-
+		$stmt->bindColumn ( 'dirt', $dirt );
+		$stmt->bindColumn ( 'turf', $turf );
+		
 		if (! $stmt->fetch ( PDO::FETCH_BOUND )) {
-			$wins = 0;
+			$totals['wins'] = 0;
+			$totals['dirt'] = 0;
+			$totals['turf'] = 0;
+		} else {
+			$totals['wins'] = $wins;
+			$totals['dirt'] = $dirt;
+			$totals['turf'] = $turf;
+			
 		}
-		return $wins;
+		return $totals;
 
 	}
 

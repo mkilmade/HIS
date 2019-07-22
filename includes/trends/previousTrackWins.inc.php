@@ -6,36 +6,50 @@ function previousTrackWins($defaults) {
 
 	echo "
       <table id='trackTable' class='tablesorter' style='width:200px; margin: auto; font-size:14px'>
-        <caption>Previous Track Stats (" . count ( $tallies ) . ")</caption>
+        <caption>Previous Track Win Stats (" . count ( $tallies ) . " Tracks)</caption>
         <thead><tr>
           <th>Track</th>
-          <th>Wins</th>
+          <th>Dirt</th>
+          <th>Turf</th>
+          <th>Total</th>
         </tr></thead>
     <tbody>
     ";
 
-	$total = 0;
+	$dirt = 0;
+	$turf = 0;
+	$wins = 0;
 	foreach ( $tallies as $tally ) {
-		$total += $tally ['wins'];
+		$dirt  += $tally ['dirt'];
+		$turf  += $tally ['turf'];
+		$wins += $tally ['wins'];
 		echo "<tr>";
 		echo "<td>{$tally['previous_track_id']}</td>";
+		echo "<td>{$tally['dirt']}</td>";
+		echo "<td>{$tally['turf']}</td>";
 		echo "<td>{$tally['wins']}</td>";
 		echo "</tr>";
 	}
 
 	// get FTS (first time starter) wins for meet
-	$wins = $rm->getFtsWins ();
-	$total += $wins;
+	$totals = $rm->getFtsWins ();
+	$dirt += $totals['dirt'];
+	$turf += $totals['turf'];
+	$wins += $totals['wins'];
 	echo "<tr>";
 	echo "<td>Firsters</td>";
-	echo "<td>$wins</td>";
+	echo "<td>{$totals['dirt']}</td>";
+	echo "<td>{$totals['turf']}</td>";
+	echo "<td>{$totals['wins']}</td>";
 	echo "</tr>";
 
 	// add total row
 	echo "
         <tr>
             <td><b>Total</b></td>
-            <td><b>$total</b></td>
+            <td><b>$dirt</b></td>
+            <td><b>$turf</b></td>
+            <td><b>$wins</b></td>
         </tr>
         </tbody></table>
 

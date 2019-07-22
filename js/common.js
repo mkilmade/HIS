@@ -175,7 +175,21 @@ function acDomainFields(selector) {
 function setupCommonFields(default_previous_date) {
 	// populate autocomplete fields
 	acDomainFields('#horse, #trainer, #jockey, #race_class, #race_flow, #previous_track_id');
-
+	
+    $("#time_of_race").keyup(function(e) {
+    	var val = $("#time_of_race").val();
+    	
+    	if (val.substring(1,2) == ":") {
+    		return
+    	}
+    	
+    	if (val.length == 4) {
+    		var mins = val.substring(0,1), secs = val.substring(1,3), frac = val.substring(3);
+    		$("#time_of_race").val(mins + ":" + secs + "." + frac);
+    		$("#trainer").focus();
+    	}
+    });
+    
 	$('#race_date').datepicker({
 		currentText : 'Today',
 		defaultDate : 0,
